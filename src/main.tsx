@@ -1,25 +1,22 @@
-import { StrictMode } from "react";
-import ReactDOM from "react-dom/client";
 import {
-    Outlet,
-    RouterProvider,
     createRootRoute,
     createRoute,
     createRouter,
+    Outlet,
+    RouterProvider,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { StrictMode } from "react";
+import ReactDOM from "react-dom/client";
+import Header from "./components/Header";
+import TanStackQueryLayout from "./integrations/tanstack-query/layout.tsx";
+import * as TanStackQueryProvider from "./integrations/tanstack-query/root-provider.tsx";
 import TanStackQueryDemo from "./routes/demo.tanstack-query.tsx";
 
-import Header from "./components/Header";
-
-import TanStackQueryLayout from "./integrations/tanstack-query/layout.tsx";
-
-import * as TanStackQueryProvider from "./integrations/tanstack-query/root-provider.tsx";
-
 import "./styles.css";
-import reportWebVitals from "./reportWebVitals.ts";
 
 import App from "./App.tsx";
+import reportWebVitals from "./reportWebVitals.ts";
 
 const rootRoute = createRootRoute({
     component: () => (
