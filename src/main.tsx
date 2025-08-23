@@ -5,11 +5,9 @@ import {
     Outlet,
     RouterProvider,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import Header from "./components/Header";
-import TanStackQueryLayout from "./integrations/tanstack-query/layout.tsx";
 import * as TanStackQueryProvider from "./integrations/tanstack-query/root-provider.tsx";
 import TanStackQueryDemo from "./routes/demo.tanstack-query.tsx";
 
@@ -23,9 +21,9 @@ const rootRoute = createRootRoute({
         <>
             <Header />
             <Outlet />
-            <TanStackRouterDevtools />
+            {/* <TanStackRouterDevtools /> */}
 
-            <TanStackQueryLayout />
+            {/* <TanStackQueryLayout /> */}
         </>
     ),
 });
