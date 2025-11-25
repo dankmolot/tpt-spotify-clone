@@ -1,7 +1,13 @@
-@import "node_modules/modern-normalize/modern-normalize.css";
+@import "../node_modules/modern-normalize/modern-normalize.css";
 
 body {
     /* improve font rendering */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    background: black;
+    color: white;
+
+    /* by default it is 16px, but just to be sure */
+    font-size: 16px;
 }
