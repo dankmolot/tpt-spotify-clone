@@ -1,22 +1,15 @@
-@import "/node_modules/modern-normalize/modern-normalize.css";
-@import "./utils.scss";
+@use "/node_modules/modern-normalize/modern-normalize.css";
+@use "./typography.scss";
+@use "./utils.scss";
 
 body {
-    /* improve font rendering */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-
     background: black;
     color: white;
-
-    /* by default it is 16px, but just to be sure */
-    font-size: 16px;
-
-    width: 100vw;
-    height: 100vh;
 }
 
 #root {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
+    display: flow-root;
 }

@@ -13,4 +13,9 @@ export default defineConfig({
         tsconfigPaths(), 
         viteReact(), 
     ],
+    css: {
+        modules: {
+            localsConvention: "camelCaseOnly"
+        }
+    }
 });
