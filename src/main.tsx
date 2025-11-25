@@ -1,43 +1,12 @@
-import {
-    createRootRoute,
-    createRoute,
-    createRouter,
-    Outlet,
-    RouterProvider,
-} from "@tanstack/react-router";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
-import Header from "./components/Header";
 import * as TanStackQueryProvider from "./integrations/tanstack-query/root-provider.tsx";
-import TanStackQueryDemo from "./routes/demo.tanstack-query.tsx";
 
 import "./styles.css";
 
-import App from "./App.tsx";
 import reportWebVitals from "./reportWebVitals.ts";
-
-const rootRoute = createRootRoute({
-    component: () => (
-        <>
-            <Header />
-            <Outlet />
-            {/* <TanStackRouterDevtools /> */}
-
-            {/* <TanStackQueryLayout /> */}
-        </>
-    ),
-});
-
-const indexRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: "/",
-    component: App,
-});
-
-const routeTree = rootRoute.addChildren([
-    indexRoute,
-    TanStackQueryDemo(rootRoute),
-]);
+import { routeTree } from "./routeTree.gen.ts";
 
 const router = createRouter({
     routeTree,
@@ -56,7 +25,7 @@ declare module "@tanstack/react-router" {
     }
 }
 
-const rootElement = document.getElementById("app");
+const rootElement = document.getElementById("root");
 if (rootElement && !rootElement.innerHTML) {
     const root = ReactDOM.createRoot(rootElement);
     root.render(
