@@ -1,7 +1,7 @@
 @use "/node_modules/modern-normalize/modern-normalize.css";
+@use "./theme.scss";
 @use "./typography.scss";
 @use "./utils.scss";
-@use "./ReactAria/components.scss";
 
 body {
     background: black;
