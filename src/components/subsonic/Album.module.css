@@ -1,0 +1,8 @@
+.album {
+    display: flex;
+    flex-direction: column;
+    background-color: red;
+    width: 12em;
+    height: 12em;
+    overflow: hidden;
+}

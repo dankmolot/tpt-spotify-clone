@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { Album } from "@/components/subsonic/Album"
 import * as subsonic from "@/lib/queries/subsonic"
 
 export const Route = createFileRoute("/test")({
@@ -6,11 +7,11 @@ export const Route = createFileRoute("/test")({
 })
 
 function Test() {
-    const { data } = subsonic.getAlbumList2({ type: "newest", size: 1 })
+    const { data } = subsonic.useGetAlbumList2({ type: "newest", size: 1 })
 
     if (!data) return
 
     if (data.status !== "ok") return
 
-    return <>{data.albumList2.album[0].name}</>
+    return <Album album={data.albumList2.album[0]} />
 }
