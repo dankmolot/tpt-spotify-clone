@@ -1,1 +1,5 @@
-export * as subsonic from "./subsonic"
+import * as subsonic from "./subsonic"
+
+export const api = {
+    subsonic,
+}

@@ -17,11 +17,18 @@ interface RequestApiKey {
 }
 
 interface RequestOptions {
+    serverURL: string
     auth: RequestUser | RequestToken | RequestApiKey
+    params?: object
 }
 
-async function request<T>(name: string, parser: z.ZodType<T>, options: RequestOptions) {
+async function request<T>(
+    name: string,
+    parser: z.ZodType<T>,
+    options: RequestOptions,
+) {
     const params = new URLSearchParams({
+        ...options.params,
         f: "json",
         c: "Spotify Clone",
         v: "1.16.1",
@@ -44,46 +51,109 @@ async function request<T>(name: string, parser: z.ZodType<T>, options: RequestOp
         }
     }
 
-    const url = `https://demo.navidrome.org/rest/${name}.view?${params.toString()}`
-    return fetch(url).then((r) => r.json()).then(r => parser.parse(r["subsonic-response"]))
+    const url = `${options.serverURL}/rest/${name}.view?${params.toString()}`
+    return fetch(url)
+        .then((r) => r.json())
+        .then((r) => parser.parse(r["subsonic-response"]))
 }
 
 export const SubsonicError = z.object({
-    "code": z.number(),
-    "message": z.string().optional(),
-    "helpUrl": z.string().optional(),
+    code: z.number(),
+    message: z.string().optional(),
+    helpUrl: z.string().optional(),
 })
 
 export const SubsonicResponseBase = z.object({
-    "version": z.string(),
-    "type": z.string(),
-    "serverVersion": z.string(),
-    "openSubsonic": z.boolean(),
+    version: z.string(),
+    type: z.string(),
+    serverVersion: z.string(),
+    openSubsonic: z.boolean(),
 })
 
 export const SubsonicOkResponse = z.object({
     ...SubsonicResponseBase.shape,
-    "status": z.literal("ok"),
+    status: z.literal("ok"),
 })
 
 export const SubsonicErrorResponse = z.object({
     ...SubsonicResponseBase.shape,
-    "status": z.literal("failed"),
-    "error": SubsonicError
+    status: z.literal("failed"),
+    error: SubsonicError,
 })
 
-export const SubsonicResponse = z.discriminatedUnion("status", [
-    SubsonicOkResponse,
-    SubsonicErrorResponse,
-])
+function toResponse<T extends z.ZodRawShape>(shape: T) {
+    return z.discriminatedUnion("status", [
+        SubsonicOkResponse.extend(shape),
+        SubsonicErrorResponse,
+    ])
+}
+
+export const SubsonicResponse = toResponse({})
+
+export const ArtistID3 = z.object({
+    id: z.string(),
+    name: z.string(),
+    coverArt: z.string().optional(),
+    artistImageUrl: z.string().optional(),
+    starred: z.string().pipe(z.coerce.date()).optional(),
+    musicBrainzId: z.string().optional(),
+    sortName: z.string().optional(),
+    roles: z.array(z.string()).optional(),
+})
+
+export const AlbumID3 = z.object({
+    id: z.string(),
+    name: z.string(),
+    version: z.string().optional(),
+    artist: z.string().optional(),
+    artistId: z.string().optional(),
+    coverArt: z.string().optional(),
+    songCount: z.number(),
+    duration: z.number(),
+    playCount: z.number().optional(),
+    created: z.string().pipe(z.coerce.date()),
+    starred: z.string().pipe(z.coerce.date()).optional(),
+    year: z.number().optional(),
+    genre: z.string().optional(),
+    artists: z.array(ArtistID3).optional(),
+})
 
 const salt = "test"
-const hash = md5(`demo${salt}`)
+const hash = md5(`${import.meta.env.VITE_SUBSONIC_PASS}${salt}`)
 
 const defaultOptions: RequestOptions = {
-    auth: { user: "demo", hash, salt },
+    serverURL: import.meta.env.VITE_SUBSONIC_URL,
+    auth: { user: import.meta.env.VITE_SUBSONIC_USER, hash, salt },
 }
 
 export function ping() {
     return request("ping", SubsonicResponse, { ...defaultOptions })
+}
+
+export interface GetAlbumList2Params {
+    // byYear and byGenre is missing
+    type:
+        | "random"
+        | "newest"
+        | "highest"
+        | "frequent"
+        | "recent"
+        | "alphabeticalByName"
+        | "alphabeticalByArtist"
+        | "starred"
+    size?: number
+    offset?: number
+}
+
+export const GetAlbumList2Response = toResponse({
+    albumList2: z.object({
+        album: z.array(AlbumID3),
+    }),
+})
+
+export function getAlbumList2(params: GetAlbumList2Params) {
+    return request("getAlbumList2", GetAlbumList2Response, {
+        ...defaultOptions,
+        params,
+    })
 }

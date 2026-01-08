@@ -3,9 +3,7 @@ import { Button } from "react-aria-components"
 import z from "zod"
 import { Form } from "@/components/Form"
 import { Logo } from "@/components/Logo"
-import { TextField } from "@/components/TextField"
 import { useAppForm } from "@/lib/hooks/useForm"
-import * as queries from "@/lib/queries"
 import { cn } from "@/lib/utils"
 import classes from "./login.module.scss"
 
@@ -29,23 +27,23 @@ function RouteComponent() {
         },
         onSubmit: async ({ value }) => {
             console.log(value)
-            ping.mutate()
+            // ping.mutate()
         },
     })
 
-    const ping = queries.subsonic.ping()
+    // const ping = queries.subsonic.ping()
 
     return (
         <Form
             className={cn("panel", classes.loginBox)}
-            onSubmit={()}
+            // onSubmit={()}
         >
             <Logo />
             <h1 style={{ marginBottom: "1em" }}>Welcome back</h1>
 
-            <form.Field children={()} />
+            {/* <form.Field children={()} /> */}
 
-            <Controller
+            {/* <Controller
                 name="server"
                 control={control}
                 defaultValue="https://demo.navidrome.org"
@@ -57,7 +55,7 @@ function RouteComponent() {
                         placeholder="https://demo.navidrome.org"
                     />
                 )}
-            />
+            /> */}
 
             {/* 
             <TextField style={{ marginBottom: "1em" }}>
@@ -82,10 +80,10 @@ function RouteComponent() {
             </TextField> */}
 
             <Button type="submit">Login</Button>
-
+            {/* 
             {ping.isPending && <p>loading...</p>}
             {ping.data && <p>{JSON.stringify(ping.data)}</p>}
-            {ping.isError && <p>{ping.error.message}</p>}
+            {ping.isError && <p>{ping.error.message}</p>} */}
         </Form>
     )
 }
