@@ -22,11 +22,10 @@ interface RequestOptions {
     params?: object
 }
 
-async function request<T>(
+async function request(
     name: string,
-    parser: z.ZodType<T>,
     options: RequestOptions,
-) {
+): Promise<Blob | object> {
     const params = new URLSearchParams({
         ...options.params,
         f: "json",
@@ -52,9 +51,12 @@ async function request<T>(
     }
 
     const url = `${options.serverURL}/rest/${name}.view?${params.toString()}`
-    return fetch(url)
-        .then((r) => r.json())
-        .then((r) => parser.parse(r["subsonic-response"]))
+    const r = await fetch(url)
+    if (r.headers.get("content-type")?.startsWith("application/json")) {
+        return r.json().then((r) => r["subsonic-response"])
+    }
+
+    return r.blob()
 }
 
 export const SubsonicError = z.object({
@@ -129,7 +131,9 @@ const defaultOptions: RequestOptions = {
 }
 
 export function ping() {
-    return request("ping", SubsonicResponse, { ...defaultOptions })
+    return request("ping", defaultOptions).then((r) =>
+        SubsonicResponse.parse(r),
+    )
 }
 
 export interface GetAlbumList2Params {
@@ -155,8 +159,24 @@ const GetAlbumList2Response = toResponse({
 export type GetAlbumList2Response = z.infer<typeof GetAlbumList2Response>
 
 export function getAlbumList2(params: GetAlbumList2Params) {
-    return request("getAlbumList2", GetAlbumList2Response, {
+    return request("getAlbumList2", {
         ...defaultOptions,
         params,
+    }).then((r) => GetAlbumList2Response.parse(r))
+}
+
+export interface GetCoverArtParams {
+    id: string
+    size?: number
+}
+
+export function getCoverArt(params: GetCoverArtParams) {
+    return request("getCoverArt", { ...defaultOptions, params }).then((r) => {
+        // getCoverArt either returns an image data, or json on error
+        if (r instanceof Blob) {
+            return r
+        }
+
+        return SubsonicErrorResponse.parse(r)
     })
 }
