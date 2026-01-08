@@ -90,7 +90,7 @@ function toResponse<T extends z.ZodRawShape>(shape: T) {
 
 export const SubsonicResponse = toResponse({})
 
-export const ArtistID3 = z.object({
+const ArtistID3 = z.object({
     id: z.string(),
     name: z.string(),
     coverArt: z.string().optional(),
@@ -100,8 +100,9 @@ export const ArtistID3 = z.object({
     sortName: z.string().optional(),
     roles: z.array(z.string()).optional(),
 })
+export type ArtistID3 = z.infer<typeof ArtistID3>
 
-export const AlbumID3 = z.object({
+const AlbumID3 = z.object({
     id: z.string(),
     name: z.string(),
     version: z.string().optional(),
@@ -117,6 +118,7 @@ export const AlbumID3 = z.object({
     genre: z.string().optional(),
     artists: z.array(ArtistID3).optional(),
 })
+export type AlbumID3 = z.infer<typeof AlbumID3>
 
 const salt = "test"
 const hash = md5(`${import.meta.env.VITE_SUBSONIC_PASS}${salt}`)

@@ -1,18 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { useEffect } from "react"
-import { api } from "@/lib/api"
+import * as subsonic from "@/lib/queries/subsonic"
 
 export const Route = createFileRoute("/test")({
     component: Test,
 })
 
 function Test() {
-    useEffect(() => {
-        api.subsonic
-            .getAlbumList2({ type: "newest" })
-            .then(console.log)
-            .catch(console.error)
-    }, [])
+    const { data } = subsonic.getAlbumList2({ type: "newest", size: 1 })
 
-    return <>hello</>
+    if (!data) return
+
+    if (data.status !== "ok") return
+
+    return <>{data.albumList2.album[0].name}</>
 }
