@@ -147,11 +147,12 @@ export interface GetAlbumList2Params {
     offset?: number
 }
 
-export const GetAlbumList2Response = toResponse({
+const GetAlbumList2Response = toResponse({
     albumList2: z.object({
         album: z.array(AlbumID3),
     }),
 })
+export type GetAlbumList2Response = z.infer<typeof GetAlbumList2Response>
 
 export function getAlbumList2(params: GetAlbumList2Params) {
     return request("getAlbumList2", GetAlbumList2Response, {
