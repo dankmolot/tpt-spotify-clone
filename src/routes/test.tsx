@@ -9,7 +9,6 @@ export const Route = createFileRoute("/test")({
 function Test() {
     const { data: albums, error } = subsonic.useGetAlbumList2({
         type: "newest",
-        size: 1,
     })
 
     if (error) {
@@ -18,5 +17,5 @@ function Test() {
 
     if (!albums) return
 
-    return <Album album={albums[0]} />
+    return albums.map(album => (<Album album={album} key={album.id} />))
 }

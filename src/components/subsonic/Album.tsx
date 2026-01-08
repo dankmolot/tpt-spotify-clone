@@ -1,5 +1,5 @@
-import { useEffect } from "react"
 import type { AlbumID3 } from "@/lib/api/subsonic"
+import { useBlob } from "@/lib/hooks/utils"
 import { useGetCoverArt } from "@/lib/queries/subsonic"
 import { cn } from "@/lib/utils"
 import classes from "./Album.module.css"
@@ -24,15 +24,11 @@ export interface ConverArtProps
 }
 
 export function CoverArt({ id, className, ...props }: ConverArtProps) {
-    const { data, error } = useGetCoverArt(id ? { id: "test" } : undefined)
+    const { data, error } = useGetCoverArt(id ? { id } : undefined)
 
-    useEffect(() => {
-        if (!data) return
-    }, [data])
+    const coverURL = useBlob(data)
 
-    console.log(error)
-
-    if (!id) {
+    if (!id || error) {
         return (
             <span className={cn(classes.coverArt, className)} {...props}>
                 missing cover
@@ -43,8 +39,8 @@ export function CoverArt({ id, className, ...props }: ConverArtProps) {
     return (
         <img
             className={cn(classes.coverArt, className)}
-            src="https://qodeinteractive.com/magazine/wp-content/uploads/2020/06/16-Tame-Impala.jpg"
-            alt="Tame Impala"
+            src={coverURL}
+            alt="Album Cover"
             {...props}
         />
     )

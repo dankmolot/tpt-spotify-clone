@@ -9,7 +9,7 @@ export function usePing() {
 
 export function useGetAlbumList2(params: subsonic.GetAlbumList2Params) {
     return useQuery({
-        queryKey: ["getAlbumList2"],
+        queryKey: ["getAlbumList2", params],
         queryFn: () => subsonic.getAlbumList2(params),
     })
 }
@@ -18,5 +18,6 @@ export function useGetCoverArt(params?: subsonic.GetCoverArtParams) {
     return useQuery({
         queryKey: ["getCoverArt", params?.id, params?.size],
         queryFn: params ? () => subsonic.getCoverArt(params) : skipToken,
+        staleTime: Infinity
     })
 }
