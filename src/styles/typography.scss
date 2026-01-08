@@ -4,7 +4,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 
     /* by default it is 16px, but just to be sure */
-    font-size: 16px;
+    font-size: var(--font-size);
 }
 
 h1 {

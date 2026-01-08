@@ -163,14 +163,14 @@ export function ping() {
 export interface GetAlbumList2Params {
     // byYear and byGenre is missing
     type:
-        | "random"
-        | "newest"
-        | "highest"
-        | "frequent"
-        | "recent"
-        | "alphabeticalByName"
-        | "alphabeticalByArtist"
-        | "starred"
+    | "random"
+    | "newest"
+    | "highest"
+    | "frequent"
+    | "recent"
+    | "alphabeticalByName"
+    | "alphabeticalByArtist"
+    | "starred"
     size?: number
     offset?: number
 }
@@ -186,9 +186,7 @@ export function getAlbumList2(params: GetAlbumList2Params) {
     return request("getAlbumList2", {
         ...defaultOptions,
         params,
-    })
-        .then(parse(GetAlbumList2Response))
-        .then((r) => r.albumList2.album)
+    }).then(parse(GetAlbumList2Response)).then(r => r.albumList2.album)
 }
 
 export interface GetCoverArtParams {

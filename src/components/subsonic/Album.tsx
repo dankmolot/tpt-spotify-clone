@@ -1,44 +1,76 @@
-import type { AlbumID3 } from "@/lib/api/subsonic"
 import { useBlob } from "@/lib/hooks/utils"
 import { useGetCoverArt } from "@/lib/queries/subsonic"
-import { cn } from "@/lib/utils"
 import classes from "./Album.module.css"
 
-export interface AlbumProps
-    extends Omit<React.ComponentProps<"div">, "children"> {
-    album: AlbumID3
+export interface IAlbum {
+    name: string
+    coverArt?: string
+    artist?: string
 }
 
-export function Album({ album, className, ...props }: AlbumProps) {
+export interface AlbumProps
+    extends Omit<React.ComponentProps<"div">, "children" | "className"> {
+    album: IAlbum
+}
+
+export function Album({ album, ...props }: AlbumProps) {
     return (
-        <div {...props} className={cn(classes.album, className)}>
+        <div {...props} className={classes.album}>
             <CoverArt id={album.coverArt} />
-            {album.name}
+            <AlbumFooter album={album} />
         </div>
     )
 }
 
+export function AlbumFooter({ album, ...props }: AlbumProps) {
+    return (
+        <div className={classes.albumFooter} {...props}>
+            <AlbumName album={album} />
+            <AlbumArtist album={album} />
+        </div>
+    )
+}
+
+export interface AlbumTextProps
+    extends Omit<React.ComponentProps<"div">, "children" | "className"> {
+    album: IAlbum
+}
+
+export function AlbumName({ album, ...props }: AlbumTextProps) {
+    return (
+        <span className={classes.albumName} {...props}>
+            {album.name}
+        </span>
+    )
+}
+
+export function AlbumArtist({ album, ...props }: AlbumTextProps) {
+    return (
+        <span className={classes.albumArtist} {...props}>
+            {album.artist}
+        </span>
+    )
+}
+
 export interface ConverArtProps
-    extends Omit<React.ComponentProps<"img">, "children"> {
+    extends Omit<React.ComponentProps<"img">, "children" | "className"> {
     id?: string
 }
 
-export function CoverArt({ id, className, ...props }: ConverArtProps) {
+export function CoverArt({ id, ...props }: ConverArtProps) {
     const { data, error } = useGetCoverArt(id ? { id } : undefined)
-
     const coverURL = useBlob(data)
 
     if (!id || error) {
         return (
-            <span className={cn(classes.coverArt, className)} {...props}>
+            <span className={classes.coverArt} {...props}>
                 missing cover
             </span>
         )
     }
-
     return (
         <img
-            className={cn(classes.coverArt, className)}
+            className={classes.coverArt}
             src={coverURL}
             alt="Album Cover"
             {...props}

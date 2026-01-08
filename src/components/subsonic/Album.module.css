@@ -1,8 +1,33 @@
 .album {
     display: flex;
     flex-direction: column;
-    background-color: red;
-    width: 12em;
-    height: 12em;
-    overflow: hidden;
+    gap: 0.5em;
+    width: min-content;
+    height: min-content;
+    padding: 1em;
+    border-radius: 0.5em;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .coverArt {
+        width: 12em;
+        height: 12em;
+        border-radius: 0.5em;
+    }
+
+    .albumFooter {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25em;
+
+        .albumName {
+            color: var(--gray-1600);
+        }
+
+        .albumArtist {
+            color: var(--gray-900);
+        }
+    }
 }
