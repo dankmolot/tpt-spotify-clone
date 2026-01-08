@@ -1,3 +1,4 @@
+import { useInView } from "react-intersection-observer"
 import { useBlob } from "@/lib/hooks/utils"
 import { useGetCoverArt } from "@/lib/queries/subsonic"
 import classes from "./Album.module.css"
@@ -58,7 +59,8 @@ export interface ConverArtProps
 }
 
 export function CoverArt({ id, ...props }: ConverArtProps) {
-    const { data, error } = useGetCoverArt(id ? { id } : undefined)
+    const { ref, inView } = useInView()
+    const { data, error } = useGetCoverArt(id ? { id, enabled: inView } : undefined)
     const coverURL = useBlob(data)
 
     if (!id || error) {
@@ -73,6 +75,7 @@ export function CoverArt({ id, ...props }: ConverArtProps) {
             className={classes.coverArt}
             src={coverURL}
             alt="Album Cover"
+            ref={ref}
             {...props}
         />
     )

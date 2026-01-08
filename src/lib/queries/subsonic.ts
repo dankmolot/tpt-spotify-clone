@@ -14,10 +14,11 @@ export function useGetAlbumList2(params: subsonic.GetAlbumList2Params) {
     })
 }
 
-export function useGetCoverArt(params?: subsonic.GetCoverArtParams) {
+export function useGetCoverArt(params?: subsonic.GetCoverArtParams & { enabled?: boolean }) {
     return useQuery({
         queryKey: ["getCoverArt", params?.id, params?.size],
         queryFn: params ? () => subsonic.getCoverArt(params) : skipToken,
-        staleTime: Infinity
+        staleTime: Infinity,
+        enabled: params?.enabled,
     })
 }
