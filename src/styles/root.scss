@@ -4,7 +4,7 @@
 @use "./utils.scss";
 
 body {
-    background: black;
+    background: var(--background-color);
     color: white;
 }
 
