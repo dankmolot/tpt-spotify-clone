@@ -1,6 +1,50 @@
 import { z } from "zod"
 import { hex, md5 } from "@/lib/utils"
 
+const SubsonicResponse = z.looseObject({
+    version: z.string(),
+    type: z.string(),
+    serverVersion: z.string(),
+    openSubsonic: z.boolean(),
+    status: z.enum(["ok", "failed"]),
+})
+export type SubsonicResponse = z.infer<typeof SubsonicResponse>
+
+class SubsonicError extends Error {
+    static schema = z.object({
+        code: z.number(),
+        message: z.string().optional(),
+        helpUrl: z.string().optional(),
+    })
+    static type = SubsonicError.schema.pipe(
+        z.transform((e) => new SubsonicError(e)),
+    )
+
+    code: number
+    helpURL?: string
+    info?: z.infer<typeof SubsonicResponse>
+
+    constructor(
+        e: z.infer<typeof SubsonicError.schema>,
+        options?: ErrorOptions,
+    ) {
+        let message = e.message
+        if (e.code !== 0) {
+            message = `${e.message} [${e.code}]`
+        }
+
+        super(message, options)
+
+        this.name = "SubsonicError"
+        this.code = e.code
+        this.helpURL = e.helpUrl
+    }
+}
+
+function parse<I, O>(o: z.ZodType<I, O>) {
+    return (data: unknown) => o.parse(data)
+}
+
 interface RequestUser {
     user: string
     pass: string
@@ -25,7 +69,7 @@ interface RequestOptions {
 async function request(
     name: string,
     options: RequestOptions,
-): Promise<Blob | object> {
+): Promise<Blob | SubsonicResponse> {
     const params = new URLSearchParams({
         ...options.params,
         f: "json",
@@ -53,44 +97,26 @@ async function request(
     const url = `${options.serverURL}/rest/${name}.view?${params.toString()}`
     const r = await fetch(url)
     if (r.headers.get("content-type")?.startsWith("application/json")) {
-        return r.json().then((r) => r["subsonic-response"])
+        const data = await r.json()
+        if (!Object.hasOwn(data, "subsonic-response")) {
+            throw new SubsonicError({
+                code: 0,
+                message: "server returned bad response",
+            })
+        }
+
+        const info = SubsonicResponse.parse(data["subsonic-response"])
+        if (info.status === "failed" || Object.hasOwn(info, "error")) {
+            const err = SubsonicError.type.parse(info.error)
+            err.info = info
+            throw err
+        }
+
+        return info
     }
 
     return r.blob()
 }
-
-export const SubsonicError = z.object({
-    code: z.number(),
-    message: z.string().optional(),
-    helpUrl: z.string().optional(),
-})
-
-export const SubsonicResponseBase = z.object({
-    version: z.string(),
-    type: z.string(),
-    serverVersion: z.string(),
-    openSubsonic: z.boolean(),
-})
-
-export const SubsonicOkResponse = z.object({
-    ...SubsonicResponseBase.shape,
-    status: z.literal("ok"),
-})
-
-export const SubsonicErrorResponse = z.object({
-    ...SubsonicResponseBase.shape,
-    status: z.literal("failed"),
-    error: SubsonicError,
-})
-
-function toResponse<T extends z.ZodRawShape>(shape: T) {
-    return z.discriminatedUnion("status", [
-        SubsonicOkResponse.extend(shape),
-        SubsonicErrorResponse,
-    ])
-}
-
-export const SubsonicResponse = toResponse({})
 
 const ArtistID3 = z.object({
     id: z.string(),
@@ -131,9 +157,7 @@ const defaultOptions: RequestOptions = {
 }
 
 export function ping() {
-    return request("ping", defaultOptions).then((r) =>
-        SubsonicResponse.parse(r),
-    )
+    return request("ping", defaultOptions) as Promise<SubsonicResponse>
 }
 
 export interface GetAlbumList2Params {
@@ -151,7 +175,7 @@ export interface GetAlbumList2Params {
     offset?: number
 }
 
-const GetAlbumList2Response = toResponse({
+const GetAlbumList2Response = z.object({
     albumList2: z.object({
         album: z.array(AlbumID3),
     }),
@@ -162,7 +186,9 @@ export function getAlbumList2(params: GetAlbumList2Params) {
     return request("getAlbumList2", {
         ...defaultOptions,
         params,
-    }).then((r) => GetAlbumList2Response.parse(r))
+    })
+        .then(parse(GetAlbumList2Response))
+        .then((r) => r.albumList2.album)
 }
 
 export interface GetCoverArtParams {
@@ -171,12 +197,8 @@ export interface GetCoverArtParams {
 }
 
 export function getCoverArt(params: GetCoverArtParams) {
-    return request("getCoverArt", { ...defaultOptions, params }).then((r) => {
-        // getCoverArt either returns an image data, or json on error
-        if (r instanceof Blob) {
-            return r
-        }
-
-        return SubsonicErrorResponse.parse(r)
-    })
+    return request("getCoverArt", {
+        ...defaultOptions,
+        params,
+    }) as Promise<Blob>
 }

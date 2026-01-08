@@ -7,11 +7,16 @@ export const Route = createFileRoute("/test")({
 })
 
 function Test() {
-    const { data } = subsonic.useGetAlbumList2({ type: "newest", size: 1 })
+    const { data: albums, error } = subsonic.useGetAlbumList2({
+        type: "newest",
+        size: 1,
+    })
 
-    if (!data) return
+    if (error) {
+        return <span style={{ color: "red" }}>{error.message}</span>
+    }
 
-    if (data.status !== "ok") return
+    if (!albums) return
 
-    return <Album album={data.albumList2.album[0]} />
+    return <Album album={albums[0]} />
 }
