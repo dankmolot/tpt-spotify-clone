@@ -3,7 +3,8 @@
     font-size: var(--font-size);
     transition-property: color, text-decoration-thickness;
     transition-duration: 200ms;
-    text-decoration: underline;
+    text-decoration: none;
+    text-decoration-color: currentColor;
     cursor: pointer;
     outline: none;
     position: relative;
@@ -11,6 +12,7 @@
     -webkit-tap-highlight-color: transparent;
 
     &[data-hovered] {
+        text-decoration: underline;
         text-decoration-thickness: 1.5px;
     }
 

@@ -1,32 +1,47 @@
 import { useQuery } from "@tanstack/react-query"
+import type { ComponentPropsWithRef } from "react"
 import { useInView } from "react-intersection-observer"
+import { RawLink } from "@/components/aria/Link"
+import type { AlbumID3 } from "@/lib/api/subsonic"
 import { useBlob } from "@/lib/hooks/utils"
 import { getCoverArtOptions } from "@/lib/queries/subsonic"
+import { cn } from "@/lib/utils"
 import classes from "./Album.module.css"
 
 export interface IAlbum {
+    id: string
     name: string
     coverArt?: string
     artist?: string
 }
 
 export interface AlbumProps
-    extends Omit<React.ComponentProps<"div">, "children" | "className"> {
-    album: IAlbum
+    extends Omit<ComponentPropsWithRef<"a">, "children" | "href"> {
+    album: AlbumID3
 }
 
-export function Album({ album, ...props }: AlbumProps) {
+export function Album({ album, className, ...props }: AlbumProps) {
     return (
-        <div {...props} className={classes.album}>
+        <RawLink
+            {...props}
+            className={cn(classes.album, className)}
+            to="/album/$albumID"
+            params={{ albumID: album.id }}
+        >
             <CoverArt id={album.coverArt} />
             <AlbumFooter album={album} />
-        </div>
+        </RawLink>
     )
 }
 
-export function AlbumFooter({ album, ...props }: AlbumProps) {
+export interface AlbumFooterProps
+    extends Omit<ComponentPropsWithRef<"div">, "children"> {
+    album: AlbumID3
+}
+
+export function AlbumFooter({ album, className, ...props }: AlbumFooterProps) {
     return (
-        <div className={classes.albumFooter} {...props}>
+        <div className={cn(classes.albumFooter, className)} {...props}>
             <AlbumName album={album} />
             <AlbumArtist album={album} />
         </div>
