@@ -13,6 +13,7 @@ import { Route as TestRouteImport } from './routes/test'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo.tanstack-query'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as AlbumAlbumIDRouteImport } from './routes/album.$albumID'
 
 const TestRoute = TestRouteImport.update({
   id: '/test',
@@ -34,16 +35,23 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AlbumAlbumIDRoute = AlbumAlbumIDRouteImport.update({
+  id: '/album/$albumID',
+  path: '/album/$albumID',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/test': typeof TestRoute
+  '/album/$albumID': typeof AlbumAlbumIDRoute
   '/auth/login': typeof AuthLoginRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/test': typeof TestRoute
+  '/album/$albumID': typeof AlbumAlbumIDRoute
   '/auth/login': typeof AuthLoginRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
@@ -51,20 +59,33 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/test': typeof TestRoute
+  '/album/$albumID': typeof AlbumAlbumIDRoute
   '/auth/login': typeof AuthLoginRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/test' | '/auth/login' | '/demo/tanstack-query'
+  fullPaths:
+    | '/'
+    | '/test'
+    | '/album/$albumID'
+    | '/auth/login'
+    | '/demo/tanstack-query'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/test' | '/auth/login' | '/demo/tanstack-query'
-  id: '__root__' | '/' | '/test' | '/auth/login' | '/demo/tanstack-query'
+  to: '/' | '/test' | '/album/$albumID' | '/auth/login' | '/demo/tanstack-query'
+  id:
+    | '__root__'
+    | '/'
+    | '/test'
+    | '/album/$albumID'
+    | '/auth/login'
+    | '/demo/tanstack-query'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   TestRoute: typeof TestRoute
+  AlbumAlbumIDRoute: typeof AlbumAlbumIDRoute
   AuthLoginRoute: typeof AuthLoginRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
 }
@@ -99,12 +120,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/album/$albumID': {
+      id: '/album/$albumID'
+      path: '/album/$albumID'
+      fullPath: '/album/$albumID'
+      preLoaderRoute: typeof AlbumAlbumIDRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   TestRoute: TestRoute,
+  AlbumAlbumIDRoute: AlbumAlbumIDRoute,
   AuthLoginRoute: AuthLoginRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
 }
