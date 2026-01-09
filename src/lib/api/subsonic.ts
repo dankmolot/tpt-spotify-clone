@@ -268,6 +268,13 @@ export interface GetAlbumParams {
     id: string
 }
 
+const GetAlbumResponse = z.object({
+    album: AlbumID3WithSongs,
+})
+export type GetAlbumResponse = z.infer<typeof GetAlbumResponse>
+
 export function getAlbum(options: RequestOptions<GetAlbumParams>) {
-    return request("getAlbum", options)
+    return request("getAlbum", options).then(
+        (r) => GetAlbumResponse.parse(r).album,
+    )
 }
