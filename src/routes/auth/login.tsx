@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { Button } from "react-aria-components"
 import z from "zod"
-import { Form } from "@/components/Form"
+import { Form } from "@/components/aria/Form"
 import { Logo } from "@/components/Logo"
 import { useAppForm } from "@/lib/hooks/useForm"
 import { cn } from "@/lib/utils"
