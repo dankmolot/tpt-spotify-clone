@@ -25,9 +25,16 @@ export const getCoverArtOptions = (params: subsonic.GetCoverArtParams) =>
         staleTime: Infinity,
     })
 
-export const getAlbumOption = (params: subsonic.GetAlbumParams) =>
+export const getAlbumOptions = (params: subsonic.GetAlbumParams) =>
     queryOptions({
         queryKey: ["getAlbum", params.id],
         queryFn: ({ signal }) =>
             subsonic.getAlbum({ ...defaultOptions, signal, params }),
+    })
+
+export const streamOptions = (params: subsonic.StreamParams) =>
+    queryOptions({
+        queryKey: ["stream", params],
+        queryFn: ({ signal }) => subsonic.stream({ ...defaultOptions, signal, params }),
+        staleTime: Infinity
     })
