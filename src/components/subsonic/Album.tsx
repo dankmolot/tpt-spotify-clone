@@ -1,6 +1,7 @@
+import { useQuery } from "@tanstack/react-query"
 import { useInView } from "react-intersection-observer"
 import { useBlob } from "@/lib/hooks/utils"
-import { useGetCoverArt } from "@/lib/queries/subsonic"
+import { getCoverArtOptions } from "@/lib/queries/subsonic"
 import classes from "./Album.module.css"
 
 export interface IAlbum {
@@ -56,11 +57,15 @@ export function AlbumArtist({ album, ...props }: AlbumTextProps) {
 export interface ConverArtProps
     extends Omit<React.ComponentProps<"img">, "children" | "className"> {
     id?: string
+    size?: number
 }
 
-export function CoverArt({ id, ...props }: ConverArtProps) {
+export function CoverArt({ id, size, ...props }: ConverArtProps) {
     const { ref, inView } = useInView()
-    const { data, error } = useGetCoverArt(id ? { id, enabled: inView } : undefined)
+    const { data, error } = useQuery({
+        ...getCoverArtOptions({ id: id ?? "", size }),
+        enabled: !!id && inView,
+    })
     const coverURL = useBlob(data)
 
     if (!id || error) {
