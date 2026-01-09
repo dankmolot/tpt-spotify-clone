@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { hex, md5 } from "@/lib/utils"
+import { hex } from "@/lib/utils"
 
 const SubsonicResponse = z.looseObject({
     version: z.string(),
@@ -41,10 +41,6 @@ class SubsonicError extends Error {
     }
 }
 
-function parse<I, O>(o: z.ZodType<I, O>) {
-    return (data: unknown) => o.parse(data)
-}
-
 interface RequestUser {
     user: string
     pass: string
@@ -60,15 +56,15 @@ interface RequestApiKey {
     token: string
 }
 
-interface RequestOptions {
+interface RequestOptions<P extends object> {
     serverURL: string
     auth: RequestUser | RequestToken | RequestApiKey
-    params?: object
+    params?: P
 }
 
-async function request(
+async function request<P extends object>(
     name: string,
-    options: RequestOptions,
+    options: RequestOptions<P>,
 ): Promise<Blob | SubsonicResponse> {
     const params = new URLSearchParams({
         ...options.params,
@@ -130,6 +126,78 @@ const ArtistID3 = z.object({
 })
 export type ArtistID3 = z.infer<typeof ArtistID3>
 
+const ItemGenre = z.object({
+    name: z.string(),
+})
+export type ItemGenre = z.infer<typeof ItemGenre>
+
+const Contributor = z.object({
+    role: z.string(),
+    subRole: z.string().optional(),
+    artist: ArtistID3,
+})
+export type Contributor = z.infer<typeof Contributor>
+
+const ReplayGain = z.object({
+    trackGain: z.number().optional(),
+    albumGain: z.number().optional(),
+    trackPeak: z.number().optional(),
+    albumPeak: z.number().optional(),
+    baseGain: z.number().optional(),
+    fallbackGain: z.number().optional(),
+})
+
+const Child = z.object({
+    id: z.string(),
+    parent: z.string().optional(),
+    isDir: z.boolean(),
+    title: z.string(),
+    album: z.string().optional(),
+    artist: z.string().optional(),
+    track: z.number().optional(),
+    year: z.number().optional(),
+    genre: z.string().optional(),
+    coverArt: z.string().optional(),
+    size: z.number().optional(),
+    contentType: z.string().optional(),
+    suffix: z.string().optional(),
+    transcodedContentType: z.string().optional(),
+    transcodedSuffix: z.string().optional(),
+    duration: z.number().optional(),
+    bitRate: z.number().optional(),
+    samplingRate: z.number().optional(),
+    path: z.string().optional(),
+    isVideo: z.boolean().optional(),
+    userRating: z.number().optional(),
+    averateRating: z.number().optional(),
+    playCount: z.number().optional(),
+    discNumber: z.number().optional(),
+    created: z.string().pipe(z.coerce.date()).optional(),
+    starred: z.string().pipe(z.coerce.date()).optional(),
+    albumId: z.string().optional(),
+    artistId: z.string().optional(),
+    type: z.enum(["music", "podcast", "audiobook", "video"]).optional(),
+    mediaType: z.enum(["song", "album", "artist"]).optional(),
+    bookmarkPosition: z.number().optional(),
+    played: z.string().pipe(z.coerce.date()).optional(),
+    bpm: z.number().optional(),
+    comment: z.string().optional(),
+    sortName: z.string().optional(),
+    musicBrainzId: z.string().optional(),
+    isrc: z.array(z.string()).optional(),
+    genres: z.array(ItemGenre).optional(),
+    artists: z.array(ArtistID3).optional(),
+    displayArtist: z.string().optional(),
+    albumArtists: z.array(ArtistID3).optional(),
+    displayAlbumArtist: z.string().optional(),
+    contributors: z.array(Contributor).optional(),
+    displayComposer: z.string().optional(),
+    moods: z.array(z.string()).optional(),
+    replayGain: ReplayGain.optional(),
+    explicitStatus: z.string().optional(),
+})
+export type Child = z.infer<typeof Child>
+
 const AlbumID3 = z.object({
     id: z.string(),
     name: z.string(),
@@ -148,29 +216,27 @@ const AlbumID3 = z.object({
 })
 export type AlbumID3 = z.infer<typeof AlbumID3>
 
-const salt = "test"
-const hash = md5(`${import.meta.env.VITE_SUBSONIC_PASS}${salt}`)
+const AlbumID3WithSongs = z.object({
+    ...AlbumID3.shape,
+    song: z.array(Child).optional(),
+})
+export type AlbumID3WithSongs = z.infer<typeof AlbumID3WithSongs>
 
-const defaultOptions: RequestOptions = {
-    serverURL: import.meta.env.VITE_SUBSONIC_URL,
-    auth: { user: import.meta.env.VITE_SUBSONIC_USER, hash, salt },
-}
-
-export function ping() {
-    return request("ping", defaultOptions) as Promise<SubsonicResponse>
+export function ping(options: RequestOptions<never>) {
+    return request("ping", options) as Promise<SubsonicResponse>
 }
 
 export interface GetAlbumList2Params {
     // byYear and byGenre is missing
     type:
-    | "random"
-    | "newest"
-    | "highest"
-    | "frequent"
-    | "recent"
-    | "alphabeticalByName"
-    | "alphabeticalByArtist"
-    | "starred"
+        | "random"
+        | "newest"
+        | "highest"
+        | "frequent"
+        | "recent"
+        | "alphabeticalByName"
+        | "alphabeticalByArtist"
+        | "starred"
     size?: number
     offset?: number
 }
@@ -182,11 +248,10 @@ const GetAlbumList2Response = z.object({
 })
 export type GetAlbumList2Response = z.infer<typeof GetAlbumList2Response>
 
-export function getAlbumList2(params: GetAlbumList2Params) {
-    return request("getAlbumList2", {
-        ...defaultOptions,
-        params,
-    }).then(parse(GetAlbumList2Response)).then(r => r.albumList2.album)
+export function getAlbumList2(options: RequestOptions<GetAlbumList2Params>) {
+    return request("getAlbumList2", options).then(
+        (r) => GetAlbumList2Response.parse(r).albumList2.album,
+    )
 }
 
 export interface GetCoverArtParams {
@@ -194,9 +259,14 @@ export interface GetCoverArtParams {
     size?: number
 }
 
-export function getCoverArt(params: GetCoverArtParams) {
-    return request("getCoverArt", {
-        ...defaultOptions,
-        params,
-    }) as Promise<Blob>
+export function getCoverArt(options: RequestOptions<GetCoverArtParams>) {
+    return request("getCoverArt", options) as Promise<Blob>
+}
+
+export interface GetAlbumParams {
+    id: string
+}
+
+export function getAlbum(options: RequestOptions<GetAlbumParams>) {
+    return request("getAlbum", options)
 }

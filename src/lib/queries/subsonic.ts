@@ -1,24 +1,29 @@
-import { skipToken, useMutation, useQuery } from "@tanstack/react-query"
+import { queryOptions } from "@tanstack/react-query"
 import * as subsonic from "../api/subsonic"
+import { md5 } from "../utils"
 
-export function usePing() {
-    return useMutation({
-        mutationFn: () => subsonic.ping(),
-    })
+const salt = "test"
+const hash = md5(`${import.meta.env.VITE_SUBSONIC_PASS}${salt}`)
+
+export const defaultOptions = {
+    serverURL: import.meta.env.VITE_SUBSONIC_URL,
+    auth: { user: import.meta.env.VITE_SUBSONIC_USER, hash, salt },
 }
 
-export function useGetAlbumList2(params: subsonic.GetAlbumList2Params) {
-    return useQuery({
+export const getAlbumList2Options = (params: subsonic.GetAlbumList2Params) =>
+    queryOptions({
         queryKey: ["getAlbumList2", params],
-        queryFn: () => subsonic.getAlbumList2(params),
+        queryFn: () => subsonic.getAlbumList2({ ...defaultOptions, params }),
     })
-}
 
-export function useGetCoverArt(params?: subsonic.GetCoverArtParams & { enabled?: boolean }) {
-    return useQuery({
-        queryKey: ["getCoverArt", params?.id, params?.size],
-        queryFn: params ? () => subsonic.getCoverArt(params) : skipToken,
+export const getCoverArtOptions = (params: subsonic.GetCoverArtParams) =>
+    queryOptions({
+        queryKey: ["getCoverArt", params],
+        queryFn: () => subsonic.getCoverArt({ ...defaultOptions, params }),
         staleTime: Infinity,
-        enabled: params?.enabled,
     })
-}
+
+export const getAlbumOption = (params: subsonic.GetAlbumParams) =>
+    queryOptions({
+        queryKey: ["getAlbum", params.id],
+    })
