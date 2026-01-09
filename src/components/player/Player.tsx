@@ -20,8 +20,8 @@ function PlayMusic() {
         if (!audioBlob) return
 
         const audio = new Audio(audioBlob)
-        audio.volume = 0.25 // please look into https://www.dr-lex.be/info-stuff/volumecontrols.html
-        audio.play()
+        audio.volume = 0.1 // please look into https://www.dr-lex.be/info-stuff/volumecontrols.html
+        audio.play() // also never auto play!
 
         return () => audio.pause()
     }, [audioBlob])
