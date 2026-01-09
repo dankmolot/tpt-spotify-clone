@@ -21,7 +21,7 @@ function PlayMusic() {
 
         const audio = new Audio(audioBlob)
         audio.volume = 0.1 // please look into https://www.dr-lex.be/info-stuff/volumecontrols.html
-        audio.play() // also never auto play!
+        // audio.play() // also never auto play!
 
         return () => audio.pause()
     }, [audioBlob])

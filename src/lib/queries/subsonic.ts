@@ -38,3 +38,9 @@ export const streamOptions = (params: subsonic.StreamParams) =>
         queryFn: ({ signal }) => subsonic.stream({ ...defaultOptions, signal, params }),
         staleTime: Infinity
     })
+
+export const getSongOptions = (params: subsonic.GetSongParams) =>
+    queryOptions({
+        queryKey: ["getSong", params.id],
+        queryFn: ({ signal }) => subsonic.getSong({ ...defaultOptions, signal, params })
+    })

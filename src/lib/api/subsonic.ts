@@ -292,7 +292,20 @@ export interface StreamParams {
     estimateContentLength?: boolean
 }
 
-
 export function stream(options: RequestOptions<StreamParams>) {
     return request("stream", options) as Promise<Blob>
+}
+
+export interface GetSongParams {
+    /** The song ID. */
+    id: string
+}
+
+const GetSongResponse = z.object({
+    song: Child
+})
+export type GetSongResponse = z.infer<typeof GetSongResponse>
+
+export function getSong(options: RequestOptions<GetSongParams>) {
+    return request("getSong", options).then(r => GetSongResponse.parse(r).song)
 }
