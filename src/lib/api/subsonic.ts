@@ -60,6 +60,7 @@ interface RequestOptions<P extends object> {
     serverURL: string
     auth: RequestUser | RequestToken | RequestApiKey
     params?: P
+    signal?: AbortSignal
 }
 
 async function request<P extends object>(
@@ -91,7 +92,7 @@ async function request<P extends object>(
     }
 
     const url = `${options.serverURL}/rest/${name}.view?${params.toString()}`
-    const r = await fetch(url)
+    const r = await fetch(url, { signal: options.signal })
     if (r.headers.get("content-type")?.startsWith("application/json")) {
         const data = await r.json()
         if (!Object.hasOwn(data, "subsonic-response")) {
