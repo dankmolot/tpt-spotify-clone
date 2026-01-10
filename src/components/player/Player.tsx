@@ -25,7 +25,7 @@ function PlayMusic() {
         if (!ref.current) return
 
         ref.current.volume = 0.1
-        ref.current.play() // play must be launched from javscript
+        // ref.current.play() // play must be launched from javscript
 
         navigator.mediaSession.playbackState = ref.current.paused ? "paused" : "playing"
         navigator.mediaSession.metadata = new MediaMetadata({
