@@ -33,4 +33,4 @@ export const getSongOptions = (params: RequestParams["getSong"]) =>
     })
 
 export const streamURL = (params: RequestParams["stream"]) => subsonic.stream({ ...defaultOptions, params })
-export const getCoverArtURL = (params: RequestParams["getCoverArt"]) => subsonic.stream({ ...defaultOptions, params })
+export const getCoverArtURL = (params: RequestParams["getCoverArt"]) => subsonic.getCoverArt({ ...defaultOptions, params })

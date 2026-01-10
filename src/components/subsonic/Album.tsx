@@ -1,10 +1,7 @@
-import { useQuery } from "@tanstack/react-query"
 import type { ComponentPropsWithRef } from "react"
-import { useInView } from "react-intersection-observer"
 import { RawLink } from "@/components/aria/Link"
-import type { AlbumID3 } from "@/lib/api/subsonic"
-import { useBlob } from "@/lib/hooks/utils"
-import { getCoverArtOptions } from "@/lib/queries/subsonic"
+import type { AlbumID3 } from "@/lib/api/subsonic/schemas"
+import { getCoverArtURL } from "@/lib/queries/subsonic"
 import { cn } from "@/lib/utils"
 import classes from "./Album.module.css"
 
@@ -76,14 +73,9 @@ export interface ConverArtProps
 }
 
 export function CoverArt({ id, size, ...props }: ConverArtProps) {
-    const { ref, inView } = useInView()
-    const { data, error } = useQuery({
-        ...getCoverArtOptions({ id: id ?? "", size }),
-        enabled: !!id && inView,
-    })
-    const coverURL = useBlob(data)
+    const coverArtURL = getCoverArtURL({ id: id ?? "", size })
 
-    if (!id || error) {
+    if (!id) {
         return (
             <span className={classes.coverArt} {...props}>
                 missing cover
@@ -93,9 +85,9 @@ export function CoverArt({ id, size, ...props }: ConverArtProps) {
     return (
         <img
             className={classes.coverArt}
-            src={coverURL}
+            src={coverArtURL.href}
             alt="Album Cover"
-            ref={ref}
+            loading="lazy"
             {...props}
         />
     )
