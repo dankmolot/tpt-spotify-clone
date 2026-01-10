@@ -1,7 +1,10 @@
-import { useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { Suspense, useEffect } from "react"
-import { useBlob } from "@/lib/hooks/utils"
-import { getCoverArtOptions, getSongOptions, streamOptions } from "@/lib/queries/subsonic"
+import {
+    getCoverArtURL,
+    getSongOptions,
+    streamURL,
+} from "@/lib/queries/subsonic"
 
 export function Player() {
     return (
@@ -14,41 +17,33 @@ export function Player() {
 function PlayMusic() {
     const NEED_THIS = "kJ4CxKdARP8E6kLGhQbB57"
     const { data: song } = useSuspenseQuery(getSongOptions({ id: NEED_THIS }))
-    const [{ data: audioData }, { data: coverArtData }] = useSuspenseQueries({
-        queries: [
-            streamOptions({ id: song.id }),
-            getCoverArtOptions({ id: song.coverArt! }),
-        ]
-    })
-    const audioBlob = useBlob(audioData)
-    const coverArtBlob = useBlob(coverArtData)
+    const audioURL = streamURL({ id: song.id })
+    const coverArtURL = getCoverArtURL({ id: song.id })
 
     useEffect(() => {
-        if (!audioBlob) return
-
-        const audio = new Audio(audioBlob)
+        const audio = new Audio(audioURL.href)
         audio.volume = 0.1 // please look into https://www.dr-lex.be/info-stuff/volumecontrols.html
-        // audio.play() // also never auto play!
+        audio.play() // also never auto play!
 
         return () => audio.pause()
-    }, [audioBlob])
+    }, [audioURL])
 
     useEffect(() => {
-        if (!coverArtBlob) return
-
-        console.log(coverArtBlob, coverArtData)
-
         navigator.mediaSession.metadata = new MediaMetadata({
             title: song.title,
             artist: song.artist,
             album: song.album,
-            artwork: [{
-                src: coverArtBlob,
-                type: coverArtData.type,
-                sizes: "150x150"
-            }]
+            artwork: [
+                {
+                    src: coverArtURL.href,
+                },
+            ],
         })
-    }, [song, coverArtData, coverArtBlob])
+    }, [song, coverArtURL])
 
-    return <h1>Music! <img src={coverArtBlob} alt="cover art" width={120}></img></h1>
+    return (
+        <h1>
+            Music! <img src={coverArtURL.href} alt="cover art" width={120}></img>
+        </h1>
+    )
 }
