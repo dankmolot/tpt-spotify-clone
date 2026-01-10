@@ -29,6 +29,9 @@
                     "level": "warn",
                     "fix": "safe"
                 }
+            },
+            "a11y": {
+                "useMediaCaption": "off"
             }
         }
     },
