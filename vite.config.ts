@@ -1,21 +1,23 @@
-import { tanstackRouter } from '@tanstack/router-plugin/vite';
-import viteReact from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { tanstackRouter } from "@tanstack/router-plugin/vite"
+import basicSsl from "@vitejs/plugin-basic-ssl"
+import viteReact from "@vitejs/plugin-react"
+import { defineConfig } from "vite"
+import tsconfigPaths from "vite-tsconfig-paths"
 
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
         tanstackRouter({
-            target: 'react',
+            target: "react",
             autoCodeSplitting: true,
         }),
-        tsconfigPaths(), 
-        viteReact(), 
+        tsconfigPaths(),
+        viteReact(),
+        basicSsl(),
     ],
     css: {
         modules: {
-            localsConvention: "camelCaseOnly"
-        }
-    }
-});
+            localsConvention: "camelCaseOnly",
+        },
+    },
+})
