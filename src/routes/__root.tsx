@@ -10,10 +10,12 @@ export const Route = createRootRoute({
 function RootLayout() {
     return (
         <>
-            <Outlet />
+            <div id="content">
+                <Outlet />
+            </div>
+
             <Player />
             <TanStackRouterDevtools position="top-right" />
-
             <TanStackQueryLayout />
         </>
     )
