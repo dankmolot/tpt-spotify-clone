@@ -85,7 +85,7 @@ export function CoverArt({ id, size, ...props }: ConverArtProps) {
     return (
         <img
             className={classes.coverArt}
-            src={coverArtURL.href}
+            src={coverArtURL}
             alt="Album Cover"
             loading="lazy"
             {...props}
