@@ -1,4 +1,5 @@
 import { queryOptions } from "@tanstack/react-query"
+import { useMemo } from "react"
 import * as subsonic from "../api/subsonic"
 import type { RequestParams } from "../api/subsonic/types"
 import { md5 } from "../utils"
@@ -32,5 +33,8 @@ export const getSongOptions = (params: RequestParams["getSong"]) =>
             subsonic.getSong({ ...defaultOptions, signal, params }),
     })
 
-export const streamURL = (params: RequestParams["stream"]) => subsonic.stream({ ...defaultOptions, params })
-export const getCoverArtURL = (params: RequestParams["getCoverArt"]) => subsonic.getCoverArt({ ...defaultOptions, params })
+export const streamURL = (params: RequestParams["stream"]) =>
+    useMemo(() => subsonic.stream({ ...defaultOptions, params }), [params])
+
+export const getCoverArtURL = (params: RequestParams["getCoverArt"]) =>
+    useMemo(() => subsonic.getCoverArt({ ...defaultOptions, params }), [params])
