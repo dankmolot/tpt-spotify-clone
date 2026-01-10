@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { Suspense, useEffect } from "react"
+import { Suspense, useEffect, useRef } from "react"
 import {
     getCoverArtURL,
     getSongOptions,
@@ -19,23 +19,22 @@ function PlayMusic() {
     const { data: song } = useSuspenseQuery(getSongOptions({ id: NEED_THIS }))
     const audioURL = streamURL({ id: song.id })
     const coverArtURL = getCoverArtURL({ id: song.id })
+    const ref = useRef<HTMLAudioElement>(null)
 
     useEffect(() => {
-        const audio = new Audio(audioURL.href)
-        audio.volume = 0.1 // please look into https://www.dr-lex.be/info-stuff/volumecontrols.html
-        audio.play() // also never auto play!
+        if (!ref.current) return
 
-        return () => audio.pause()
-    }, [audioURL])
+        ref.current.volume = 0.1
+        ref.current.play() // play must be launched from javscript
 
-    useEffect(() => {
+        navigator.mediaSession.playbackState = ref.current.paused ? "paused" : "playing"
         navigator.mediaSession.metadata = new MediaMetadata({
             title: song.title,
             artist: song.artist,
             album: song.album,
             artwork: [
                 {
-                    src: coverArtURL.href,
+                    src: coverArtURL,
                 },
             ],
         })
@@ -43,7 +42,14 @@ function PlayMusic() {
 
     return (
         <h1>
-            Music! <img src={coverArtURL.href} alt="cover art" width={120}></img>
+            Music!
+            <img src={coverArtURL} alt="cover art" width={120}></img>
+            <audio
+                ref={ref}
+                src={audioURL}
+                preload="auto"
+                controls
+            />
         </h1>
     )
 }
