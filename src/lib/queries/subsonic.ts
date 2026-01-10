@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query"
 import * as subsonic from "../api/subsonic"
+import type { RequestParams } from "../api/subsonic/types"
 import { md5 } from "../utils"
 
 const salt = "test"
@@ -10,37 +11,23 @@ export const defaultOptions = {
     auth: { user: import.meta.env.VITE_SUBSONIC_USER, hash, salt },
 }
 
-export const getAlbumList2Options = (params: subsonic.GetAlbumList2Params) =>
+export const getAlbumList2Options = (params: RequestParams["getAlbumList2"]) =>
     queryOptions({
         queryKey: ["getAlbumList2", params],
         queryFn: ({ signal }) =>
             subsonic.getAlbumList2({ ...defaultOptions, signal, params }),
     })
 
-export const getCoverArtOptions = (params: subsonic.GetCoverArtParams) =>
-    queryOptions({
-        queryKey: ["getCoverArt", params],
-        queryFn: ({ signal }) =>
-            subsonic.getCoverArt({ ...defaultOptions, signal, params }),
-        staleTime: Infinity,
-    })
-
-export const getAlbumOptions = (params: subsonic.GetAlbumParams) =>
+export const getAlbumOptions = (params: RequestParams["getAlbum"]) =>
     queryOptions({
         queryKey: ["getAlbum", params.id],
         queryFn: ({ signal }) =>
             subsonic.getAlbum({ ...defaultOptions, signal, params }),
     })
 
-export const streamOptions = (params: subsonic.StreamParams) =>
-    queryOptions({
-        queryKey: ["stream", params],
-        queryFn: ({ signal }) => subsonic.stream({ ...defaultOptions, signal, params }),
-        staleTime: Infinity
-    })
-
-export const getSongOptions = (params: subsonic.GetSongParams) =>
+export const getSongOptions = (params: RequestParams["getSong"]) =>
     queryOptions({
         queryKey: ["getSong", params.id],
-        queryFn: ({ signal }) => subsonic.getSong({ ...defaultOptions, signal, params })
+        queryFn: ({ signal }) =>
+            subsonic.getSong({ ...defaultOptions, signal, params }),
     })
