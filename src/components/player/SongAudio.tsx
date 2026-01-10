@@ -46,5 +46,6 @@ export function SongAudio({ song, playing }: AudioProps) {
         ref={ref}
         src={audioURL}
         preload="auto"
+        crossOrigin="anonymous"
     />
 }
