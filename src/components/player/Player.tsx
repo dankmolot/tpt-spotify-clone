@@ -1,7 +1,7 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
 import { Suspense, useEffect } from "react"
 import { useBlob } from "@/lib/hooks/utils"
-import { streamOptions } from "@/lib/queries/subsonic"
+import { getCoverArtOptions, getSongOptions, streamOptions } from "@/lib/queries/subsonic"
 
 export function Player() {
     return (
@@ -13,8 +13,15 @@ export function Player() {
 
 function PlayMusic() {
     const NEED_THIS = "kJ4CxKdARP8E6kLGhQbB57"
-    const { data } = useSuspenseQuery(streamOptions({ id: NEED_THIS }))
-    const audioBlob = useBlob(data)
+    const { data: song } = useSuspenseQuery(getSongOptions({ id: NEED_THIS }))
+    const [{ data: audioData }, { data: coverArtData }] = useSuspenseQueries({
+        queries: [
+            streamOptions({ id: song.id }),
+            getCoverArtOptions({ id: song.coverArt! }),
+        ]
+    })
+    const audioBlob = useBlob(audioData)
+    const coverArtBlob = useBlob(coverArtData)
 
     useEffect(() => {
         if (!audioBlob) return
@@ -26,5 +33,22 @@ function PlayMusic() {
         return () => audio.pause()
     }, [audioBlob])
 
-    return <h1>Music!</h1>
+    useEffect(() => {
+        if (!coverArtBlob) return
+
+        console.log(coverArtBlob, coverArtData)
+
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: song.title,
+            artist: song.artist,
+            album: song.album,
+            artwork: [{
+                src: coverArtBlob,
+                type: coverArtData.type,
+                sizes: "150x150"
+            }]
+        })
+    }, [song, coverArtData, coverArtBlob])
+
+    return <h1>Music! <img src={coverArtBlob} alt="cover art" width={120}></img></h1>
 }
