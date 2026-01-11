@@ -2,7 +2,8 @@
     margin: 0.5em;
     min-height: 3em;
 
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
+    gap: 1em;
 }

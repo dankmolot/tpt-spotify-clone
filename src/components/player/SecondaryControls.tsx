@@ -1,3 +1,3 @@
 export function SecondaryControls() {
-    return <div>secondary contros</div>
+    return <div style={{ justifySelf: "end" }}>secondary contros</div>
 }
