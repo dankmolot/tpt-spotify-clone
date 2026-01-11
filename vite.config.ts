@@ -15,9 +15,13 @@ export default defineConfig({
         viteReact(),
         basicSsl(),
     ],
+    build: {
+        cssMinify: "lightningcss",
+    },
     css: {
-        modules: {
-            localsConvention: "camelCaseOnly",
+        transformer: "lightningcss",
+        lightningcss: {
+            cssModules: true,
         },
     },
 })
