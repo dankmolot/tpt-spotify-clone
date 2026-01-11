@@ -1,6 +1,6 @@
 .player {
     margin: 0.5em;
-    min-height: 3em;
+    min-height: 4em;
 
     display: grid;
     grid-template-columns: 1fr auto 1fr;

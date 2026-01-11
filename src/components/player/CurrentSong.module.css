@@ -1,0 +1,26 @@
+.panel {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+
+    .coverArt {
+        width: 4em;
+        height: 4em;
+        border-radius: 0.5em;
+    }
+
+    .info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25em;
+
+        /* .title {
+            font-size: var(--font-size-lg);
+        } */
+
+        .author {
+            font-size: var(--font-size-sm);
+            color: var(--gray-900);
+        }
+    }
+}
