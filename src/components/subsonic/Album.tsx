@@ -25,7 +25,7 @@ export function Album({ album, className, ...props }: AlbumProps) {
             to="/album/$albumID"
             params={{ albumID: album.id }}
         >
-            <CoverArt id={album.coverArt} />
+            <CoverArt id={album.coverArt} className={classes.coverArt} />
             <AlbumFooter album={album} />
         </RawLink>
     )
@@ -67,7 +67,7 @@ export function AlbumArtist({ album, ...props }: AlbumTextProps) {
 }
 
 export interface ConverArtProps
-    extends Omit<React.ComponentProps<"img">, "children" | "className"> {
+    extends Omit<React.ComponentProps<"img">, "children"> {
     id?: string
     size?: number
 }
@@ -76,19 +76,7 @@ export function CoverArt({ id, size, ...props }: ConverArtProps) {
     const coverArtURL = getCoverArtURL({ id: id ?? "", size })
 
     if (!id) {
-        return (
-            <span className={classes.coverArt} {...props}>
-                missing cover
-            </span>
-        )
+        return <span {...props}>missing cover</span>
     }
-    return (
-        <img
-            className={classes.coverArt}
-            src={coverArtURL}
-            alt="Album Cover"
-            loading="lazy"
-            {...props}
-        />
-    )
+    return <img src={coverArtURL} alt="Album Cover" loading="lazy" {...props} />
 }
