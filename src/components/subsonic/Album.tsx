@@ -1,9 +1,9 @@
 import type { ComponentPropsWithRef } from "react"
 import { RawLink } from "@/components/aria/Link"
 import type { AlbumID3 } from "@/lib/api/subsonic/schemas"
-import { getCoverArtURL } from "@/lib/queries/subsonic"
 import { cn } from "@/lib/utils"
 import classes from "./Album.module.css"
+import { CoverArt } from "./CoverArt"
 
 export interface IAlbum {
     id: string
@@ -64,19 +64,4 @@ export function AlbumArtist({ album, ...props }: AlbumTextProps) {
             {album.artist}
         </span>
     )
-}
-
-export interface ConverArtProps
-    extends Omit<React.ComponentProps<"img">, "children"> {
-    id?: string
-    size?: number
-}
-
-export function CoverArt({ id, size, ...props }: ConverArtProps) {
-    const coverArtURL = getCoverArtURL({ id: id ?? "", size })
-
-    if (!id) {
-        return <span {...props}>missing cover</span>
-    }
-    return <img src={coverArtURL} alt="Album Cover" loading="lazy" {...props} />
 }
