@@ -14,6 +14,7 @@ const router = createRouter({
         ...TanStackQueryProvider.getContext(),
     },
     defaultPreload: "intent",
+    scrollToTopSelectors: ["#content"],
     scrollRestoration: true,
     defaultStructuralSharing: true,
     defaultPreloadStaleTime: 0,
