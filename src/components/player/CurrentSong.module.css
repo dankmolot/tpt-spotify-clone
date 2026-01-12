@@ -23,4 +23,33 @@
             color: var(--gray-900);
         }
     }
+
+    .favorite {
+        height: 1.25em;
+        stroke-width: 2.5;
+        color: var(--gray-1100);
+        transition: 0.1s var(--easeOutQuint);
+        fill: transparent;
+
+        &:hover {
+            color: var(--gray-1600);
+            transform: scale(1.1);
+        }
+
+        &:active {
+            color: var(--gray-900);
+            transform: scale(0.95);
+        }
+
+        &.starred {
+            color: var(--tint-1200);
+            fill: var(--tint-1200);
+        }
+
+        &.loading {
+            color: var(--gray-400);
+            fill: var(--gray-400);
+            transform: scale(0.9);
+        }
+    }
 }
