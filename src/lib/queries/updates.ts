@@ -4,10 +4,11 @@
 import type { QueryClient } from "@tanstack/react-query"
 import type { Child } from "../api/subsonic/schemas"
 
-export async function updateSong(client: QueryClient, song: Child) {
-    await client.invalidateQueries({ queryKey: ["getSong", song.id] })
-    if (song.albumId) {
-        // no need to wait for album updates currently
-        client.invalidateQueries({ queryKey: ["getAlbum", song.albumId] })
-    }
+export async function updateSong(
+    client: QueryClient,
+    song: Partial<Child> & Pick<Child, "id">,
+) {
+    client.setQueryData(["getSong", song.id], (old?: Child) =>
+        old ? { ...old, ...song } : old,
+    )
 }

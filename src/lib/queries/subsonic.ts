@@ -1,7 +1,12 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query"
+import {
+    queryOptions,
+    useMutation,
+    useQueryClient,
+} from "@tanstack/react-query"
 import * as subsonic from "../api/subsonic"
 import type { RequestParams } from "../api/subsonic/types"
 import { md5 } from "../utils"
+import { updateSong } from "./updates"
 
 const salt = "test"
 const hash = md5(`${import.meta.env.VITE_SUBSONIC_PASS}${salt}`)
@@ -38,12 +43,24 @@ export const streamURL = (params: RequestParams["stream"]) =>
 export const getCoverArtURL = (params: RequestParams["getCoverArt"]) =>
     subsonic.getCoverArt({ ...defaultOptions, params }).toString()
 
-export const starOptions = mutationOptions({
-    mutationFn: (params: RequestParams["star"]) =>
-        subsonic.star({ ...defaultOptions, params }),
-})
+export const useMutateStar = () => {
+    const queryClient = useQueryClient()
 
-export const unstarOptions = mutationOptions({
-    mutationFn: (params: RequestParams["unstar"]) =>
-        subsonic.unstar({ ...defaultOptions, params }),
-})
+    return useMutation({
+        mutationFn: (params: RequestParams["star"]) =>
+            subsonic.star({ ...defaultOptions, params }),
+        onSuccess: (_, { id }) =>
+            updateSong(queryClient, { id, starred: new Date() }),
+    })
+}
+
+export const useMutateUnstar = () => {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: (params: RequestParams["unstar"]) =>
+            subsonic.unstar({ ...defaultOptions, params }),
+        onSuccess: (_, { id }) =>
+            updateSong(queryClient, { id, starred: undefined }),
+    })
+}
