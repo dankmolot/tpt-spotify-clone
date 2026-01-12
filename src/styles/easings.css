@@ -1,0 +1,5 @@
+:root {
+    --easeInQuint: cubic-bezier(0.64, 0, 0.78, 0);
+    --easeOutQuint: cubic-bezier(0.22, 1, 0.36, 1);
+    --easeInOutQuint: cubic-bezier(0.83, 0, 0.17, 1);
+}
