@@ -78,8 +78,6 @@ async function request<N extends RequestName>(
     })
 }
 
-
-
 export function ping(options: RequestOptions<"ping">) {
     return request("ping", options) as Promise<SubsonicResponse>
 }
@@ -108,4 +106,14 @@ export function getSong(options: RequestOptions<"getSong">) {
     return request("getSong", options).then(
         (r) => GetSongResponse.parse(r).song,
     )
+}
+
+/** Attaches a star to a song, album or artist. */
+export function star(options: RequestOptions<"star">) {
+    return request("star", options)
+}
+
+/** Removes a star to a song, album or artist. */
+export function unstar(options: RequestOptions<"unstar">) {
+    return request("unstar", options)
 }

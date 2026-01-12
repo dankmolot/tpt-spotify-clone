@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query"
+import { mutationOptions, queryOptions } from "@tanstack/react-query"
 import * as subsonic from "../api/subsonic"
 import type { RequestParams } from "../api/subsonic/types"
 import { md5 } from "../utils"
@@ -37,3 +37,13 @@ export const streamURL = (params: RequestParams["stream"]) =>
 
 export const getCoverArtURL = (params: RequestParams["getCoverArt"]) =>
     subsonic.getCoverArt({ ...defaultOptions, params }).toString()
+
+export const starOptions = mutationOptions({
+    mutationFn: (params: RequestParams["star"]) =>
+        subsonic.star({ ...defaultOptions, params }),
+})
+
+export const unstarOptions = mutationOptions({
+    mutationFn: (params: RequestParams["unstar"]) =>
+        subsonic.unstar({ ...defaultOptions, params }),
+})

@@ -20,29 +20,29 @@ export interface RequestOptions<Name extends RequestName> {
     signal?: AbortSignal
 }
 
-
 export interface RequestParams {
-    "ping": never
-    "getAlbumList2": GetAlbumList2
-    "getCoverArt": GetCoverArtParams
-    "stream": StreamParams
-    "getAlbum": GetAlbumParams
-    "getSong": GetSongParams
+    ping: never
+    getAlbumList2: GetAlbumList2
+    getCoverArt: GetCoverArtParams
+    stream: StreamParams
+    getAlbum: GetAlbumParams
+    getSong: GetSongParams
+    star: StarParams
+    unstar: UnstarParams
 }
 export type RequestName = keyof RequestParams
-
 
 export interface GetAlbumList2 {
     // byYear and byGenre is missing
     type:
-    | "random"
-    | "newest"
-    | "highest"
-    | "frequent"
-    | "recent"
-    | "alphabeticalByName"
-    | "alphabeticalByArtist"
-    | "starred"
+        | "random"
+        | "newest"
+        | "highest"
+        | "frequent"
+        | "recent"
+        | "alphabeticalByName"
+        | "alphabeticalByArtist"
+        | "starred"
     size?: number
     offset?: number
 }
@@ -73,3 +73,9 @@ export interface GetSongParams {
     /** The song ID. */
     id: string
 }
+
+export interface StarParams {
+    /** The ID of the file (song) or folder (album/artist) to star. */
+    id: string
+}
+export type UnstarParams = StarParams
