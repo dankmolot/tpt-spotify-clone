@@ -12,7 +12,7 @@
     --yellow: oklch(0.8 .128516 73.8032);
     --turquoise: oklch(0.5 .081146 205.114);
     --cyan: oklch(0.4 .142107 243.926);
-    --green: oklch(0.5 .121276 155.372);
+    --green: oklch(0.5 .2127 150.11);
     --blue: oklch(0.5 .22049 266.315);
     --indigo: oklch(1 .25049 284.23);
     --purple: oklch(0.7 .223324 302);
@@ -75,6 +75,24 @@
     --lightness-1400: 91.1434%;
     --lightness-1500: 95.2045%;
     --lightness-1600: 100%;
+
+    /* lower chroma at low lightness levels */
+    --chroma-100: calc(l * c * 0.5);
+    --chroma-200: calc(l * c * 0.6);
+    --chroma-300: calc(l * c * 0.7);
+    --chroma-400: calc(l * c * 0.8);
+    --chroma-500: calc(l * c * 0.9);
+    --chroma-600: c;
+    --chroma-700: c;
+    --chroma-800: c;
+    --chroma-900: c;
+    --chroma-1000: c;
+    --chroma-1100: c;
+    --chroma-1200: c;
+    --chroma-1300: c;
+    --chroma-1400: c;
+    --chroma-1500: c;
+    --chroma-1600: c;
 
     --highlight-hover: rgb(255 255 255 / 0.1);
     --highlight-pressed: rgb(255 255 255 / 0.2);
