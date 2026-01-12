@@ -6,7 +6,7 @@ import {
 import * as subsonic from "../api/subsonic"
 import type { RequestParams } from "../api/subsonic/types"
 import { md5 } from "../utils"
-import { updateSong } from "./updates"
+import { setSong, updateSong } from "./updates"
 
 const salt = "test"
 const hash = md5(`${import.meta.env.VITE_SUBSONIC_PASS}${salt}`)
@@ -26,8 +26,15 @@ export const getAlbumList2Options = (params: RequestParams["getAlbumList2"]) =>
 export const getAlbumOptions = (params: RequestParams["getAlbum"]) =>
     queryOptions({
         queryKey: ["getAlbum", params.id],
-        queryFn: ({ signal }) =>
-            subsonic.getAlbum({ ...defaultOptions, signal, params }),
+        queryFn: ({ signal, client }) =>
+            subsonic
+                .getAlbum({ ...defaultOptions, signal, params })
+                .then((album) => {
+                    for (const song of album.song ?? []) {
+                        setSong(client, song)
+                    }
+                    return album
+                }),
     })
 
 export const getSongOptions = (params: RequestParams["getSong"]) =>

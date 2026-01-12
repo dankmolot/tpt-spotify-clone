@@ -4,7 +4,14 @@
 import type { QueryClient } from "@tanstack/react-query"
 import type { Child } from "../api/subsonic/schemas"
 
-export async function updateSong(
+export function setSong(client: QueryClient, song: Child) {
+    client.setQueryData(["getSong", song.id], (old?: Child) => ({
+        ...old,
+        ...song,
+    }))
+}
+
+export function updateSong(
     client: QueryClient,
     song: Partial<Child> & Pick<Child, "id">,
 ) {
