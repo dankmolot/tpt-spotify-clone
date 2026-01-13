@@ -1,25 +1,109 @@
+import { useQuery } from "@tanstack/react-query"
 import { useEffect, useRef } from "react"
-import type { Child } from "@/lib/api/subsonic/schemas"
-import { getCoverArtURL, streamURL } from "@/lib/queries/subsonic"
+import { useShallow } from "zustand/react/shallow"
+import {
+    getCoverArtURL,
+    getSongOptions,
+    streamURL,
+} from "@/lib/queries/subsonic"
+import { usePlayerState } from "@/lib/state"
 
-export interface AudioProps {
-    song: Child
-    playing?: boolean
+export function SongAudio() {
+    const ref = useRef<HTMLAudioElement>(null)
+    const songID = usePlayerState((s) => s.songID)
+    const [playing, setPlaying] = usePlayerState(
+        useShallow((s) => [s.playing, s.setPlaying]),
+    )
+    const [volume, setVolume] = usePlayerState(
+        useShallow((s) => [s.volume, s.setVolume]),
+    )
+    const [currentTime, setCurrentTime] = usePlayerState(
+        useShallow((s) => [s.currentTime, s.setCurrentTime]),
+    )
+    const [playbackRate, setPlaybackRate] = usePlayerState(
+        useShallow((s) => [s.playbackRate, s.setPlaybackRate]),
+    )
+    const loop = usePlayerState((s) => s.loop)
+    const [setDuration, setError, setBuffered, setState] = usePlayerState(
+        useShallow((s) => [
+            s.setDuration,
+            s.setError,
+            s.setBuffered,
+            s.setState,
+        ]),
+    )
+
+    // Play/pause
+    // biome-ignore lint/correctness/useExhaustiveDependencies(songID): make sure play state is synchronized
+    useEffect(() => {
+        if (!ref.current) return
+        if (playing && ref.current.paused) {
+            ref.current.play()
+        } else if (!playing && !ref.current.paused) {
+            ref.current.pause()
+        }
+    }, [songID, playing])
+
+    // Volume changing
+    useEffect(() => {
+        if (!ref.current) return
+        console.log("set volume", volume)
+        ref.current.volume = Math.min(Math.max(volume, 0), 1)
+    }, [volume])
+
+    // Seeking
+    useEffect(() => {
+        if (!ref.current) return
+        if (Math.round(ref.current.currentTime) !== currentTime) {
+            console.log("seek", currentTime)
+            ref.current.currentTime = currentTime
+        }
+    }, [currentTime])
+
+    // Playback rate
+    useEffect(() => {
+        if (!ref.current) return
+        ref.current.playbackRate = playbackRate
+    }, [playbackRate])
+
+    // Looping
+    useEffect(() => {
+        if (!ref.current) return
+        ref.current.loop = loop
+    }, [loop])
+
+    return (
+        <audio
+            ref={ref}
+            src={songID ? streamURL({ id: songID }) : undefined}
+            preload="auto"
+            crossOrigin="anonymous"
+            style={{ display: "none" }} // just in case, dom was acting strangely
+            onPlay={() => setPlaying(true)}
+            onPause={() => setPlaying(false)}
+            onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
+            onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+            onDurationChange={(e) => setDuration(e.currentTarget.duration)}
+            onRateChange={(e) => setPlaybackRate(e.currentTarget.playbackRate)}
+            onError={(e) => setError(e.currentTarget.error || undefined)}
+            onProgress={(e) => setBuffered(e.currentTarget.buffered)}
+            onLoadStart={() => setState("start")}
+            onCanPlay={() => setState("ready")}
+            // handle waiting and stalled?
+        />
+    )
 }
 
-export function SongAudio({ song, playing }: AudioProps) {
-    const ref = useRef<HTMLAudioElement>(null)
-    const audioURL = streamURL({ id: song.id })
+export function SongMediaSession() {
+    const songID = usePlayerState((s) => s.songID)
+    const { data: song } = useQuery({
+        ...getSongOptions({ id: songID }),
+        enabled: !!songID,
+    })
 
     useEffect(() => {
-        if (!ref.current) return
-        ref.current.volume = 0.1
-    }, [])
+        if (!song) return
 
-    useEffect(() => {
-        if (!ref.current) return
-
-        navigator.mediaSession.playbackState = ref.current.paused ? "paused" : "playing"
         navigator.mediaSession.metadata = new MediaMetadata({
             title: song.title,
             artist: song.artist,
@@ -32,20 +116,5 @@ export function SongAudio({ song, playing }: AudioProps) {
         })
     }, [song])
 
-    useEffect(() => {
-        if (!ref.current) return
-
-        if (playing && ref.current.paused) {
-            ref.current.play()
-        } else if (!playing && !ref.current.paused) {
-            ref.current.pause()
-        }
-    }, [playing])
-
-    return <audio
-        ref={ref}
-        src={audioURL}
-        preload="auto"
-        crossOrigin="anonymous"
-    />
+    return null
 }
