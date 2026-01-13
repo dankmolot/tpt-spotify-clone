@@ -15,6 +15,7 @@ function parseTimeRanges(ranges: TimeRanges) {
 }
 
 export type MediaState = "start" | "ready"
+export type LoopType = "none" | "one" | "queue"
 
 interface PlayerState {
     songID: string
@@ -25,6 +26,8 @@ interface PlayerState {
     setVolume: (volume: number) => void
     currentTime: number
     setCurrentTime: (currentTime: number) => void
+    seekPos: number
+    setSeekPos: (seekPos: number) => void
     seek: (amount: number) => void
     duration: number
     setDuration: (duration: number) => void
@@ -36,8 +39,8 @@ interface PlayerState {
     setBuffered: (buffered: TimeRanges) => void
     state: MediaState
     setState: (state: MediaState) => void
-    loop: boolean
-    setLoop: (loop: boolean) => void
+    loop: LoopType
+    setLoop: (loop: LoopType) => void
 }
 
 const defaultPlayingState: Partial<PlayerState> = {
@@ -45,10 +48,11 @@ const defaultPlayingState: Partial<PlayerState> = {
     playing: false,
     volume: 1,
     currentTime: 0,
+    seekPos: 0,
     duration: 0,
     playbackRate: 1,
     state: "start",
-    loop: false,
+    loop: "none",
 }
 
 export const usePlayerState = create<PlayerState>()(
@@ -75,7 +79,8 @@ export const usePlayerState = create<PlayerState>()(
                     set({ currentTime: currentTime })
                 }
             },
-            seek: (amount) => get().setCurrentTime(get().currentTime + amount),
+            setSeekPos: (seekPos) => set({ seekPos }),
+            seek: (amount) => get().setSeekPos(get().seekPos + amount),
             setDuration: (duration) => set({ duration }),
             setPlaybackRate: (playbackRate) =>
                 set({

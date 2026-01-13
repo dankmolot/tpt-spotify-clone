@@ -17,21 +17,21 @@ export function SongAudio() {
     const [volume, setVolume] = usePlayerState(
         useShallow((s) => [s.volume, s.setVolume]),
     )
-    const [currentTime, setCurrentTime] = usePlayerState(
-        useShallow((s) => [s.currentTime, s.setCurrentTime]),
-    )
     const [playbackRate, setPlaybackRate] = usePlayerState(
         useShallow((s) => [s.playbackRate, s.setPlaybackRate]),
     )
+    const seekPos = usePlayerState((s) => s.seekPos)
     const loop = usePlayerState((s) => s.loop)
-    const [setDuration, setError, setBuffered, setState] = usePlayerState(
-        useShallow((s) => [
-            s.setDuration,
-            s.setError,
-            s.setBuffered,
-            s.setState,
-        ]),
-    )
+    const [setCurrentTime, setDuration, setError, setBuffered, setState] =
+        usePlayerState(
+            useShallow((s) => [
+                s.setCurrentTime,
+                s.setDuration,
+                s.setError,
+                s.setBuffered,
+                s.setState,
+            ]),
+        )
 
     // Play/pause
     // biome-ignore lint/correctness/useExhaustiveDependencies(songID): make sure play state is synchronized
@@ -54,11 +54,8 @@ export function SongAudio() {
     // Seeking
     useEffect(() => {
         if (!ref.current) return
-        if (Math.round(ref.current.currentTime) !== currentTime) {
-            console.log("seek", currentTime)
-            ref.current.currentTime = currentTime
-        }
-    }, [currentTime])
+        ref.current.currentTime = seekPos
+    }, [seekPos])
 
     // Playback rate
     useEffect(() => {
@@ -69,7 +66,7 @@ export function SongAudio() {
     // Looping
     useEffect(() => {
         if (!ref.current) return
-        ref.current.loop = loop
+        ref.current.loop = loop === "one"
     }, [loop])
 
     return (

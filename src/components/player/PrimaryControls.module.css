@@ -7,10 +7,78 @@
 
     .buttons {
         display: flex;
+        align-items: center;
         gap: 1em;
+
+        button {
+            background-color: transparent;
+            outline: none;
+            border: none;
+            padding: 0;
+
+            --color: var(--gray-1200);
+            color: var(--color);
+            font-size: 1.5em;
+            width: 1em;
+            height: 1em;
+
+            > svg {
+                width: 1em;
+                height: 1em;
+
+                &.fill {
+                    fill: var(--color);
+                }
+            }
+
+            &:hover {
+                --color: var(--gray-1600);
+                transform: scale(1.1);
+            }
+
+            &:active {
+                --color: var(--gray-600);
+                transform: scale(1);
+            }
+        }
+
+        .playPause {
+            --color: var(--gray-1600);
+            background-color: var(--color);
+            border-radius: 100%;
+            padding: 0.25em;
+            width: 1.5em;
+            height: 1.5em;
+
+            > svg {
+                color: black;
+                fill: black;
+
+                &.play {
+                    /* make it look more centered, ~1px */
+                    transform: translateX(0.05em);
+                }
+            }
+
+            &:active {
+                --color: var(--gray-1200);
+            }
+        }
+
+        .loop {
+            &.one,
+            &.queue {
+                --color: var(--tint-1200);
+
+                &:active {
+                    --color: var(--tint-900);
+                }
+            }
+        }
     }
 
     .progress {
         display: flex;
+        gap: 2em;
     }
 }
