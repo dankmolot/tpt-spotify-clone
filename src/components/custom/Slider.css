@@ -31,6 +31,10 @@
     .slider:hover & {
         background-color: var(--tint-1200);
     }
+
+    .slider[aria-disabled="true"] & {
+        display: none;
+    }
 }
 
 .sliderThumb {
@@ -48,5 +52,9 @@
 
     .slider:hover & {
         display: block;
+    }
+
+    .slider[aria-disabled="true"] & {
+        display: none;
     }
 }

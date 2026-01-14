@@ -85,6 +85,7 @@ export function SliderController({
             aria-valuenow={currentValue}
             aria-valuemin={minValue}
             aria-valuemax={maxValue}
+            aria-disabled={valueDelta === 0}
             tabIndex={0}
             className={cn("slider", className)}
             onPointerMove={(e) => pressed && updateValue(e)}
