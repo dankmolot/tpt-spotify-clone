@@ -2,6 +2,8 @@
     display: flex;
     gap: 1em;
     align-items: center;
+    width: 30%;
+    min-width: 12em;
 
     .coverArt {
         width: 4em;

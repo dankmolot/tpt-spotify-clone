@@ -141,12 +141,12 @@ function ProgressTime() {
     const currentTime = usePlayerState((s) =>
         s.seeking ? s.seekPos : s.currentTime,
     )
-    return <span>{humanTime(currentTime)}</span>
+    return <span className={classes.currentTime}>{humanTime(currentTime)}</span>
 }
 
 function ProgressDuration() {
     const duration = usePlayerState((s) => s.duration)
-    return <span>{humanTime(duration)}</span>
+    return <span className={classes.duration}>{humanTime(duration)}</span>
 }
 
 function ProgressSeeker() {
