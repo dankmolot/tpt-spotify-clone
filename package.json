@@ -25,6 +25,7 @@
     "lucide-react": "^0.476.0",
     "modern-normalize": "^3.0.1",
     "react": "^19.2.0",
+    "react-aria": "^3.45.0",
     "react-aria-components": "^1.14.0",
     "react-dom": "^19.2.0",
     "sass-embedded": "^1.93.3",
