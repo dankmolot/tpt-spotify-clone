@@ -79,6 +79,13 @@
 
     .progress {
         display: flex;
+        align-items: center;
         gap: 2em;
+        font-size: var(--font-size-sm);
+        color: var(--gray-1200);
+
+        .slider {
+            width: 24em;
+        }
     }
 }

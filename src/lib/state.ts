@@ -26,6 +26,8 @@ interface PlayerState {
     setVolume: (volume: number) => void
     currentTime: number
     setCurrentTime: (currentTime: number) => void
+    seeking: boolean
+    setSeeking: (seeking: boolean) => void
     seekPos: number
     setSeekPos: (seekPos: number) => void
     seek: (amount: number) => void
@@ -48,6 +50,7 @@ const defaultPlayingState: Partial<PlayerState> = {
     playing: false,
     volume: 1,
     currentTime: 0,
+    seeking: false,
     seekPos: 0,
     duration: 0,
     playbackRate: 1,
@@ -79,9 +82,10 @@ export const usePlayerState = create<PlayerState>()(
                     set({ currentTime: currentTime })
                 }
             },
+            setSeeking: (seeking) => set({ seeking }),
             setSeekPos: (seekPos) => set({ seekPos }),
             seek: (amount) => get().setSeekPos(get().seekPos + amount),
-            setDuration: (duration) => set({ duration }),
+            setDuration: (duration) => set({ duration: Math.floor(duration) }),
             setPlaybackRate: (playbackRate) =>
                 set({
                     playbackRate: Math.max(Math.min(playbackRate, 4), 0.25), // Gecko mutes rate outside this range

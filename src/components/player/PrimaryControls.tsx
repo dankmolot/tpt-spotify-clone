@@ -10,6 +10,12 @@ import {
 import { useShallow } from "zustand/react/shallow"
 import { usePlayerState } from "@/lib/state"
 import { cn } from "@/lib/utils"
+import {
+    SliderController,
+    SliderProgress,
+    SliderThumb,
+    SliderTrack,
+} from "../custom/Slider"
 import classes from "./PrimaryControls.module.css"
 
 export function PrimaryControls() {
@@ -122,17 +128,53 @@ function humanTime(raw: number) {
 }
 
 function Progress() {
-    const [currentTime, duration] = usePlayerState(
-        useShallow((s) => [s.currentTime, s.duration]),
-    )
-
     return (
         <div className={classes.progress}>
-            <span>{humanTime(currentTime)}</span>
-            <div>
-                <div></div>
-            </div>
-            <span>{humanTime(duration)}</span>
+            <ProgressTime />
+            <ProgressSeeker />
+            <ProgressDuration />
         </div>
+    )
+}
+
+function ProgressTime() {
+    const currentTime = usePlayerState((s) =>
+        s.seeking ? s.seekPos : s.currentTime,
+    )
+    return <span>{humanTime(currentTime)}</span>
+}
+
+function ProgressDuration() {
+    const duration = usePlayerState((s) => s.duration)
+    return <span>{humanTime(duration)}</span>
+}
+
+function ProgressSeeker() {
+    const [currentTime, duration, setSeeking, setSeekPos, setCurrentTime] =
+        usePlayerState(
+            useShallow((s) => [
+                s.seeking ? s.seekPos : s.currentTime,
+                s.duration,
+                s.setSeeking,
+                s.setSeekPos,
+                s.setCurrentTime,
+            ]),
+        )
+
+    return (
+        <SliderController
+            value={currentTime}
+            maxValue={duration}
+            onPressed={() => setSeeking(true)}
+            onUnpressed={() => setSeeking(false)}
+            onChanged={(value) => setSeekPos(value)}
+            onChangedEnd={(value) => setCurrentTime(value)} // predict that currentTime will be same as seekPos
+            className={classes.slider}
+        >
+            <SliderTrack>
+                <SliderProgress />
+            </SliderTrack>
+            <SliderThumb />
+        </SliderController>
     )
 }

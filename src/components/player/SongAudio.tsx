@@ -20,7 +20,9 @@ export function SongAudio() {
     const [playbackRate, setPlaybackRate] = usePlayerState(
         useShallow((s) => [s.playbackRate, s.setPlaybackRate]),
     )
-    const seekPos = usePlayerState((s) => s.seekPos)
+    const [seekPos, seeking] = usePlayerState(
+        useShallow((s) => [s.seekPos, s.seeking]),
+    )
     const loop = usePlayerState((s) => s.loop)
     const [setCurrentTime, setDuration, setError, setBuffered, setState] =
         usePlayerState(
@@ -53,9 +55,21 @@ export function SongAudio() {
 
     // Seeking
     useEffect(() => {
-        if (!ref.current) return
+        if (!ref.current || seeking) return
         ref.current.currentTime = seekPos
-    }, [seekPos])
+    }, [seekPos, seeking])
+
+    useEffect(() => {
+        if (!ref.current) return
+        if (seeking && !ref.current.paused) {
+            // pause during seeking
+            ref.current.pause()
+        } else if (!seeking && playing && ref.current.paused) {
+            // and undo previous pausing
+            ref.current.play()
+            setPlaying(!ref.current.paused)
+        }
+    })
 
     // Playback rate
     useEffect(() => {
@@ -76,8 +90,8 @@ export function SongAudio() {
             preload="auto"
             crossOrigin="anonymous"
             style={{ display: "none" }} // just in case, dom was acting strangely
-            onPlay={() => setPlaying(true)}
-            onPause={() => setPlaying(false)}
+            onPlay={() => !seeking && setPlaying(true)}
+            onPause={() => !seeking && setPlaying(false)}
             onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
             onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
             onDurationChange={(e) => setDuration(e.currentTarget.duration)}
