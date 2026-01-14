@@ -53,7 +53,6 @@ export function SliderController({
 
     // sync given value with current state
     useEffect(() => {
-        console.log("value changed", value)
         setCurrentValue(value)
     }, [value])
 
@@ -98,8 +97,8 @@ export function SliderController({
             onPointerUp={(e) => {
                 e.currentTarget.releasePointerCapture(e.pointerId)
                 setPressed(false)
-                onUnpressed?.()
                 onChangedEnd?.(currentValue)
+                onUnpressed?.()
             }}
             style={style}
             {...props}
