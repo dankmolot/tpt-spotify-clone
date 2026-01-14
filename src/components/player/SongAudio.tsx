@@ -59,6 +59,7 @@ export function SongAudio() {
         ref.current.currentTime = seekPos
     }, [seekPos, seeking])
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies(playing): only should be triggered when seeking is changed
     useEffect(() => {
         if (!ref.current) return
         if (seeking && !ref.current.paused) {
@@ -69,7 +70,7 @@ export function SongAudio() {
             ref.current.play()
             setPlaying(!ref.current.paused)
         }
-    })
+    }, [seeking, setPlaying])
 
     // Playback rate
     useEffect(() => {
