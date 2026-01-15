@@ -2,7 +2,6 @@ import {
     type ComponentPropsWithRef,
     type CSSProperties,
     type MouseEvent,
-    useEffect,
     useState,
 } from "react"
 import "./Slider.css"
@@ -46,15 +45,9 @@ export function SliderController({
     onChangedEnd,
     ...props
 }: SliderControllerProps) {
-    const [currentValue, setCurrentValue] = useState(value)
     const [pressed, setPressed] = useState(false)
 
     const valueDelta = maxValue - minValue
-
-    // sync given value with current state
-    useEffect(() => {
-        setCurrentValue(value)
-    }, [value])
 
     function updateValue(e: MouseEvent) {
         const { x, width } = e.currentTarget.getBoundingClientRect()
@@ -67,14 +60,13 @@ export function SliderController({
             newValue = newValue - remainder + Math.round(remainder)
         }
 
-        setCurrentValue(newValue)
         onChanged?.(newValue)
     }
 
     style = {
         ...style,
         "--sliderValue": Math.min(
-            Math.max(minValue + currentValue / valueDelta, 0),
+            Math.max(minValue + value / valueDelta, 0),
             1,
         ),
     } as CSSProperties
@@ -82,7 +74,7 @@ export function SliderController({
     return (
         <div
             role="slider"
-            aria-valuenow={currentValue}
+            aria-valuenow={value}
             aria-valuemin={minValue}
             aria-valuemax={maxValue}
             aria-disabled={valueDelta === 0}
@@ -98,7 +90,7 @@ export function SliderController({
             onPointerUp={(e) => {
                 e.currentTarget.releasePointerCapture(e.pointerId)
                 setPressed(false)
-                onChangedEnd?.(currentValue)
+                onChangedEnd?.(value)
                 onUnpressed?.()
             }}
             style={style}
