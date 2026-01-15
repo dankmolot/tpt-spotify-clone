@@ -94,13 +94,21 @@ export function SongAudio() {
             onPlay={() => !seeking && setPlaying(true)}
             onPause={() => !seeking && setPlaying(false)}
             onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
-            onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+            onTimeUpdate={(e) =>
+                // unfortunately "progress" and "canplay" events
+                // are not reliable for "buffered" changes
+                setCurrentTime(
+                    e.currentTarget.currentTime,
+                    e.currentTarget.buffered,
+                )
+            }
             onDurationChange={(e) => setDuration(e.currentTarget.duration)}
             onRateChange={(e) => setPlaybackRate(e.currentTarget.playbackRate)}
             onError={(e) => setError(e.currentTarget.error || undefined)}
             onProgress={(e) => setBuffered(e.currentTarget.buffered)}
             onLoadStart={() => setState("start")}
-            onCanPlay={() => setState("ready")}
+            onCanPlayThrough={() => setState("ready")}
+            onCanPlay={(e) => setBuffered(e.currentTarget.buffered)}
             // handle waiting and stalled?
         />
     )

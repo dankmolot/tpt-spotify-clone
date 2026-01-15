@@ -25,7 +25,7 @@ interface PlayerState {
     volume: number
     setVolume: (volume: number) => void
     currentTime: number
-    setCurrentTime: (currentTime: number) => void
+    setCurrentTime: (currentTime: number, buffered?: TimeRanges) => void
     seeking: boolean
     setSeeking: (seeking: boolean) => void
     seekPos: number
@@ -37,7 +37,7 @@ interface PlayerState {
     setPlaybackRate: (playbackRate: number) => void
     error?: MediaError
     setError: (error?: MediaError) => void
-    buffered?: BufferedRange[]
+    buffered: BufferedRange[]
     setBuffered: (buffered: TimeRanges) => void
     state: MediaState
     setState: (state: MediaState) => void
@@ -54,6 +54,7 @@ const defaultPlayingState: Partial<PlayerState> = {
     seekPos: 0,
     duration: 0,
     playbackRate: 1,
+    buffered: [],
     state: "start",
     loop: "none",
 }
@@ -68,18 +69,19 @@ export const usePlayerState = create<PlayerState>()(
                     currentTime: 0,
                     duration: 0,
                     error: undefined,
-                    buffered: undefined,
+                    buffered: [],
                     state: "start",
                 }),
             setPlaying: (playing) => set({ playing }),
             setVolume: (volume) =>
                 set({ volume: Math.min(Math.max(volume, 0), 1) }),
-            setCurrentTime: (currentTime) => {
+            setCurrentTime: (currentTime, buffered) => {
                 currentTime = Math.floor(currentTime)
                 currentTime = Math.max(Math.min(currentTime, get().duration), 0)
 
                 if (get().currentTime !== currentTime) {
                     set({ currentTime: currentTime })
+                    buffered && get().setBuffered(buffered)
                 }
             },
             setSeeking: (seeking) => set({ seeking }),
@@ -91,8 +93,21 @@ export const usePlayerState = create<PlayerState>()(
                     playbackRate: Math.max(Math.min(playbackRate, 4), 0.25), // Gecko mutes rate outside this range
                 }),
             setError: (error) => set({ error }),
-            setBuffered: (buffered) =>
-                set({ buffered: parseTimeRanges(buffered) }),
+            setBuffered: (buffered) => {
+                const old = get().buffered
+                const parsed = parseTimeRanges(buffered)
+                // check if buffered has changed at all
+                if (
+                    old.length !== parsed.length ||
+                    !old.every(
+                        (v, i) =>
+                            v.start === parsed[i]?.start &&
+                            v.end === parsed[i]?.end,
+                    )
+                ) {
+                    set({ buffered: parsed })
+                }
+            },
             setState: (state) => {
                 if (get().state !== state) set({ state })
             },

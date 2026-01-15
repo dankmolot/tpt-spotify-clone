@@ -14,7 +14,7 @@ import classes from "./CurrentSong.module.css"
 export function CurrentSong() {
     const songID = usePlayerState((s) => s.songID)
 
-    if (!songID) return <div></div>
+    if (!songID) return <div className={classes.panel}></div>
 
     return (
         <div className={classes.panel}>

@@ -7,6 +7,7 @@ import {
     SkipBackIcon,
     SkipForwardIcon,
 } from "lucide-react"
+import type { CSSProperties, ReactNode } from "react"
 import { useShallow } from "zustand/react/shallow"
 import { usePlayerState } from "@/lib/state"
 import { cn } from "@/lib/utils"
@@ -131,7 +132,7 @@ function Progress() {
     return (
         <div className={classes.progress}>
             <ProgressTime />
-            <ProgressSeeker />
+            <ProgressSlider />
             <ProgressDuration />
         </div>
     )
@@ -149,7 +150,20 @@ function ProgressDuration() {
     return <span className={classes.duration}>{humanTime(duration)}</span>
 }
 
-function ProgressSeeker() {
+function ProgressSlider() {
+    // Slider is split in such way to minimize re-renders
+    return (
+        <ProgressSliderController>
+            <SliderTrack>
+                <ProgressSliderBuffer />
+                <SliderProgress />
+            </SliderTrack>
+            <SliderThumb />
+        </ProgressSliderController>
+    )
+}
+
+function ProgressSliderController(props: { children?: ReactNode }) {
     const [currentTime, duration, setSeeking, setSeekPos, setCurrentTime] =
         usePlayerState(
             useShallow((s) => [
@@ -170,11 +184,28 @@ function ProgressSeeker() {
             onChanged={(value) => setSeekPos(value)}
             onChangedEnd={(value) => setCurrentTime(value)} // predict that currentTime will be same as seekPos
             className={classes.slider}
-        >
-            <SliderTrack>
-                <SliderProgress />
-            </SliderTrack>
-            <SliderThumb />
-        </SliderController>
+            {...props}
+        />
     )
+}
+
+function ProgressSliderBuffer() {
+    const [buffered, duration] = usePlayerState(
+        useShallow((s) => [s.buffered, s.duration]),
+    )
+
+    return buffered.map((buffer) => {
+        const style = {
+            "--bufferStart": buffer.start / duration,
+            "--bufferLength": (buffer.end - buffer.start) / duration,
+        } as CSSProperties
+
+        return (
+            <SliderProgress
+                className={classes.buffer}
+                style={style}
+                key={buffer.start}
+            />
+        )
+    })
 }

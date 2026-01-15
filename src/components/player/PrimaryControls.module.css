@@ -89,6 +89,13 @@
 
         .slider {
             width: 100%;
+
+            .buffer {
+                background-color: var(--gray-400);
+                left: calc(100% * var(--bufferStart, 0));
+                width: calc(100% * var(--bufferLength, 0));
+                transform: none;
+            }
         }
 
         .currentTime,
