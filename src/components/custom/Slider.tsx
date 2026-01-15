@@ -10,18 +10,6 @@ import { cn } from "@/lib/utils"
 
 type DivProps = ComponentPropsWithRef<"div">
 
-export function Slider({ className, ...props }: DivProps) {
-    // You can use this structure as example for your own hacks
-    return (
-        <SliderController {...props}>
-            <SliderTrack>
-                <SliderProgress />
-            </SliderTrack>
-            <SliderThumb />
-        </SliderController>
-    )
-}
-
 interface SliderControllerProps extends DivProps {
     value?: number
     minValue?: number
@@ -31,6 +19,18 @@ interface SliderControllerProps extends DivProps {
     onUnpressed?: () => void
     onChanged?: (value: number) => void
     onChangedEnd?: (value: number) => void
+}
+
+export function Slider({ className, ...props }: SliderControllerProps) {
+    // You can use this structure as example for your own hacks
+    return (
+        <SliderController {...props}>
+            <SliderTrack>
+                <SliderProgress />
+            </SliderTrack>
+            <SliderThumb />
+        </SliderController>
+    )
 }
 
 export function SliderController({
