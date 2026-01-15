@@ -24,6 +24,7 @@ export function SongAudio() {
         useShallow((s) => [s.seekPos, s.seeking]),
     )
     const loop = usePlayerState((s) => s.loop)
+    const muted = usePlayerState((s) => s.muted)
     const [setCurrentTime, setDuration, setError, setBuffered, setState] =
         usePlayerState(
             useShallow((s) => [
@@ -49,9 +50,14 @@ export function SongAudio() {
     // Volume changing
     useEffect(() => {
         if (!ref.current) return
-        console.log("set volume", volume)
-        ref.current.volume = Math.min(Math.max(volume, 0), 1)
+        ref.current.volume = volume
     }, [volume])
+
+    // Muting
+    useEffect(() => {
+        if (!ref.current) return
+        ref.current.muted = muted
+    }, [muted])
 
     // Seeking
     useEffect(() => {

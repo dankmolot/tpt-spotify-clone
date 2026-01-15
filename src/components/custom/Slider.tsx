@@ -20,7 +20,7 @@ interface SliderControllerProps extends DivProps {
     onChangedEnd?: (value: number) => void
 }
 
-export function Slider({ className, ...props }: SliderControllerProps) {
+export function Slider({ ...props }: SliderControllerProps) {
     // You can use this structure as example for your own hacks
     return (
         <SliderController {...props}>

@@ -1,0 +1,60 @@
+.panel {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    width: 30%;
+    min-width: 12em;
+    gap: 1em;
+
+    .volume {
+        display: flex;
+        gap: 0.5em;
+        align-items: center;
+
+        .icon {
+            background-color: unset;
+            border: 0;
+            outline: 0;
+            padding: 0;
+
+            width: 1.5em;
+            height: 1.5em;
+            color: var(--gray-1200);
+
+            > svg {
+                width: inherit;
+                height: inherit;
+            }
+
+            &:hover {
+                color: var(--gray-1600);
+                transform: scale(1.1);
+            }
+
+            &:active {
+                color: var(--gray-900);
+                transform: none;
+            }
+        }
+
+        .slider {
+            width: 8em;
+        }
+    }
+
+    .queue {
+        color: var(--gray-1200);
+        width: 1.5em;
+        height: 1.5em;
+
+        &:hover {
+            color: var(--gray-1600);
+            transform: scale(1.1);
+        }
+
+        &:active {
+            color: var(--gray-900);
+            transform: none;
+        }
+    }
+}

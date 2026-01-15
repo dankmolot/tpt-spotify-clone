@@ -24,6 +24,8 @@ interface PlayerState {
     setPlaying: (playing: boolean) => void
     volume: number
     setVolume: (volume: number) => void
+    muted: boolean
+    setMuted: (muted: boolean) => void
     currentTime: number
     setCurrentTime: (currentTime: number, buffered?: TimeRanges) => void
     seeking: boolean
@@ -49,6 +51,7 @@ const defaultPlayingState: Partial<PlayerState> = {
     songID: "",
     playing: false,
     volume: 1,
+    muted: false,
     currentTime: 0,
     seeking: false,
     seekPos: 0,
@@ -75,6 +78,7 @@ export const usePlayerState = create<PlayerState>()(
             setPlaying: (playing) => set({ playing }),
             setVolume: (volume) =>
                 set({ volume: Math.min(Math.max(volume, 0), 1) }),
+            setMuted: (muted) => set({ muted }),
             setCurrentTime: (currentTime, buffered) => {
                 currentTime = Math.floor(currentTime)
                 currentTime = Math.max(Math.min(currentTime, get().duration), 0)
