@@ -1,13 +1,13 @@
-import { RawLink } from "./aria/Link"
+import { Link } from "./custom/Link"
 import classes from "./Header.module.css"
 import { Logo } from "./Logo"
 
 export function Header() {
     return (
         <div className={classes.header}>
-            <RawLink to="/" className={classes.logo}>
+            <Link to="/" className={classes.logo}>
                 <Logo />
-            </RawLink>
+            </Link>
 
             <div>search</div>
             <div>user</div>
