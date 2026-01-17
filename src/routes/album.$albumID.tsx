@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { useShallow } from "zustand/react/shallow"
 import { Album } from "@/components/subsonic/Album"
 import { Song } from "@/components/subsonic/Song"
+import { SongTable } from "@/components/subsonic/SongTable"
 import { getQueryClient } from "@/integrations/tanstack-query/root-provider"
 import { getAlbumOptions } from "@/lib/queries/subsonic"
 import { usePlayerState } from "@/lib/state"
@@ -10,10 +11,10 @@ import { usePlayerState } from "@/lib/state"
 export const Route = createFileRoute("/album/$albumID")({
     loader: ({ params: { albumID } }) =>
         getQueryClient().ensureQueryData(getAlbumOptions({ id: albumID })),
-    component: RouteComponent,
+    component: AlbumPage,
 })
 
-function RouteComponent() {
+function AlbumPage() {
     const { albumID } = Route.useParams()
     const { data: album } = useSuspenseQuery(getAlbumOptions({ id: albumID }))
     const [songID, setSong] = usePlayerState(
@@ -23,6 +24,7 @@ function RouteComponent() {
     return (
         <>
             <Album album={album} />
+            <SongTable songs={album.song} />
             {album.song?.map((v) => (
                 <button
                     key={v.id}
