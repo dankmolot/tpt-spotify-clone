@@ -1,5 +1,5 @@
 import type { ComponentPropsWithRef } from "react"
-import { RawLink } from "@/components/aria/Link"
+import { Link } from "@/components/custom/Link"
 import type { AlbumID3 } from "@/lib/api/subsonic/schemas"
 import { cn } from "@/lib/utils"
 import classes from "./Album.module.css"
@@ -19,7 +19,7 @@ export interface AlbumProps
 
 export function Album({ album, className, ...props }: AlbumProps) {
     return (
-        <RawLink
+        <Link
             {...props}
             className={cn(classes.album, className)}
             to="/album/$albumID"
@@ -27,7 +27,7 @@ export function Album({ album, className, ...props }: AlbumProps) {
         >
             <CoverArt id={album.coverArt} className={classes.coverArt} />
             <AlbumFooter album={album} />
-        </RawLink>
+        </Link>
     )
 }
 

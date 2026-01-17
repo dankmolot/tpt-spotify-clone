@@ -1,0 +1,25 @@
+.song {
+    display: flex;
+    gap: 1em;
+    user-select: none;
+}
+
+.songCover {
+    border-radius: 0.5em;
+    object-fit: contain;
+}
+
+.songInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.songArtist {
+    color: var(--gray-900);
+    font-size: var(--font-size-sm);
+
+    &:hover {
+        color: var(--gray-1600);
+    }
+}

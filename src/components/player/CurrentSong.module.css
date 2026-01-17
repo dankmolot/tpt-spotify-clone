@@ -5,25 +5,8 @@
     width: 30%;
     min-width: 12em;
 
-    .coverArt {
-        width: 4em;
+    .song {
         height: 4em;
-        border-radius: 0.5em;
-    }
-
-    .info {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25em;
-
-        /* .title {
-            font-size: var(--font-size-lg);
-        } */
-
-        .author {
-            font-size: var(--font-size-sm);
-            color: var(--gray-900);
-        }
     }
 
     .favorite {
