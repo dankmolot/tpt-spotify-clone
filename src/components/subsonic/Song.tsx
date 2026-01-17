@@ -1,6 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
+import { HeartIcon } from "lucide-react"
 import type { ComponentPropsWithoutRef, ComponentPropsWithRef } from "react"
-import { getSongOptions } from "@/lib/queries/subsonic"
+import {
+    getSongOptions,
+    useMutateStar,
+    useMutateUnstar,
+} from "@/lib/queries/subsonic"
 import { cn } from "@/lib/utils"
 import { Link } from "../custom/Link"
 import { type ConverArtProps, CoverArt } from "./CoverArt"
@@ -135,5 +140,39 @@ export function SongArtist({
         <span {...props} className={cn(classes.songArtist, className)}>
             {song.artist}
         </span>
+    )
+}
+
+export function FavoriteSong({ id, online }: SongParams) {
+    const { data: starred, isPending: songIsPending } = useQuery({
+        ...getSongOptions({ id }),
+        enabled: online,
+        select: (song) => !!song.starred,
+    })
+
+    const star = useMutateStar()
+    const unstar = useMutateUnstar()
+
+    function onClick() {
+        if (starred) {
+            unstar.mutate({ id })
+        } else {
+            star.mutate({ id })
+        }
+    }
+
+    const isPending = star.isPending || unstar.isPending
+
+    if (songIsPending) return
+
+    return (
+        <HeartIcon
+            className={cn(
+                classes.favorite,
+                starred && classes.starred,
+                isPending && classes.loading,
+            )}
+            onClick={onClick}
+        />
     )
 }
