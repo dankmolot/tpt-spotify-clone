@@ -96,6 +96,7 @@ export function SongTitle({
             to="/album/$albumID"
             params={{ albumID: song.albumId }}
             className={className}
+            onClick={(e) => e.stopPropagation()}
         >
             {song.title}
         </Link>
@@ -126,6 +127,7 @@ export function SongArtist({
             to="/artist/$artistID"
             params={{ artistID: song.artistId }}
             className={cn(classes.songArtist, className)}
+            onClick={(e) => e.stopPropagation()}
         >
             {song.artist}
         </Link>

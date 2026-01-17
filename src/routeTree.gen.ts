@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as ArtistArtistIDRouteImport } from './routes/artist.$artistID'
 import { Route as AlbumAlbumIDRouteImport } from './routes/album.$albumID'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArtistArtistIDRoute = ArtistArtistIDRouteImport.update({
+  id: '/artist/$artistID',
+  path: '/artist/$artistID',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AlbumAlbumIDRoute = AlbumAlbumIDRouteImport.update({
   id: '/album/$albumID',
   path: '/album/$albumID',
@@ -32,30 +38,34 @@ const AlbumAlbumIDRoute = AlbumAlbumIDRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/album/$albumID': typeof AlbumAlbumIDRoute
+  '/artist/$artistID': typeof ArtistArtistIDRoute
   '/auth/login': typeof AuthLoginRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/album/$albumID': typeof AlbumAlbumIDRoute
+  '/artist/$artistID': typeof ArtistArtistIDRoute
   '/auth/login': typeof AuthLoginRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/album/$albumID': typeof AlbumAlbumIDRoute
+  '/artist/$artistID': typeof ArtistArtistIDRoute
   '/auth/login': typeof AuthLoginRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/album/$albumID' | '/auth/login'
+  fullPaths: '/' | '/album/$albumID' | '/artist/$artistID' | '/auth/login'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/album/$albumID' | '/auth/login'
-  id: '__root__' | '/' | '/album/$albumID' | '/auth/login'
+  to: '/' | '/album/$albumID' | '/artist/$artistID' | '/auth/login'
+  id: '__root__' | '/' | '/album/$albumID' | '/artist/$artistID' | '/auth/login'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AlbumAlbumIDRoute: typeof AlbumAlbumIDRoute
+  ArtistArtistIDRoute: typeof ArtistArtistIDRoute
   AuthLoginRoute: typeof AuthLoginRoute
 }
 
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/artist/$artistID': {
+      id: '/artist/$artistID'
+      path: '/artist/$artistID'
+      fullPath: '/artist/$artistID'
+      preLoaderRoute: typeof ArtistArtistIDRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/album/$albumID': {
       id: '/album/$albumID'
       path: '/album/$albumID'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AlbumAlbumIDRoute: AlbumAlbumIDRoute,
+  ArtistArtistIDRoute: ArtistArtistIDRoute,
   AuthLoginRoute: AuthLoginRoute,
 }
 export const routeTree = rootRouteImport
