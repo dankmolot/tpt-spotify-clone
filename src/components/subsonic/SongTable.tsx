@@ -60,7 +60,7 @@ export function SongTable({ songs }: SongTableProps) {
         getRowId: (row) => row.id,
     })
 
-    const setSong = usePlayerState((s) => s.setSong)
+    const setSongID = usePlayerState((s) => s.setSongID)
 
     return (
         <div className="p-2">
@@ -86,7 +86,9 @@ export function SongTable({ songs }: SongTableProps) {
                         <tr
                             key={row.id}
                             className={classes.song}
-                            onClick={() => setSong(row.id)}
+                            onClick={() =>
+                                setSongID(row.id, row.original.duration)
+                            }
                         >
                             {row.getVisibleCells().map((cell) => (
                                 <td key={cell.id}>

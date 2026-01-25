@@ -19,7 +19,7 @@ export type LoopType = "none" | "one" | "queue"
 
 interface PlayerState {
     songID: string
-    setSong: (id: string) => void
+    setSongID: (id: string, duration?: number) => void
     playing: boolean
     setPlaying: (playing: boolean) => void
     volume: number
@@ -47,33 +47,36 @@ interface PlayerState {
     setLoop: (loop: LoopType) => void
 }
 
-const defaultPlayingState: Partial<PlayerState> = {
+const initialPlayerState: Partial<PlayerState> = {
+    currentTime: 0,
+    duration: 0,
+    error: undefined,
+    buffered: [],
+    state: "start",
+}
+
+const defaultPlayerState: Partial<PlayerState> = {
+    ...initialPlayerState,
+
     songID: "",
     playing: false,
     volume: 1,
     muted: false,
-    currentTime: 0,
     seeking: false,
     seekPos: 0,
-    duration: 0,
     playbackRate: 1,
-    buffered: [],
-    state: "start",
     loop: "none",
 }
 
 export const usePlayerState = create<PlayerState>()(
     devtools(
         (set, get) => ({
-            ...defaultPlayingState,
-            setSong: (songID) =>
+            ...defaultPlayerState,
+            setSongID: (songID, duration = 0) =>
                 set({
+                    ...initialPlayerState,
                     songID,
-                    currentTime: 0,
-                    duration: 0,
-                    error: undefined,
-                    buffered: [],
-                    state: "start",
+                    duration: duration,
                 }),
             setPlaying: (playing) => set({ playing }),
             setVolume: (volume) =>
