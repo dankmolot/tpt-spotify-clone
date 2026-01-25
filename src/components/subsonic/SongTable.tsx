@@ -7,7 +7,15 @@ import {
 import { ClockIcon } from "lucide-react"
 import type { Child } from "@/lib/api/subsonic/schemas"
 import { humanTime } from "@/lib/utils"
-import { FavoriteSong, Song } from "./Song"
+import {
+    FavoriteSong,
+    SongArtist,
+    SongCover,
+    SongGroup,
+    SongInfoGroup,
+    SongTitle,
+} from "./Song"
+import classes from "./SongTable.module.css"
 
 const columnHelper = createColumnHelper<Child>()
 
@@ -15,12 +23,23 @@ const columns = [
     columnHelper.accessor("id", {
         id: "song",
         header: () => <span>Song</span>,
-        cell: (info) => <Song id={info.getValue()} style={{ height: "4em" }} />,
+        cell: (info) => (
+            <SongGroup id={info.getValue()} style={{ height: "4em" }}>
+                <SongCover id={info.getValue()} />
+                <SongInfoGroup>
+                    <SongTitle id={info.getValue()} />
+                    <SongArtist
+                        id={info.getValue()}
+                        className={classes.artist}
+                    />
+                </SongInfoGroup>
+            </SongGroup>
+        ),
     }),
     columnHelper.accessor("id", {
         id: "favorite",
         header: () => null,
-        cell: (info) => <FavoriteSong id={info.getValue()} />
+        cell: (info) => <FavoriteSong id={info.getValue()} />,
     }),
     columnHelper.accessor("duration", {
         header: () => <ClockIcon />,
@@ -50,9 +69,9 @@ export function SongTable({ songs }: SongTableProps) {
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(
-                                            header.column.columnDef.header,
-                                            header.getContext(),
-                                        )}
+                                              header.column.columnDef.header,
+                                              header.getContext(),
+                                          )}
                                 </th>
                             ))}
                         </tr>
@@ -60,7 +79,7 @@ export function SongTable({ songs }: SongTableProps) {
                 </thead>
                 <tbody>
                     {table.getRowModel().rows.map((row) => (
-                        <tr key={row.id}>
+                        <tr key={row.id} className={classes.song}>
                             {row.getVisibleCells().map((cell) => (
                                 <td key={cell.id}>
                                     {flexRender(

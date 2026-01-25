@@ -1,0 +1,10 @@
+.song {
+    border-radius: 1em;
+    &:hover {
+        background-color: var(--gray-100);
+
+        .artist {
+            color: var(--gray-1600);
+        }
+    }
+}
