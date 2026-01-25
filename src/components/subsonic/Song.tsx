@@ -143,7 +143,7 @@ export function SongArtist({
     )
 }
 
-export function FavoriteSong({ id, online }: SongParams) {
+export function FavoriteSong({ id, online = false }: SongParams) {
     const { data: starred, isPending: songIsPending } = useQuery({
         ...getSongOptions({ id }),
         enabled: online,
