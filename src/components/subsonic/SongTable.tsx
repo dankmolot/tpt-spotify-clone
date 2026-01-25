@@ -90,7 +90,7 @@ export function SongTable({ songs }: SongTableProps) {
                             key={row.id}
                             className={classes.song}
                             onClick={() => {
-                                setSongID(row.id, row.original.duration)
+                                setSongID(row.id)
                                 setQueue(
                                     table
                                         .getRowModel()

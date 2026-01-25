@@ -19,7 +19,7 @@ export type LoopType = "none" | "one" | "queue"
 
 export interface PlayerState {
     songID: string
-    setSongID: (id: string, duration?: number) => void
+    setSongID: (id: string) => void
     playing: boolean
     setPlaying: (playing: boolean) => void
     volume: number
@@ -75,11 +75,11 @@ export const usePlayerState = create<PlayerState>()(
     devtools(
         (set, get) => ({
             ...defaultPlayerState,
-            setSongID: (songID, duration = 0) =>
+            setSongID: (songID) =>
+                get().songID !== songID &&
                 set({
                     ...initialPlayerState,
                     songID,
-                    duration: duration,
                 }),
             setPlaying: (playing) => set({ playing }),
             setVolume: (volume) =>

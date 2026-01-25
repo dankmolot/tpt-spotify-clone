@@ -6,6 +6,7 @@ import {
 import * as subsonic from "../api/subsonic"
 import type { RequestParams } from "../api/subsonic/types"
 import { md5 } from "../utils"
+import { getSongKey } from "./keys"
 import { setSong, updateSong } from "./updates"
 
 const salt = "test"
@@ -39,7 +40,7 @@ export const getAlbumOptions = (params: RequestParams["getAlbum"]) =>
 
 export const getSongOptions = (params: RequestParams["getSong"]) =>
     queryOptions({
-        queryKey: ["getSong", params.id],
+        queryKey: getSongKey(params.id),
         queryFn: ({ signal }) =>
             subsonic.getSong({ ...defaultOptions, signal, params }),
     })

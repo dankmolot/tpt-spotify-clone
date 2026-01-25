@@ -1,6 +1,8 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { type SyntheticEvent, useEffect, useRef } from "react"
 import { useShallow } from "zustand/react/shallow"
+import type { Child } from "@/lib/api/subsonic/schemas"
+import { getSongKey } from "@/lib/queries/keys"
 import {
     getCoverArtURL,
     getSongOptions,
@@ -10,6 +12,7 @@ import { usePlayerState } from "@/lib/state"
 
 export function SongAudio() {
     const ref = useRef<HTMLAudioElement>(null)
+    const queryClient = useQueryClient()
     const [songID, setSongID] = usePlayerState(
         useShallow((s) => [s.songID, s.setSongID]),
     )
@@ -68,6 +71,7 @@ export function SongAudio() {
         ref.current.currentTime = seekPos
     }, [seekPos, seeking])
 
+    // Seeking
     // biome-ignore lint/correctness/useExhaustiveDependencies(playing): only should be triggered when seeking is changed
     useEffect(() => {
         if (!ref.current) return
@@ -92,6 +96,18 @@ export function SongAudio() {
         if (!ref.current) return
         ref.current.loop = loop === "one"
     }, [loop])
+
+    // Preload duration from tanstack query cache
+    useEffect(() => {
+        const song = queryClient.getQueryData(getSongKey(songID)) as
+            | Child
+            | undefined
+
+        const duration = song?.duration
+        if (duration) {
+            setDuration(duration)
+        }
+    }, [queryClient, songID, setDuration])
 
     // Handle events for the queue
     function onEnded(e: SyntheticEvent<HTMLAudioElement>) {

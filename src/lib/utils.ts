@@ -2,14 +2,13 @@ import { type ClassValue, clsx } from "clsx"
 import SparkMD5 from "spark-md5"
 
 export function cn(...inputs: ClassValue[]) {
-    return clsx(inputs);
+    return clsx(inputs)
 }
 
 // https://stackoverflow.com/a/57391629
 export function hex(value: string) {
-    return Array.from(
-        new TextEncoder().encode(value),
-        byte => byte.toString(16).padStart(2, "0")
+    return Array.from(new TextEncoder().encode(value), (byte) =>
+        byte.toString(16).padStart(2, "0"),
     ).join("")
 }
 
@@ -29,4 +28,25 @@ export function humanTime(raw: number) {
     }
 
     return `${minutes}:${seconds}`
+}
+
+/**
+ * Basically transforms a "seed" value to a number in range from 0 to 1
+ * Based on https://stackoverflow.com/a/23304189
+ * @param seed number from which random is generated
+ */
+export function randomWithSeed(seed: number) {
+    seed = Math.sin(seed) * 10000
+    return seed - Math.floor(seed)
+}
+
+/**
+ * Shuffle for arrays with a seed, useful for determinitsic results with same seeds
+ * Shuffling based on https://stackoverflow.com/a/46545530
+ */
+export function shuffleArray<T>(input: T[], seed: number) {
+    return input
+        .map((value, i) => ({ value, sort: randomWithSeed(seed + i) }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value)
 }
