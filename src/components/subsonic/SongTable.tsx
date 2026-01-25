@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-table"
 import { ClockIcon } from "lucide-react"
 import type { Child } from "@/lib/api/subsonic/schemas"
+import { usePlayerState } from "@/lib/state"
 import { humanTime } from "@/lib/utils"
 import {
     FavoriteSong,
@@ -56,7 +57,10 @@ export function SongTable({ songs }: SongTableProps) {
         data: songs ?? [],
         columns,
         getCoreRowModel: getCoreRowModel(),
+        getRowId: (row) => row.id,
     })
+
+    const setSong = usePlayerState((s) => s.setSong)
 
     return (
         <div className="p-2">
@@ -79,7 +83,11 @@ export function SongTable({ songs }: SongTableProps) {
                 </thead>
                 <tbody>
                     {table.getRowModel().rows.map((row) => (
-                        <tr key={row.id} className={classes.song}>
+                        <tr
+                            key={row.id}
+                            className={classes.song}
+                            onClick={() => setSong(row.id)}
+                        >
                             {row.getVisibleCells().map((cell) => (
                                 <td key={cell.id}>
                                     {flexRender(
