@@ -10,7 +10,7 @@ import {
 import type { CSSProperties, ReactNode } from "react"
 import { useShallow } from "zustand/react/shallow"
 import { usePlayerState } from "@/lib/state"
-import { cn } from "@/lib/utils"
+import { cn, humanTime } from "@/lib/utils"
 import {
     SliderController,
     SliderProgress,
@@ -114,19 +114,7 @@ function Loop() {
     )
 }
 
-function humanTime(raw: number) {
-    const hours = Math.floor(raw / 60 / 60)
-    const minutes = Math.floor((raw / 60) % 60)
-    const seconds = Math.round(raw % 60)
-        .toString()
-        .padStart(2, "0")
 
-    if (hours !== 0) {
-        return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds}`
-    }
-
-    return `${minutes}:${seconds}`
-}
 
 function Progress() {
     return (
