@@ -68,6 +68,7 @@ const defaultPlayerState: Partial<PlayerState> = {
     seekPos: 0,
     playbackRate: 1,
     loop: "none",
+    queue: [],
 }
 
 export const usePlayerState = create<PlayerState>()(
@@ -121,7 +122,7 @@ export const usePlayerState = create<PlayerState>()(
                 if (get().state !== state) set({ state })
             },
             setLoop: (loop) => set({ loop }),
-            setQueue: (queue) => set({ queue }),
+            setQueue: (queue) => set({ queue: queue }),
         }),
         { name: "Player" },
     ),

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { useEffect, useRef } from "react"
+import { type SyntheticEvent, useEffect, useRef } from "react"
 import { useShallow } from "zustand/react/shallow"
 import {
     getCoverArtURL,
@@ -10,7 +10,9 @@ import { usePlayerState } from "@/lib/state"
 
 export function SongAudio() {
     const ref = useRef<HTMLAudioElement>(null)
-    const songID = usePlayerState((s) => s.songID)
+    const [songID, setSongID] = usePlayerState(
+        useShallow((s) => [s.songID, s.setSongID]),
+    )
     const [playing, setPlaying] = usePlayerState(
         useShallow((s) => [s.playing, s.setPlaying]),
     )
@@ -25,6 +27,7 @@ export function SongAudio() {
     )
     const loop = usePlayerState((s) => s.loop)
     const muted = usePlayerState((s) => s.muted)
+    const queue = usePlayerState((s) => s.queue)
     const [setCurrentTime, setDuration, setError, setBuffered, setState] =
         usePlayerState(
             useShallow((s) => [
@@ -90,6 +93,29 @@ export function SongAudio() {
         ref.current.loop = loop === "one"
     }, [loop])
 
+    // Handle events for the queue
+    function onEnded(e: SyntheticEvent<HTMLAudioElement>) {
+        // Make sure we are handling only on sond ended, not because no futher data is available
+        if (e.currentTarget.currentTime !== e.currentTarget.duration) return
+
+        const currentIndex = queue.indexOf(songID)
+        let next = currentIndex !== -1 ? queue.at(currentIndex + 1) : undefined
+
+        // if no next song was found, start from beginning
+        if (next === undefined && loop === "queue") {
+            next = queue.at(0)
+            if (next === undefined) {
+                console.warn("for some reason queue was not populated")
+                next = songID
+            }
+        }
+
+        if (next) {
+            setSongID(next)
+            setPlaying(true)
+        }
+    }
+
     return (
         <audio
             ref={ref}
@@ -115,6 +141,7 @@ export function SongAudio() {
             onLoadStart={() => setState("start")}
             onCanPlayThrough={() => setState("ready")}
             onCanPlay={(e) => setBuffered(e.currentTarget.buffered)}
+            onEnded={onEnded}
             // handle waiting and stalled?
         />
     )
