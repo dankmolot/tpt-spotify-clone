@@ -17,7 +17,7 @@ function parseTimeRanges(ranges: TimeRanges) {
 export type MediaState = "start" | "ready"
 export type LoopType = "none" | "one" | "queue"
 
-interface PlayerState {
+export interface PlayerState {
     songID: string
     setSongID: (id: string, duration?: number) => void
     playing: boolean
@@ -45,6 +45,8 @@ interface PlayerState {
     setState: (state: MediaState) => void
     loop: LoopType
     setLoop: (loop: LoopType) => void
+    queue: string[]
+    setQueue: (queue: string[]) => void
 }
 
 const initialPlayerState: Partial<PlayerState> = {
@@ -119,6 +121,7 @@ export const usePlayerState = create<PlayerState>()(
                 if (get().state !== state) set({ state })
             },
             setLoop: (loop) => set({ loop }),
+            setQueue: (queue) => set({ queue }),
         }),
         { name: "Player" },
     ),

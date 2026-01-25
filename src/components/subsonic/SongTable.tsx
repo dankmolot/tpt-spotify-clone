@@ -5,6 +5,7 @@ import {
     useReactTable,
 } from "@tanstack/react-table"
 import { ClockIcon } from "lucide-react"
+import { useShallow } from "zustand/react/shallow"
 import type { Child } from "@/lib/api/subsonic/schemas"
 import { usePlayerState } from "@/lib/state"
 import { humanTime } from "@/lib/utils"
@@ -60,7 +61,9 @@ export function SongTable({ songs }: SongTableProps) {
         getRowId: (row) => row.id,
     })
 
-    const setSongID = usePlayerState((s) => s.setSongID)
+    const [setSongID, setQueue] = usePlayerState(
+        useShallow((s) => [s.setSongID, s.setQueue]),
+    )
 
     return (
         <div className="p-2">
@@ -86,9 +89,14 @@ export function SongTable({ songs }: SongTableProps) {
                         <tr
                             key={row.id}
                             className={classes.song}
-                            onClick={() =>
+                            onClick={() => {
                                 setSongID(row.id, row.original.duration)
-                            }
+                                setQueue(
+                                    table
+                                        .getRowModel()
+                                        .rows.map((row) => row.original.id),
+                                )
+                            }}
                         >
                             {row.getVisibleCells().map((cell) => (
                                 <td key={cell.id}>
