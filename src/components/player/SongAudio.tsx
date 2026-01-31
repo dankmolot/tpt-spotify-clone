@@ -149,7 +149,7 @@ export function SongAudio() {
 }
 
 export function SongMediaSession() {
-    const songID = usePlayerState((s) => s.songID)
+    const [songID, seekQueue] = usePlayerState(useShallow((s) => [s.songID, s.seekQueue]))
     const { data: song } = useQuery({
         ...getSongOptions({ id: songID }),
         enabled: !!songID,
@@ -168,7 +168,10 @@ export function SongMediaSession() {
                 },
             ],
         })
-    }, [song])
+
+        navigator.mediaSession.setActionHandler("previoustrack", () => seekQueue(false))
+        navigator.mediaSession.setActionHandler("nexttrack", () => seekQueue(true))
+    }, [song, seekQueue])
 
     return null
 }
