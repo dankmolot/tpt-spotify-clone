@@ -45,7 +45,7 @@ export function SongAudio() {
     useEffect(() => {
         if (!ref.current) return
         if (playing && ref.current.paused) {
-            ref.current.play()
+            ref.current.play().catch(() => { })
         } else if (!playing && !ref.current.paused) {
             ref.current.pause()
         }
@@ -78,7 +78,7 @@ export function SongAudio() {
             ref.current.pause()
         } else if (!seeking && playing && ref.current.paused) {
             // and undo previous pausing
-            ref.current.play()
+            ref.current.play().catch(() => { })
             setPlaying(!ref.current.paused)
         }
     }, [seeking, setPlaying])
