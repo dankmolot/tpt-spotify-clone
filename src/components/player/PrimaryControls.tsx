@@ -49,8 +49,10 @@ function Shuffle() {
 }
 
 function SkipBack() {
+    const seekQueue = usePlayerState((s) => s.seekQueue)
+
     return (
-        <button type="button">
+        <button type="button" onClick={() => seekQueue(false)}>
             <SkipBackIcon className={classes.fill} />
         </button>
     )
@@ -73,8 +75,10 @@ function PlayPause() {
 }
 
 function SkipForward() {
+    const seekQueue = usePlayerState((s) => s.seekQueue)
+
     return (
-        <button type="button">
+        <button type="button" onClick={() => seekQueue(true)}>
             <SkipForwardIcon className={classes.fill} />
         </button>
     )
