@@ -76,9 +76,9 @@ export function SongTable({ songs }: SongTableProps) {
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(
-                                              header.column.columnDef.header,
-                                              header.getContext(),
-                                          )}
+                                            header.column.columnDef.header,
+                                            header.getContext(),
+                                        )}
                                 </th>
                             ))}
                         </tr>
@@ -94,7 +94,7 @@ export function SongTable({ songs }: SongTableProps) {
                                 setQueue(
                                     table
                                         .getRowModel()
-                                        .rows.map((row) => row.original.id),
+                                        .rows.map((row) => row.id),
                                 )
                             }}
                         >

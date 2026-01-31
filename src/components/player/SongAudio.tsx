@@ -13,9 +13,7 @@ import { usePlayerState } from "@/lib/state"
 export function SongAudio() {
     const ref = useRef<HTMLAudioElement>(null)
     const queryClient = useQueryClient()
-    const [songID, setSongID] = usePlayerState(
-        useShallow((s) => [s.songID, s.setSongID]),
-    )
+    const songID = usePlayerState((s) => s.songID)
     const [playing, setPlaying] = usePlayerState(
         useShallow((s) => [s.playing, s.setPlaying]),
     )
@@ -30,7 +28,7 @@ export function SongAudio() {
     )
     const loop = usePlayerState((s) => s.loop)
     const muted = usePlayerState((s) => s.muted)
-    const queue = usePlayerState((s) => s.queue)
+    const seekQueue = usePlayerState((s) => s.seekQueue)
     const [setCurrentTime, setDuration, setError, setBuffered, setState] =
         usePlayerState(
             useShallow((s) => [
@@ -114,20 +112,7 @@ export function SongAudio() {
         // Make sure we are handling only on sond ended, not because no futher data is available
         if (e.currentTarget.currentTime !== e.currentTarget.duration) return
 
-        const currentIndex = queue.indexOf(songID)
-        let next = currentIndex !== -1 ? queue.at(currentIndex + 1) : undefined
-
-        // if no next song was found, start from beginning
-        if (next === undefined && loop === "queue") {
-            next = queue.at(0)
-            if (next === undefined) {
-                console.warn("for some reason queue was not populated")
-                next = songID
-            }
-        }
-
-        if (next) {
-            setSongID(next)
+        if (seekQueue(true)) {
             setPlaying(true)
         }
     }
@@ -158,7 +143,7 @@ export function SongAudio() {
             onCanPlayThrough={() => setState("ready")}
             onCanPlay={(e) => setBuffered(e.currentTarget.buffered)}
             onEnded={onEnded}
-            // handle waiting and stalled?
+        // handle waiting and stalled?
         />
     )
 }

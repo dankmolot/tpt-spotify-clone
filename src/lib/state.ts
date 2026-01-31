@@ -47,6 +47,7 @@ export interface PlayerState {
     setLoop: (loop: LoopType) => void
     queue: string[]
     setQueue: (queue: string[]) => void
+    seekQueue: (forward: boolean) => boolean
 }
 
 const initialPlayerState: Partial<PlayerState> = {
@@ -75,12 +76,7 @@ export const usePlayerState = create<PlayerState>()(
     devtools(
         (set, get) => ({
             ...defaultPlayerState,
-            setSongID: (songID) =>
-                get().songID !== songID &&
-                set({
-                    ...initialPlayerState,
-                    songID,
-                }),
+            setSongID: (songID) => set({ ...initialPlayerState, songID }),
             setPlaying: (playing) => set({ playing }),
             setVolume: (volume) =>
                 set({ volume: Math.min(Math.max(volume, 0), 1) }),
@@ -123,6 +119,39 @@ export const usePlayerState = create<PlayerState>()(
             },
             setLoop: (loop) => set({ loop }),
             setQueue: (queue) => set({ queue: queue }),
+            seekQueue: (forward: boolean) => {
+                const { queue, songID, loop, setSongID } = get()
+                const currentIndex = queue.indexOf(songID)
+                if (currentIndex === -1) {
+                    console.warn(`for some reason queue was not populated, unable to seek in the queue songID=${songID} queue=`, queue)
+                    return false
+                }
+
+                // first, go back or forward in the queue
+                // out of bounds will result in undefined
+                let nextID: string | undefined = queue[currentIndex + (forward ? 1 : -1)]
+
+                if (!nextID) {
+                    // if no next song was found, and loop enabled, then just go around
+                    if (loop === "queue") {
+                        nextID = queue.at(forward ? 0 : -1)
+                        if (!nextID) {
+                            console.warn(`unable to find next song in queue forward=${forward} songID=${songID} currentIndex=${currentIndex} queue=`, queue)
+                            nextID = songID
+                        }
+                    } else if (!forward) {
+                        // if we go backwards, just stay on first index
+                        nextID = queue[0]
+                    }
+                }
+
+
+                if (nextID) {
+                    setSongID(nextID)
+                }
+
+                return !!nextID
+            },
         }),
         { name: "Player" },
     ),
