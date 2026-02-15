@@ -1,10 +1,199 @@
-.song {
-    border-radius: 1em;
-    &:hover {
-        background-color: var(--gray-100);
+.songTable {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 2em;
 
-        .artist {
-            color: var(--gray-1600);
+    /* cells */
+    .track {
+        display: flex;
+        justify-content: center;
+
+        width: 3em;
+    }
+
+    .song {
+        display: flex;
+        flex-grow: 1;
+    }
+
+    .album {
+        justify-content: center;
+        width: 16em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--gray-900);
+    }
+
+    .favorite {
+        display: flex;
+        justify-content: center;
+        width: 3em;
+
+        & > svg {
+            width: 1.25em;
+        }
+    }
+
+    .duration {
+        display: flex;
+        justify-content: center;
+        width: 5em;
+
+        & > svg {
+            width: 1.25em;
+        }
+    }
+
+    .options {
+        width: 2em;
+
+        & > svg {
+            color: var(--gray-1200);
+            width: 1.25em;
+
+            &:hover {
+                transform: scale(1.1);
+                color: var(--gray-1600);
+            }
+
+            &:active {
+                transform: scale(0.95);
+                color: var(--gray-1100);
+            }
+        }
+    }
+
+    /* table parts (head and body) */
+    .header {
+        display: flex;
+        width: 100%;
+        justify-items: center;
+        align-items: center;
+        padding: 0.5em 0em;
+        color: var(--gray-900);
+        border-bottom: 1px solid var(--gray-100);
+        margin-bottom: 1em;
+    }
+
+    .body {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+        .row {
+            all: unset;
+            display: flex;
+            justify-items: center;
+            align-items: center;
+            width: 100%;
+            height: 4em;
+            padding: 0 0em;
+            cursor: pointer;
+
+            .track {
+                color: var(--gray-900);
+
+                .playIcon {
+                    display: none;
+                    width: 1.25em;
+                    fill: currentColor;
+                }
+                .pauseIcon {
+                    display: none;
+                    width: 1.25em;
+                    fill: currentColor;
+                }
+            }
+
+            .song {
+                height: 3em;
+            }
+
+            .favorite,
+            .options {
+                opacity: 0;
+            }
+
+            &:hover {
+                background-color: var(--gray-100);
+                border-radius: 0.25em;
+
+                .artist {
+                    color: var(--gray-1600);
+                }
+
+                .album {
+                    color: var(--gray-1600);
+                }
+
+                .favorite,
+                .options {
+                    opacity: 1;
+                }
+
+                .track {
+                    color: var(--gray-1600);
+                    .trackNumber {
+                        display: none;
+                    }
+                    .playIcon {
+                        display: inline;
+                    }
+                }
+            }
+
+            &[data-selected="true"] {
+                .song .title {
+                    color: var(--tint-1200);
+                }
+
+                .track {
+                    color: var(--tint-1200);
+                }
+
+                &[data-playing="true"]:hover .track {
+                    .playIcon {
+                        display: none;
+                    }
+                    .pauseIcon {
+                        display: inline;
+                    }
+                }
+            }
+        }
+    }
+
+    /* old css rules TODO: remove this */
+    table {
+        width: 100%;
+
+        th {
+            border-bottom: 1px white solid;
+            margin-bottom: 2em;
+        }
+
+        tr:hover {
+            td {
+                background-color: var(--gray-100);
+                --row-border-radius: 0.25em;
+                &:first-child {
+                    border-top-left-radius: var(--row-border-radius);
+                    border-bottom-left-radius: var(--row-border-radius);
+                }
+                &:last-child {
+                    border-top-right-radius: var(--row-border-radius);
+                    border-bottom-right-radius: var(--row-border-radius);
+                }
+            }
+
+            /* border-radius can only be applied to td */
+
+            /* make artist name more visible */
+            .artist {
+                color: var(--gray-1600);
+            }
         }
     }
 }
