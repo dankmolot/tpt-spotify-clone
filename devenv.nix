@@ -6,6 +6,8 @@
     pnpm.enable = true;
   };
 
+  dotenv.disableHint = true;
+
   # https://devenv.sh/basics/
   # https://devenv.sh/packages/
   # https://devenv.sh/languages/
