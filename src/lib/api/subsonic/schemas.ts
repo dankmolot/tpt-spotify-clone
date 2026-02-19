@@ -140,7 +140,7 @@ const AlbumID3 = z.object({
     artistId: z.string().optional(),
     coverArt: z.string().optional(),
     songCount: z.number(),
-    duration: z.number(),
+    duration: z.number().optional(), // required by spec, navidrome sometime returns nothing
     playCount: z.number().optional(),
     created: z.string().pipe(z.coerce.date()),
     starred: z.string().pipe(z.coerce.date()).optional(),
