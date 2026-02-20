@@ -1,4 +1,6 @@
 import { getCoverArtURL } from "@/lib/queries/subsonic"
+import { cn } from "@/lib/utils"
+import classes from "./CoverArt.module.css"
 
 export interface ConverArtProps
     extends Omit<React.ComponentPropsWithRef<"img">, "children"> {
@@ -6,7 +8,7 @@ export interface ConverArtProps
     id?: string
 }
 
-export function CoverArt({ id, ...props }: ConverArtProps) {
+export function CoverArt({ id, className, ...props }: ConverArtProps) {
     const coverArtURL = getCoverArtURL({ id: id ?? "" })
 
     // to reload img, set its .src to a value
@@ -26,6 +28,7 @@ export function CoverArt({ id, ...props }: ConverArtProps) {
             loading="lazy"
             crossOrigin="anonymous"
             onError={({ currentTarget }) => onError(currentTarget)}
+            className={cn(classes.coverArt, className)}
             {...props}
         />
     )
