@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { getCoverArtURL } from "@/lib/queries/subsonic"
 import { cn } from "@/lib/utils"
 import classes from "./CoverArt.module.css"
@@ -8,8 +9,9 @@ export interface ConverArtProps
     id?: string
 }
 
-export function CoverArt({ id, className, ...props }: ConverArtProps) {
+export function CoverArt({ id, className, onLoad, ...props }: ConverArtProps) {
     const coverArtURL = getCoverArtURL({ id: id ?? "" })
+    const [ready, setReady] = useState(false)
 
     // to reload img, set its .src to a value
     // setting .src will trigger a reload
@@ -29,6 +31,11 @@ export function CoverArt({ id, className, ...props }: ConverArtProps) {
             crossOrigin="anonymous"
             onError={({ currentTarget }) => onError(currentTarget)}
             className={cn(classes.coverArt, className)}
+            data-loaded={ready}
+            onLoad={(e) => {
+                setReady(true)
+                onLoad?.(e)
+            }}
             {...props}
         />
     )

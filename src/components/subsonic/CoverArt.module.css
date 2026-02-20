@@ -1,6 +1,22 @@
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 .coverArt {
     object-fit: cover;
     aspect-ratio: 1 / 1;
     height: 100%;
     border-radius: 0.5em;
+    opacity: 0;
+
+    &[data-loaded="true"] {
+        opacity: 1;
+        animation-name: fadeIn;
+        animation-duration: 0.25s;
+    }
 }
