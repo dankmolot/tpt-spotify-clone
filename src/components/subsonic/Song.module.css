@@ -13,6 +13,9 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .songArtist {
