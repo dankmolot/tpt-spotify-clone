@@ -9,6 +9,7 @@ export interface OverviewProps extends React.ComponentPropsWithRef<"div"> {
     coverID: string
     type: "Album"
     title: string
+    onCoverLoaded?: (el: HTMLImageElement) => void
 }
 
 export function Overview({
@@ -17,6 +18,7 @@ export function Overview({
     title,
     children,
     className,
+    onCoverLoaded,
     ...props
 }: OverviewProps) {
     const items = React.Children.map(children, (child, i) => [
@@ -29,7 +31,11 @@ export function Overview({
 
     return (
         <div className={cn(classes.overview, className)} {...props}>
-            <CoverArt id={coverID} className={classes.coverArt} />
+            <CoverArt
+                id={coverID}
+                className={classes.coverArt}
+                onLoad={(e) => onCoverLoaded?.(e.currentTarget)}
+            />
             <div className={classes.info}>
                 <span className={classes.type}>{type}</span>
                 <span
@@ -49,6 +55,7 @@ export function Overview({
 export interface AlbumOverviewProps
     extends Omit<React.ComponentPropsWithRef<"div">, "children"> {
     album: AlbumID3
+    onCoverLoaded?: (el: HTMLImageElement) => void
 }
 
 export function AlbumOverview({ album, ...props }: AlbumOverviewProps) {

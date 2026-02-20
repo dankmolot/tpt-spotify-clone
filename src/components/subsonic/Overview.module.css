@@ -3,6 +3,12 @@
     height: 16em;
     padding: 3em 1em 1em 1em;
     gap: 1em;
+    background: linear-gradient(
+        180deg,
+        rgb(from var(--coverColor) r g b / 75%) 0%,
+        rgb(from var(--coverColor) r g b / 40%) 100%
+    );
+    transition: --coverColor 0.5s;
 
     .info {
         display: flex;

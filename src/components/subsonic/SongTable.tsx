@@ -68,7 +68,7 @@ const columns = [
         cell: (info) => (
             <Link
                 to="/album/$albumID"
-                params={{ albumID: info.row.original.albumId }}
+                params={{ albumID: info.row.original.albumId || "" }}
                 className={classes.album}
             >
                 {info.getValue()}

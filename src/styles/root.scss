@@ -31,6 +31,14 @@ body {
     overflow: auto;
 
     background: var(--background-color);
+    --coverColor: var(--background-color);
+
     border-radius: 0.5em;
     position: relative;
+}
+
+@property --coverColor {
+    syntax: '<color>';
+    initial-value: #000;
+    inherits: true;
 }

@@ -1,9 +1,12 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
+import { type CSSProperties, useState } from "react"
 import { AlbumOverview } from "@/components/subsonic/Overview"
 import { SongTable } from "@/components/subsonic/SongTable"
 import { getQueryClient } from "@/integrations/tanstack-query/root-provider"
+import { useVibrant } from "@/lib/hooks/useVibrant"
 import { getAlbumOptions } from "@/lib/queries/subsonic"
+import "./album.$albumID.css"
 
 export const Route = createFileRoute("/album/$albumID")({
     loader: ({ params: { albumID } }) =>
@@ -14,11 +17,17 @@ export const Route = createFileRoute("/album/$albumID")({
 function AlbumPage() {
     const { albumID } = Route.useParams()
     const { data: album } = useSuspenseQuery(getAlbumOptions({ id: albumID }))
+    const [coverImage, setCoverImage] = useState<HTMLImageElement>()
+    const palette = useVibrant(coverImage)
+
+    const style = { "--coverColor": palette?.DarkVibrant?.hex } as CSSProperties
 
     return (
-        <>
-            <AlbumOverview album={album} />
-            <SongTable songs={album.song} />
-        </>
+        <div style={style}>
+            <AlbumOverview album={album} onCoverLoaded={setCoverImage} />
+            <div className="sub">
+                <SongTable songs={album.song} />
+            </div>
+        </div>
     )
 }
