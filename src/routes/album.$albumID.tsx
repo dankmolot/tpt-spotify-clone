@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { Album } from "@/components/subsonic/Album"
+import { AlbumOverview } from "@/components/subsonic/Overview"
 import { SongTable } from "@/components/subsonic/SongTable"
 import { getQueryClient } from "@/integrations/tanstack-query/root-provider"
 import { getAlbumOptions } from "@/lib/queries/subsonic"
@@ -17,7 +17,7 @@ function AlbumPage() {
 
     return (
         <>
-            <Album album={album} />
+            <AlbumOverview album={album} />
             <SongTable songs={album.song} />
         </>
     )

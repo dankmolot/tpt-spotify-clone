@@ -30,6 +30,19 @@ export function humanTime(raw: number) {
     return `${minutes}:${seconds}`
 }
 
+export function humanDuration(raw: number) {
+    const seconds = Math.round(raw % 60)
+    const minutes = Math.floor((raw / 60) % 60)
+    const hours = Math.floor(raw / 60 / 60)
+
+    const result = []
+    hours && result.push(`${hours} hr`)
+    minutes && result.push(`${minutes} min`)
+    result.push(`${seconds} sec`)
+
+    return result.join(" ")
+}
+
 /**
  * Basically transforms a "seed" value to a number in range from 0 to 1
  * Based on https://stackoverflow.com/a/23304189

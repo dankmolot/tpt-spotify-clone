@@ -1,0 +1,31 @@
+.overview {
+    display: flex;
+    height: 16em;
+    padding: 3em 1em 1em 1em;
+    gap: 1em;
+
+    .info {
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        gap: 0.25em;
+
+        .title {
+            display: block;
+            font-size: clamp(2em, calc(100cqw / var(--text-length)), 6em);
+            font-weight: 900;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .items {
+            display: flex;
+            align-items: center;
+            gap: 0.25em;
+            color: var(--gray-1200);
+
+            text-wrap: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+}
