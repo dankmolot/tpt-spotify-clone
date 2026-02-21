@@ -13,6 +13,7 @@
     height: 100%;
     border-radius: 0.5em;
     opacity: 0;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
     &[data-loaded="true"] {
         opacity: 1;
