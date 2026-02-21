@@ -30,11 +30,24 @@ body {
     flex: 1;
     overflow: auto;
 
-    background: var(--background-color);
+    display: flex;
+    gap: 0.5em;
+
     --coverColor: var(--background-color);
 
     border-radius: 0.5em;
     position: relative;
+
+    &>* {
+        border-radius: inherit;
+    }
+
+    &>*:nth-child(2) {
+        min-height: 0;
+        flex: 1;
+        overflow: auto;
+        background-color: var(--background-color);
+    }
 }
 
 @property --coverColor {

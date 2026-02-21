@@ -1,0 +1,10 @@
+.viewer {
+    background: var(--background-color);
+    min-width: 16em;
+    height: 100%;
+    padding: 2em 1.25em;
+
+    .title {
+        font-weight: bold;
+    }
+}

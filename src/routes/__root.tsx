@@ -5,6 +5,7 @@ import { Player } from "@/components/player/Player"
 
 const TanStackQueryLayout = lazy(() => import("@/integrations/tanstack-query/layout"))
 const TanStackRouterDevtools = lazy(() => import("@tanstack/react-router-devtools").then(m => ({ default: m.TanStackRouterDevtools })))
+const PlaylistViewer = lazy(() => import("@/components/subsonic/PlaylistViewer"))
 
 export const Route = createRootRoute({
     component: RootLayout,
@@ -15,6 +16,7 @@ function RootLayout() {
         <>
             <Header />
             <div id="content">
+                <PlaylistViewer />
                 <Outlet />
                 {/* <TanStackRouterDevtools position="top-right" />
                 <TanStackQueryLayout /> */}
