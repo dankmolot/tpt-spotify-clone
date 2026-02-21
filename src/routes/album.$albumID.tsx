@@ -20,7 +20,7 @@ function AlbumPage() {
     const [coverImage, setCoverImage] = useState<HTMLImageElement>()
     const palette = useVibrant(coverImage)
 
-    const style = { "--coverColor": palette?.DarkVibrant?.hex } as CSSProperties
+    const style = { "--coverColor": palette?.Vibrant?.hex } as CSSProperties
 
     return (
         <div style={style}>
