@@ -1,12 +1,12 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { type CSSProperties, useState } from "react"
+import { CoverGradientContainer } from "@/components/CoverGradientContainer"
 import { AlbumOverview } from "@/components/subsonic/Overview"
 import { SongTable } from "@/components/subsonic/SongTable"
 import { getQueryClient } from "@/integrations/tanstack-query/root-provider"
 import { useVibrant } from "@/lib/hooks/useVibrant"
 import { getAlbumOptions } from "@/lib/queries/subsonic"
-import "./album.$albumID.css"
 
 export const Route = createFileRoute("/album/$albumID")({
     loader: ({ params: { albumID } }) =>
@@ -25,9 +25,9 @@ function AlbumPage() {
     return (
         <div style={style}>
             <AlbumOverview album={album} onCoverLoaded={setCoverImage} />
-            <div className="sub">
+            <CoverGradientContainer>
                 <SongTable songs={album.song} />
-            </div>
+            </CoverGradientContainer>
         </div>
     )
 }

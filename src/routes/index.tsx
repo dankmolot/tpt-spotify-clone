@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
+import { CoverGradientContainer } from "@/components/CoverGradientContainer"
 import { Album } from "@/components/subsonic/Album"
-import { getAlbumList2Options } from "@/lib/queries/subsonic"
 import type { GetAlbumList2 } from "@/lib/api/subsonic/types"
+import { getAlbumList2Options } from "@/lib/queries/subsonic"
 import classes from "./index.module.css"
 
 export const Route = createFileRoute("/")({
@@ -10,13 +11,15 @@ export const Route = createFileRoute("/")({
 })
 
 function Index() {
-    return <main>
-        <AlbumList title="Most Played" options={{ type: "frequent" }} />
-        <AlbumList title="Explore" options={{ type: "random" }} />
-        <AlbumList title="New Stuff" options={{ type: "newest" }} />
-        <AlbumList title="Recently Played" options={{ type: "recent" }} />
-        <AlbumList title="Your Favorites" options={{ type: "starred" }} />
-    </main>
+    return (
+        <CoverGradientContainer className={classes.main}>
+            <AlbumList title="Most Played" options={{ type: "frequent" }} />
+            <AlbumList title="Explore" options={{ type: "random" }} />
+            <AlbumList title="New Stuff" options={{ type: "newest" }} />
+            <AlbumList title="Recently Played" options={{ type: "recent" }} />
+            <AlbumList title="Your Favorites" options={{ type: "starred" }} />
+        </CoverGradientContainer>
+    )
 }
 
 interface AlbumListProps {
@@ -25,10 +28,12 @@ interface AlbumListProps {
 }
 
 function AlbumList({ title, options }: AlbumListProps) {
-    return <div className={classes.albumList}>
-        <h3 className={classes.title}>{title}</h3>
-        <AlbumListCourasel options={options} />
-    </div>
+    return (
+        <div className={classes.albumList}>
+            <h3 className={classes.title}>{title}</h3>
+            <AlbumListCourasel options={options} />
+        </div>
+    )
 }
 
 interface AlbumListCouraselProps {
@@ -49,7 +54,11 @@ function AlbumListCourasel({ options }: AlbumListCouraselProps) {
 
     if (!albums) return
 
-    return <div className={classes.carousel}>
-        { albums.map((album) => <Album album={album} key={album.id} />) }
-    </div>
+    return (
+        <div className={classes.carousel}>
+            {albums.map((album) => (
+                <Album album={album} key={album.id} />
+            ))}
+        </div>
+    )
 }

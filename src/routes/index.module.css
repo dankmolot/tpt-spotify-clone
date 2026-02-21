@@ -1,8 +1,10 @@
-main {
+.main {
     display: flex;
     flex-direction: column;
     padding: 2em;
     gap: 2em;
+
+    --coverColor: rgb(241, 81, 108);
 }
 
 .albumList {
