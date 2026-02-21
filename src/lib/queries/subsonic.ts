@@ -72,3 +72,9 @@ export const useMutateUnstar = () => {
             updateSong(queryClient, { id, starred: undefined }),
     })
 }
+
+export const getPlaylistsOptions = (params?: RequestParams["getPlaylists"]) =>
+    queryOptions({
+        queryKey: ["getPlaylists", params],
+        queryFn: ({ signal }) => subsonic.getPlaylists({ ...defaultOptions, signal, params })
+    })

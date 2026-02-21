@@ -2,6 +2,7 @@ import { hex } from "@/lib/utils"
 import {
     GetAlbumList2Response,
     GetAlbumResponse,
+    GetPlaylistsResponse,
     GetSongResponse,
     SubsonicError,
     SubsonicResponse,
@@ -116,4 +117,9 @@ export function star(options: RequestOptions<"star">) {
 /** Removes a star to a song, album or artist. */
 export function unstar(options: RequestOptions<"unstar">) {
     return request("unstar", options)
+}
+
+/** Returns all playlists a user is allowed to play. */
+export function getPlaylists(options: RequestOptions<"getPlaylists">) {
+    return request("getPlaylists", options).then((r) => GetPlaylistsResponse.parse(r).playlists.playlist)
 }

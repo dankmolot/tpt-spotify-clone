@@ -140,7 +140,7 @@ const AlbumID3 = z.object({
     artistId: z.string().optional(),
     coverArt: z.string().optional(),
     songCount: z.number(),
-    duration: z.number().optional(), // required by spec, navidrome sometime returns nothing
+    duration: z.number().default(0), // required by spec, navidrome sometime returns nothing
     playCount: z.number().optional(),
     created: z.string().pipe(z.coerce.date()),
     starred: z.string().pipe(z.coerce.date()).optional(),
@@ -156,6 +156,23 @@ const AlbumID3WithSongs = z.object({
     song: z.array(Child).optional(),
 })
 export type AlbumID3WithSongs = z.infer<typeof AlbumID3WithSongs>
+
+
+const Playlist = z.object({
+    id: z.string(),
+    name: z.string(),
+    comment: z.string().optional(),
+    owner: z.string().optional(),
+    public: z.boolean().optional(),
+    songCount: z.number(),
+    duration: z.number(),
+    created: z.string().pipe(z.coerce.date()),
+    changed: z.string().pipe(z.coerce.date()),
+    coverArt: z.string().optional(),
+    allowedUser: z.array(z.string()).optional(),
+    readonly: z.boolean().optional(),
+    validUntil: z.string().pipe(z.coerce.date()).optional(),
+})
 
 
 export const GetAlbumList2Response = z.object({
@@ -176,3 +193,11 @@ export const GetSongResponse = z.object({
     song: Child
 })
 export type GetSongResponse = z.infer<typeof GetSongResponse>
+
+
+export const GetPlaylistsResponse = z.object({
+    playlists: z.object({
+        playlist: z.array(Playlist)
+    })
+})
+export type GetPlaylistsResponse = z.infer<typeof GetPlaylistsResponse>

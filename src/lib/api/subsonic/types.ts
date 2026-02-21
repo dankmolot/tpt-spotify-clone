@@ -29,6 +29,7 @@ export interface RequestParams {
     getSong: GetSongParams
     star: StarParams
     unstar: UnstarParams
+    getPlaylists: GetPlaylistsParams
 }
 export type RequestName = keyof RequestParams
 
@@ -79,3 +80,8 @@ export interface StarParams {
     id: string
 }
 export type UnstarParams = StarParams
+
+export interface GetPlaylistsParams {
+    /** If specified, return playlists for this user rather than for the authenticated user. The authenticated user must have admin role if this parameter is used. */
+    username?: string
+}
