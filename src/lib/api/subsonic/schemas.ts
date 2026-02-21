@@ -173,6 +173,7 @@ const Playlist = z.object({
     readonly: z.boolean().optional(),
     validUntil: z.string().pipe(z.coerce.date()).optional(),
 })
+export type Playlist = z.infer<typeof Playlist>
 
 
 export const GetAlbumList2Response = z.object({
