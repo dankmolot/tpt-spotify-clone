@@ -1,10 +1,22 @@
 .viewer {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
     background: var(--background-color);
-    min-width: 16em;
+    min-width: 20em;
     height: 100%;
-    padding: 2em 1.25em;
+    padding: 2em 0.5em;
 
     .title {
+        margin: 0 0.5em;
+        font-size: var(--font-size-lg);
         font-weight: bold;
+    }
+
+    .list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25em;
     }
 }
