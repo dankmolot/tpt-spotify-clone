@@ -12,13 +12,21 @@ export const Route = createFileRoute("/")({
 
 function Index() {
     return (
-        <CoverGradientContainer className={classes.main}>
-            <AlbumList title="Most Played" options={{ type: "frequent" }} />
-            <AlbumList title="Explore" options={{ type: "random" }} />
-            <AlbumList title="New Stuff" options={{ type: "newest" }} />
-            <AlbumList title="Recently Played" options={{ type: "recent" }} />
-            <AlbumList title="Your Favorites" options={{ type: "starred" }} />
-        </CoverGradientContainer>
+        <div className={classes.main}>
+            <CoverGradientContainer className={classes.inner}>
+                <AlbumList title="Most Played" options={{ type: "frequent" }} />
+                <AlbumList title="Explore" options={{ type: "random" }} />
+                <AlbumList title="New Stuff" options={{ type: "newest" }} />
+                <AlbumList
+                    title="Recently Played"
+                    options={{ type: "recent" }}
+                />
+                <AlbumList
+                    title="Your Favorites"
+                    options={{ type: "starred" }}
+                />
+            </CoverGradientContainer>
+        </div>
     )
 }
 
