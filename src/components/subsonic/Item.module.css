@@ -3,7 +3,6 @@
     gap: 0.75em;
     padding: 0.5em;
     height: 4em;
-    border-radius: 0.5em;
 
     .info {
         display: flex;
@@ -14,6 +13,7 @@
 
         white-space: nowrap;
         text-overflow: ellipsis;
+        transition: color 0.1s;
 
         .title {
             color: var(--gray-1600);
@@ -21,10 +21,15 @@
     }
 }
 
-.link:hover {
-    background-color: var(--gray-100);
+.link {
+    transition: background-color 0.1s;
+    border-radius: 0.5em;
 
-    .info {
-        color: var(--gray-1600);
+    &:hover {
+        background-color: var(--gray-100);
+
+        .info {
+            color: var(--gray-1600);
+        }
     }
 }
