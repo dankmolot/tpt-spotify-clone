@@ -18,14 +18,18 @@
 
         .title {
             display: block;
-            font-size: clamp(2em, calc(100cqw / var(--text-length)), 6em);
+            font-size: clamp(
+                2em,
+                calc((100cqw - 32em) / var(--text-length)),
+                6em
+            );
             font-weight: 900;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .items {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 0.25em;
             color: var(--gray-1200);

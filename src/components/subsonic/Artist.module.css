@@ -1,7 +1,7 @@
-.author {
-    display: flex;
-    gap: 0.5em;
+.author:has(.coverArt) {
+    display: inline-flex;
     align-items: center;
+    gap: 0.5em;
     height: 1.5em;
     color: var(--gray-1600);
     font-weight: bold;

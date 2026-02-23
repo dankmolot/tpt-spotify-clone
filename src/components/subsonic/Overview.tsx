@@ -1,7 +1,7 @@
 import React from "react"
 import type { AlbumID3 } from "@/lib/api/subsonic/schemas"
 import { cn, humanDuration } from "@/lib/utils"
-import { Author } from "./Author"
+import { Artist } from "./Artist"
 import { CoverArt } from "./CoverArt"
 import classes from "./Overview.module.css"
 
@@ -72,7 +72,7 @@ export function AlbumOverview({ album, ...props }: AlbumOverviewProps) {
             {...props}
         >
             {artist && (
-                <Author id={artist.id} name={artist.name} coverID={artist.id} />
+                <Artist id={artist.id} name={artist.name} coverID={artist.id} />
             )}
             {album.year && <span>{album.year}</span>}
             <span>{album.songCount} songs</span>
