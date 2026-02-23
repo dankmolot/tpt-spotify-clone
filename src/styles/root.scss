@@ -38,6 +38,8 @@ body {
     border-radius: 0.5em;
     position: relative;
 
+    isolation: isolate;
+
     &>* {
         border-radius: inherit;
     }
