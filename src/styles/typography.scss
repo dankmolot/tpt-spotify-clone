@@ -3,18 +3,30 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    /* by default it is 16px, but just to be sure */
     font-size: var(--font-size);
 }
 
 h1 {
     font-size: 3em;
     font-weight: 800;
-    margin: 0;
 }
 
 a {
     color: inherit;
     text-decoration: inherit;
     cursor: pointer;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+}
+
+* {
+    line-height: normal;
 }
