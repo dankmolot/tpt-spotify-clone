@@ -1,0 +1,45 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 14em;
+    height: min-content;
+    padding: 1em;
+    gap: 0.5em;
+
+    .coverArt {
+        height: 12em;
+    }
+
+    .info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25em;
+        color: var(--gray-900);
+
+        .title {
+            color: var(--gray-1600);
+        }
+
+        .title,
+        .description {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -moz-box-orient: vertical; /* apparently without this, line clamping does not work */
+        }
+    }
+}
+
+.link {
+    display: inline;
+    width: min-content;
+    height: min-content;
+    transition: background-color 0.1s;
+
+    &:hover {
+        border-radius: 0.5em;
+        background-color: rgb(255, 255, 255, 0.1);
+    }
+}

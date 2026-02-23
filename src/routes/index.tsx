@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { CoverGradientContainer } from "@/components/CoverGradientContainer"
-import { Album } from "@/components/subsonic/Album"
+import { AlbumCard } from "@/components/subsonic/Card"
 import type { GetAlbumList2 } from "@/lib/api/subsonic/types"
 import { getAlbumList2Options } from "@/lib/queries/subsonic"
 import classes from "./index.module.css"
@@ -57,7 +57,7 @@ function AlbumListCourasel({ options }: AlbumListCouraselProps) {
     return (
         <div className={classes.carousel}>
             {albums.map((album) => (
-                <Album album={album} key={album.id} />
+                <AlbumCard album={album} key={album.id} />
             ))}
         </div>
     )
