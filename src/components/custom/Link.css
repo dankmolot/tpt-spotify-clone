@@ -1,4 +1,4 @@
-a {
+.link {
     &:hover {
         text-decoration: underline;
         text-decoration-color: currentColor;

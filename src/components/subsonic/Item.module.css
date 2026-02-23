@@ -22,8 +22,6 @@
 }
 
 .link:hover {
-    text-decoration: none;
-
     background-color: var(--gray-100);
 
     .info {
