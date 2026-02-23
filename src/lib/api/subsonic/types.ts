@@ -30,6 +30,8 @@ export interface RequestParams {
     star: StarParams
     unstar: UnstarParams
     getPlaylists: GetPlaylistsParams
+    getArtist: GetArtistParams
+    getArtistInfo2: GetArtistInfo2Params
 }
 export type RequestName = keyof RequestParams
 
@@ -84,4 +86,18 @@ export type UnstarParams = StarParams
 export interface GetPlaylistsParams {
     /** If specified, return playlists for this user rather than for the authenticated user. The authenticated user must have admin role if this parameter is used. */
     username?: string
+}
+
+export interface GetArtistParams {
+    /** The artist ID. */
+    id: string
+}
+
+export interface  GetArtistInfo2Params {
+    /** The artist, album or song ID. */
+    id: string
+    /** Max number of similar artists to return. (default 20) */
+    count?: number
+    /** Whether to return artists that are not present in the media library. (default false) */
+    includeNotPresent?: boolean
 }

@@ -2,6 +2,8 @@ import { hex } from "@/lib/utils"
 import {
     GetAlbumList2Response,
     GetAlbumResponse,
+    GetArtistInfo2Response,
+    GetArtistResponse,
     GetPlaylistsResponse,
     GetSongResponse,
     SubsonicError,
@@ -122,4 +124,14 @@ export function unstar(options: RequestOptions<"unstar">) {
 /** Returns all playlists a user is allowed to play. */
 export function getPlaylists(options: RequestOptions<"getPlaylists">) {
     return request("getPlaylists", options).then((r) => GetPlaylistsResponse.parse(r).playlists.playlist)
+}
+
+/** Returns details for an artist. */
+export function getArtist(options: RequestOptions<"getArtist">) {
+    return request("getArtist", options).then((r) => GetArtistResponse.parse(r).artist)
+}
+
+/** Returns details for an artist. */
+export function getArtistInfo2(options: RequestOptions<"getArtistInfo2">) {
+    return request("getArtistInfo2", options).then((r) => GetArtistInfo2Response.parse(r).artistInfo2)
 }

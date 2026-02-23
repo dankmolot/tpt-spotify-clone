@@ -42,7 +42,7 @@ export class SubsonicError extends Error {
 }
 
 
-export const ArtistID3 = z.object({
+const ArtistID3 = z.object({
     id: z.string(),
     name: z.string(),
     coverArt: z.string().optional(),
@@ -55,13 +55,13 @@ export const ArtistID3 = z.object({
 export type ArtistID3 = z.infer<typeof ArtistID3>
 
 
-export const ItemGenre = z.object({
+const ItemGenre = z.object({
     name: z.string(),
 })
 export type ItemGenre = z.infer<typeof ItemGenre>
 
 
-export const Contributor = z.object({
+const Contributor = z.object({
     role: z.string(),
     subRole: z.string().optional(),
     artist: ArtistID3,
@@ -69,7 +69,7 @@ export const Contributor = z.object({
 export type Contributor = z.infer<typeof Contributor>
 
 
-export const ReplayGain = z.object({
+const ReplayGain = z.object({
     trackGain: z.number().optional(),
     albumGain: z.number().optional(),
     trackPeak: z.number().optional(),
@@ -80,7 +80,7 @@ export const ReplayGain = z.object({
 export type ReplayGain = z.infer<typeof ReplayGain>
 
 
-export const Child = z.object({
+const Child = z.object({
     id: z.string(),
     parent: z.string().optional(),
     isDir: z.boolean(),
@@ -158,6 +158,13 @@ const AlbumID3WithSongs = z.object({
 export type AlbumID3WithSongs = z.infer<typeof AlbumID3WithSongs>
 
 
+const ArtistWithAlbumsID3 = z.object({
+    ...ArtistID3.shape,
+    album: z.array(AlbumID3).optional()
+})
+export type ArtistWithAlbumsID3 = z.infer<typeof ArtistWithAlbumsID3>
+
+
 const Playlist = z.object({
     id: z.string(),
     name: z.string(),
@@ -174,6 +181,18 @@ const Playlist = z.object({
     validUntil: z.string().pipe(z.coerce.date()).optional(),
 })
 export type Playlist = z.infer<typeof Playlist>
+
+
+const ArtistInfo2 = z.object({
+    biography: z.string().optional(),
+    musicBrainzId: z.string().optional(),
+    lastFmUrl: z.string().optional(),
+    smallImageUrl: z.string().optional(),
+    mediumImageUrl: z.string().optional(),
+    largeImageUrl: z.string().optional(),
+    similarArtist: z.array(ArtistID3).optional(),
+})
+export type ArtistInfo2 = z.infer<typeof ArtistInfo2>
 
 
 export const GetAlbumList2Response = z.object({
@@ -202,3 +221,15 @@ export const GetPlaylistsResponse = z.object({
     })
 })
 export type GetPlaylistsResponse = z.infer<typeof GetPlaylistsResponse>
+
+
+export const GetArtistResponse = z.object({
+    artist: ArtistID3
+})
+export type GetArtistResponse = z.infer<typeof GetArtistResponse>
+
+
+export const GetArtistInfo2Response = z.object({
+    artistInfo2: ArtistInfo2
+})
+export type GetArtistInfo2Response = z.infer<typeof GetArtistInfo2Response>

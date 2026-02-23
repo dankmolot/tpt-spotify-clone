@@ -12,7 +12,7 @@ import { setSong, updateSong } from "./updates"
 const salt = "test"
 const hash = md5(`${import.meta.env.VITE_SUBSONIC_PASS}${salt}`)
 
-export const defaultOptions = {
+const defaultOptions = {
     serverURL: import.meta.env.VITE_SUBSONIC_URL,
     auth: { user: import.meta.env.VITE_SUBSONIC_USER, hash, salt },
 }
@@ -77,4 +77,16 @@ export const getPlaylistsOptions = (params?: RequestParams["getPlaylists"]) =>
     queryOptions({
         queryKey: ["getPlaylists", params],
         queryFn: ({ signal }) => subsonic.getPlaylists({ ...defaultOptions, signal, params })
+    })
+
+export const getArtist = (params?: RequestParams["getArtist"]) =>
+    queryOptions({
+        queryKey: ["getArtist", params],
+        queryFn: ({ signal }) => subsonic.getArtist({ ...defaultOptions, signal, params })
+    })
+
+export const getArtistInfo2 = (params?: RequestParams["getArtistInfo2"]) =>
+    queryOptions({
+        queryKey: ["getArtistInfo2", params],
+        queryFn: ({ signal }) => subsonic.getArtist({ ...defaultOptions, signal, params })
     })
