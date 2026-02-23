@@ -79,14 +79,14 @@ export const getPlaylistsOptions = (params?: RequestParams["getPlaylists"]) =>
         queryFn: ({ signal }) => subsonic.getPlaylists({ ...defaultOptions, signal, params })
     })
 
-export const getArtist = (params?: RequestParams["getArtist"]) =>
+export const getArtistOptions = (params?: RequestParams["getArtist"]) =>
     queryOptions({
         queryKey: ["getArtist", params],
         queryFn: ({ signal }) => subsonic.getArtist({ ...defaultOptions, signal, params })
     })
 
-export const getArtistInfo2 = (params?: RequestParams["getArtistInfo2"]) =>
+export const getArtistInfo2Options = (params?: RequestParams["getArtistInfo2"]) =>
     queryOptions({
         queryKey: ["getArtistInfo2", params],
-        queryFn: ({ signal }) => subsonic.getArtist({ ...defaultOptions, signal, params })
+        queryFn: ({ signal }) => subsonic.getArtistInfo2({ ...defaultOptions, signal, params })
     })

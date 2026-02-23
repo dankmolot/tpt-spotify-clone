@@ -224,7 +224,7 @@ export type GetPlaylistsResponse = z.infer<typeof GetPlaylistsResponse>
 
 
 export const GetArtistResponse = z.object({
-    artist: ArtistID3
+    artist: ArtistWithAlbumsID3
 })
 export type GetArtistResponse = z.infer<typeof GetArtistResponse>
 
