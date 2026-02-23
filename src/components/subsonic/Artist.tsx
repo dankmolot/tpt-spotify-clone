@@ -81,7 +81,7 @@ export function Artists({
     }
 
     return (
-        <span style={{ display: "inline" }} {...props}>
+        <span {...props}>
             {artists
                 .flatMap((a) => [
                     <Artist key={a.id} id={a.id} name={a.name} theme={theme} />,

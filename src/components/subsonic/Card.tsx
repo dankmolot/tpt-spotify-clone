@@ -42,7 +42,7 @@ export interface AlbumCardTheme {
     card?: CardTheme
     link?: ClassValue
     title?: ClassValue
-    owner?: ClassValue
+    artists?: ClassValue
 }
 
 export interface AlbumCardProps extends ComponentPropsWithRef<"div"> {
@@ -62,7 +62,10 @@ export function AlbumCard({ album, theme, ...props }: AlbumCardProps) {
                     {album.name}
                 </span>
 
-                <Artists from={album} />
+                <Artists
+                    from={album}
+                    className={cn(classes.description, theme?.artists)}
+                />
             </Card>
         </RawLink>
     )
