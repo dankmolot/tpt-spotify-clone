@@ -1,9 +1,11 @@
 import {
+    type QueryClient,
     queryOptions,
     useMutation,
     useQueryClient,
 } from "@tanstack/react-query"
 import * as subsonic from "../api/subsonic"
+import type { Child } from "../api/subsonic/schemas"
 import type { RequestParams } from "../api/subsonic/types"
 import { md5 } from "../utils"
 import { getSongKey } from "./keys"
@@ -15,6 +17,16 @@ const hash = md5(`${import.meta.env.VITE_SUBSONIC_PASS}${salt}`)
 const defaultOptions = {
     serverURL: import.meta.env.VITE_SUBSONIC_URL,
     auth: { user: import.meta.env.VITE_SUBSONIC_USER, hash, salt },
+}
+
+function cacheSongs(client: QueryClient, songs?: Child[]) {
+    if (songs) {
+        for (const song of songs) {
+            setSong(client, song)
+        }
+    }
+
+    return songs
 }
 
 export const getAlbumList2Options = (params: RequestParams["getAlbumList2"]) =>
@@ -31,9 +43,7 @@ export const getAlbumOptions = (params: RequestParams["getAlbum"]) =>
             subsonic
                 .getAlbum({ ...defaultOptions, signal, params })
                 .then((album) => {
-                    for (const song of album.song ?? []) {
-                        setSong(client, song)
-                    }
+                    cacheSongs(client, album.song)
                     return album
                 }),
     })
@@ -76,23 +86,29 @@ export const useMutateUnstar = () => {
 export const getPlaylistsOptions = (params?: RequestParams["getPlaylists"]) =>
     queryOptions({
         queryKey: ["getPlaylists", params],
-        queryFn: ({ signal }) => subsonic.getPlaylists({ ...defaultOptions, signal, params })
+        queryFn: ({ signal }) =>
+            subsonic.getPlaylists({ ...defaultOptions, signal, params }),
     })
 
 export const getArtistOptions = (params?: RequestParams["getArtist"]) =>
     queryOptions({
         queryKey: ["getArtist", params],
-        queryFn: ({ signal }) => subsonic.getArtist({ ...defaultOptions, signal, params })
+        queryFn: ({ signal }) =>
+            subsonic.getArtist({ ...defaultOptions, signal, params }),
     })
 
-export const getArtistInfo2Options = (params?: RequestParams["getArtistInfo2"]) =>
+export const getArtistInfo2Options = (
+    params?: RequestParams["getArtistInfo2"],
+) =>
     queryOptions({
         queryKey: ["getArtistInfo2", params],
-        queryFn: ({ signal }) => subsonic.getArtistInfo2({ ...defaultOptions, signal, params })
+        queryFn: ({ signal }) =>
+            subsonic.getArtistInfo2({ ...defaultOptions, signal, params }),
     })
 
 export const getTopSongsOptions = (params?: RequestParams["getTopSongs"]) =>
     queryOptions({
         queryKey: ["getTopSongs", params],
-        queryFn: ({ signal }) => subsonic.getTopSongs({ ...defaultOptions, signal, params })
+        queryFn: ({ signal, client }) =>
+            subsonic.getTopSongs({ ...defaultOptions, signal, params }).then((s) => cacheSongs(client, s)),
     })

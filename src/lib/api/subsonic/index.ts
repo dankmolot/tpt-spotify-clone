@@ -139,5 +139,5 @@ export function getArtistInfo2(options: RequestOptions<"getArtistInfo2">) {
 
 /** Returns top songs for the given artist, using data from last.fm. */
 export function getTopSongs(options: RequestOptions<"getTopSongs">) {
-    return request("getTopSongs", options).then((r) => GetTopSongsResponse.parse(r).topSongs.song)
+    return request("getTopSongs", options).then((r) => GetTopSongsResponse.parse(r).topSongs.song || [])
 }
