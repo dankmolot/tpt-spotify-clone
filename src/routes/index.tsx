@@ -50,7 +50,7 @@ interface AlbumListCouraselProps {
 
 function AlbumListCourasel({ options }: AlbumListCouraselProps) {
     const { data: albums, error } = useQuery({
-        ...getAlbumList2Options(options),
+        ...getAlbumList2Options({ size: 25, ...options }),
         refetchOnWindowFocus: false,
         refetchOnMount: false,
         refetchOnReconnect: false,
