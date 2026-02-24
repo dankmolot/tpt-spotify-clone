@@ -6,6 +6,7 @@ import {
     GetArtistResponse,
     GetPlaylistsResponse,
     GetSongResponse,
+    GetTopSongsResponse,
     SubsonicError,
     SubsonicResponse,
 } from "./schemas"
@@ -134,4 +135,9 @@ export function getArtist(options: RequestOptions<"getArtist">) {
 /** Returns details for an artist. */
 export function getArtistInfo2(options: RequestOptions<"getArtistInfo2">) {
     return request("getArtistInfo2", options).then((r) => GetArtistInfo2Response.parse(r).artistInfo2)
+}
+
+/** Returns top songs for the given artist, using data from last.fm. */
+export function getTopSongs(options: RequestOptions<"getTopSongs">) {
+    return request("getTopSongs", options).then((r) => GetTopSongsResponse.parse(r).topSongs.song)
 }

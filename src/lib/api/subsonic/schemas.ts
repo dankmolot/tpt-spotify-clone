@@ -233,3 +233,11 @@ export const GetArtistInfo2Response = z.object({
     artistInfo2: ArtistInfo2
 })
 export type GetArtistInfo2Response = z.infer<typeof GetArtistInfo2Response>
+
+
+export const GetTopSongsResponse = z.object({
+    topSongs: z.object({
+        song: z.array(Child),
+    }),
+})
+export type GetTopSongsResponse = z.infer<typeof GetTopSongsResponse>

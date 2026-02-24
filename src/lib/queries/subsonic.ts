@@ -90,3 +90,9 @@ export const getArtistInfo2Options = (params?: RequestParams["getArtistInfo2"]) 
         queryKey: ["getArtistInfo2", params],
         queryFn: ({ signal }) => subsonic.getArtistInfo2({ ...defaultOptions, signal, params })
     })
+
+export const getTopSongsOptions = (params?: RequestParams["getTopSongs"]) =>
+    queryOptions({
+        queryKey: ["getTopSongs", params],
+        queryFn: ({ signal }) => subsonic.getTopSongs({ ...defaultOptions, signal, params })
+    })

@@ -32,6 +32,7 @@ export interface RequestParams {
     getPlaylists: GetPlaylistsParams
     getArtist: GetArtistParams
     getArtistInfo2: GetArtistInfo2Params
+    getTopSongs: GetTopSongsParams
 }
 export type RequestName = keyof RequestParams
 
@@ -93,11 +94,18 @@ export interface GetArtistParams {
     id: string
 }
 
-export interface  GetArtistInfo2Params {
+export interface GetArtistInfo2Params {
     /** The artist, album or song ID. */
     id: string
     /** Max number of similar artists to return. (default 20) */
     count?: number
     /** Whether to return artists that are not present in the media library. (default false) */
     includeNotPresent?: boolean
+}
+
+export interface GetTopSongsParams {
+    /** The artist name. */
+    artist: string
+    /** Max number of songs to return. (default 50) */
+    count?: number
 }
