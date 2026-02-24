@@ -1,10 +1,16 @@
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { type ComponentPropsWithRef, type CSSProperties, useState } from "react"
+import {
+    type ComponentPropsWithRef,
+    type CSSProperties,
+    useEffect,
+    useState,
+} from "react"
 import { CoverGradientContainer } from "@/components/CoverGradientContainer"
 import { type ConverArtProps, CoverArt } from "@/components/subsonic/CoverArt"
+import { SongTable } from "@/components/subsonic/SongTable"
 import { useVibrant } from "@/lib/hooks/useVibrant"
-import { getArtistOptions } from "@/lib/queries/subsonic"
+import { getArtistOptions, getTopSongsOptions } from "@/lib/queries/subsonic"
 import { cn } from "@/lib/utils"
 import classes from "./artist.$artistID.module.css"
 
@@ -19,9 +25,9 @@ function RouteComponent() {
     return (
         <div style={{ "--coverColor": pallete?.Vibrant?.hex } as CSSProperties}>
             <ArtistOverview onLoad={(e) => setImg(e.currentTarget)} />
-            <CoverGradientContainer
-                style={{ height: "100%" }}
-            ></CoverGradientContainer>
+            <CoverGradientContainer style={{ minHeight: "24em" }}>
+                <FavoriteSongs />
+            </CoverGradientContainer>
         </div>
     )
 }
@@ -82,5 +88,26 @@ function ArtistOverview({ onLoad }: { onLoad?: ConverArtProps["onLoad"] }) {
                 <p>{artist.album?.length} albums</p>
             </div>
         </ArtistOverviewBase>
+    )
+}
+
+function FavoriteSongs() {
+    const { artistID } = Route.useParams()
+    const { data: artist } = useQuery(getArtistOptions({ id: artistID }))
+    const { data: songs } = useQuery({
+        ...getTopSongsOptions({ artist: artist?.name ?? "" }),
+        enabled: !!artist,
+    })
+
+    useEffect(() => {
+        console.log(songs)
+    }, [songs])
+
+    if (!songs) return
+
+    return (
+        <div>
+            <SongTable songs={songs} />
+        </div>
     )
 }

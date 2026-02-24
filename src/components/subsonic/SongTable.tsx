@@ -10,15 +10,19 @@ import type { Child } from "@/lib/api/subsonic/schemas"
 import { usePlayerState } from "@/lib/state"
 import { humanTime } from "@/lib/utils"
 import { Link } from "../custom/Link"
-import {
-    FavoriteSong,
-    SongArtist,
-    SongCover,
-    SongGroup,
-    SongInfoGroup,
-    SongTitle,
-} from "./Song"
+import { SongItem } from "./Item"
+import { FavoriteSong } from "./Song"
 import classes from "./SongTable.module.css"
+
+// https://tanstack.com/table/v8/docs/guide/custom-features
+export interface SongTableToggles {
+    coverArt: boolean
+}
+
+// define types for our new feature's table options
+export interface SongTableOptions {
+    songTable?: SongTableToggles
+}
 
 const columnHelper = createColumnHelper<Child>()
 
@@ -51,16 +55,11 @@ const columns = [
         id: "song",
         header: () => <span className={classes.song}>Title</span>,
         cell: (info) => (
-            <SongGroup id={info.getValue()} className={classes.song}>
-                <SongCover id={info.getValue()} />
-                <SongInfoGroup>
-                    <SongTitle id={info.getValue()} className={classes.title} />
-                    <SongArtist
-                        id={info.getValue()}
-                        className={classes.artist}
-                    />
-                </SongInfoGroup>
-            </SongGroup>
+            <SongItem
+                song={info.row.original}
+                className={classes.song}
+                theme={{ artists: classes.artist }}
+            />
         ),
     }),
     columnHelper.accessor("album", {

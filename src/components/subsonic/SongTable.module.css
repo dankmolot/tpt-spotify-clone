@@ -13,7 +13,6 @@
     }
 
     .song {
-        display: flex;
         flex-grow: 1;
     }
 
@@ -108,7 +107,7 @@
             }
 
             .song {
-                height: 3em;
+                height: 4em;
             }
 
             .favorite,
