@@ -39,7 +39,7 @@ const columns = [
                     }
                 >
                     <span className={classes.trackNumber}>
-                        {info.getValue()}
+                        {info.row.index + 1}
                     </span>
                     <PlayIcon className={classes.playIcon} />
                     <PauseIcon className={classes.pauseIcon} />
