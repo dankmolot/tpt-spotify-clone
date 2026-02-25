@@ -53,6 +53,37 @@ export interface WithArtists {
     artists?: ArtistID3[]
 }
 
+export interface FirstArtistProps
+    extends Omit<ComponentPropsWithRef<"a">, "children"> {
+    theme?: ArtistTheme
+    from: WithArtists
+    withCover?: boolean
+}
+
+export function FirstArtist({
+    from: { artist, artistId, artists },
+    theme,
+    withCover = false,
+    ...props
+}: FirstArtistProps) {
+    if (artists) {
+        artistId = artists[0].id
+        artist = artists[0].name
+    }
+
+    if (!artist) artist = "Unknown"
+
+    return (
+        <Artist
+            id={artistId}
+            name={artist}
+            theme={theme}
+            coverID={withCover ? artistId : undefined}
+            {...props}
+        />
+    )
+}
+
 export interface ArtistsProps
     extends Omit<ComponentPropsWithRef<"a">, "children"> {
     theme?: ArtistTheme

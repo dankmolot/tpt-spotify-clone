@@ -139,6 +139,8 @@ export interface SongTableProps {
     withHeader?: boolean
 }
 
+const empty: never[] = []
+
 export function SongTable({
     songs,
     limit: showLimit,
@@ -149,7 +151,7 @@ export function SongTable({
     withHeader = false,
 }: SongTableProps) {
     const table = useReactTable({
-        data: songs ?? [],
+        data: songs ?? empty,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getRowId: (row) => row.id,

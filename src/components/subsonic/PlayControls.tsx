@@ -27,7 +27,7 @@ export function PlayControlsForSongs({
                 s.shuffle,
             ]),
         )
-    const currentQueue = useRef(queue)
+    const currentQueue = useRef<string[]>(undefined)
 
     const onPlay = (mushShuffle: boolean) => {
         if (currentQueue.current === queue && !mushShuffle) {

@@ -24,7 +24,7 @@ function AlbumPage() {
     const style = { "--coverColor": palette?.Vibrant?.hex } as CSSProperties
 
     return (
-        <div style={style}>
+        <div key={albumID} style={style}>
             <AlbumOverview album={album} onCoverLoaded={setCoverImage} />
             <CoverGradientContainer style={{ padding: "1.5em" }}>
                 <PlayControlsForSongs

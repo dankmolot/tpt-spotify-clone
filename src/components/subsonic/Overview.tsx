@@ -1,13 +1,13 @@
 import React from "react"
-import type { AlbumID3 } from "@/lib/api/subsonic/schemas"
+import type { AlbumID3, PlaylistWithSongs } from "@/lib/api/subsonic/schemas"
 import { cn, humanDuration } from "@/lib/utils"
-import { Artist } from "./Artist"
+import { FirstArtist } from "./Artist"
 import { CoverArt } from "./CoverArt"
 import classes from "./Overview.module.css"
 
 export interface OverviewProps extends React.ComponentPropsWithRef<"div"> {
     coverID: string
-    type: "Album"
+    type: "Album" | "Playlist"
     title: string
     onCoverLoaded?: (el: HTMLImageElement) => void
 }
@@ -59,11 +59,6 @@ export interface AlbumOverviewProps
 }
 
 export function AlbumOverview({ album, ...props }: AlbumOverviewProps) {
-    const artist =
-        album.artists?.[0] ||
-        (album.artist &&
-            album.artistId && { id: album.artistId, name: album.artist })
-
     return (
         <Overview
             coverID={album.coverArt ?? ""}
@@ -71,12 +66,31 @@ export function AlbumOverview({ album, ...props }: AlbumOverviewProps) {
             title={album.name}
             {...props}
         >
-            {artist && (
-                <Artist id={artist.id} name={artist.name} coverID={artist.id} />
-            )}
+            <FirstArtist from={album} withCover />
+
             {album.year && <span>{album.year}</span>}
             <span>{album.songCount} songs</span>
             {album.duration && <span>{humanDuration(album.duration)}</span>}
         </Overview>
+    )
+}
+
+export interface PlaylistOverviewProps
+    extends Omit<React.ComponentPropsWithRef<"div">, "children"> {
+    playlist: PlaylistWithSongs
+    onCoverLoaded?: (el: HTMLImageElement) => void
+}
+
+export function PlaylistOverview({
+    playlist,
+    ...props
+}: PlaylistOverviewProps) {
+    return (
+        <Overview
+            coverID={playlist.coverArt ?? ""}
+            type="Playlist"
+            title={playlist.name}
+            {...props}
+        ></Overview>
     )
 }
