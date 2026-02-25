@@ -68,6 +68,7 @@ const persistedKeys: (keyof PlayerState)[] = [
     "queueID",
     "shuffled",
     "queueOpen",
+    "duration",
 ]
 
 const initialPlayerState = {
