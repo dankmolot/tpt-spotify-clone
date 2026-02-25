@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
+import { shuffleArray } from "./utils"
 
 export interface BufferedRange {
     start: number
@@ -45,8 +46,10 @@ export interface PlayerState {
     setState: (state: MediaState) => void
     loop: LoopType
     setLoop: (loop: LoopType) => void
+    originalQueue: string[]
     queue: string[]
-    setQueue: (queue: string[]) => void
+    queueID: string
+    setQueue: (queue: string[], queueID?: string) => void
     seekQueue: (forward: boolean) => boolean
     shuffled: boolean
     shuffle: () => void
@@ -72,7 +75,9 @@ const defaultPlayerState: Partial<PlayerState> = {
     seekPos: 0,
     playbackRate: 1,
     loop: "none",
+    originalQueue: [],
     queue: [],
+    queueID: "",
     shuffled: false,
 }
 
@@ -129,25 +134,37 @@ export const usePlayerState = create<PlayerState>()(
                 if (get().state !== state) set({ state })
             },
             setLoop: (loop) => set({ loop }),
-            setQueue: (queue) => set({ queue: queue }),
+            setQueue: (queue, queueID) => {
+                set({ originalQueue: queue, queue, queueID })
+                if (get().shuffled) get().shuffle()
+            },
             seekQueue: (forward: boolean) => {
                 const { queue, songID, loop, currentTime, setSongID } = get()
                 const currentIndex = queue.indexOf(songID)
                 if (currentIndex === -1) {
-                    console.warn(`for some reason queue was not populated, unable to seek in the queue songID=${songID} queue=`, queue)
+                    console.warn(
+                        `for some reason queue was not populated, unable to seek in the queue songID=${songID} queue=`,
+                        queue,
+                    )
                     return false
                 }
 
                 // first, go back or forward in the queue
                 // out of bounds will result in undefined
-                let nextID: string | undefined = queue[currentIndex + (forward ? 1 : currentTime < 3 ? -1 : 0)]
+                let nextID: string | undefined =
+                    queue[
+                        currentIndex + (forward ? 1 : currentTime < 3 ? -1 : 0)
+                    ]
 
                 if (!nextID) {
                     // if no next song was found, and loop enabled, then just go around
                     if (loop === "queue") {
                         nextID = queue.at(forward ? 0 : -1)
                         if (!nextID) {
-                            console.warn(`unable to find next song in queue forward=${forward} songID=${songID} currentIndex=${currentIndex} queue=`, queue)
+                            console.warn(
+                                `unable to find next song in queue forward=${forward} songID=${songID} currentIndex=${currentIndex} queue=`,
+                                queue,
+                            )
                             nextID = songID
                         }
                     } else if (!forward) {
@@ -156,14 +173,16 @@ export const usePlayerState = create<PlayerState>()(
                     }
                 }
 
-
-                if (nextID)
-                    setSongID(nextID)
+                if (nextID) setSongID(nextID)
 
                 return !!nextID
             },
-            shuffle: () => set({ shuffled: true }),
-            unshuffle: () => set({ shuffled: false })
+            shuffle: () => {
+                const shuffledQueue = shuffleArray(get().queue, Date.now())
+                set({ queue: shuffledQueue, shuffled: true })
+            },
+            unshuffle: () =>
+                set({ shuffled: false, queue: get().originalQueue }),
         }),
         { name: "Player" },
     ),
