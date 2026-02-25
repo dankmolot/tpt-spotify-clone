@@ -106,6 +106,7 @@ function TopSongs({ show, onLoaded }: { show: boolean; onLoaded: () => void }) {
     const { data: songs } = useQuery({
         ...getTopSongsOptions({ artist: artist?.name ?? "" }),
         enabled: !!artist,
+        refetchOnWindowFocus: false,
     })
     const [showMore, setShowMore] = useState(false)
 
@@ -148,9 +149,11 @@ function Albums({ show }: { show: boolean }) {
         <div className={classes.albums}>
             <h2>Albums</h2>
             <div className={classes.list}>
-                {artist?.album?.map((a) => (
-                    <AlbumCard key={a.id} album={a} />
-                ))}
+                {artist?.album
+                    ?.sort((a, b) => (b.year || 0) - (a.year || 0))
+                    .map((a) => (
+                        <AlbumCard key={a.id} album={a} alternative />
+                    ))}
             </div>
         </div>
     )

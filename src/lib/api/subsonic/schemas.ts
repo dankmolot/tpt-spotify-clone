@@ -147,6 +147,8 @@ const AlbumID3 = z.object({
     year: z.number().optional(),
     genre: z.string().optional(),
     artists: z.array(ArtistID3).optional(),
+    /** The types of this album release. (Album, Compilation, EP, Remix, …). */
+    releaseTypes: z.array(z.string()).optional(),
 })
 export type AlbumID3 = z.infer<typeof AlbumID3>
 

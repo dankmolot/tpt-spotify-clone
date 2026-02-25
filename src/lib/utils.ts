@@ -63,3 +63,8 @@ export function shuffleArray<T>(input: T[], seed: number) {
         .sort((a, b) => a.sort - b.sort)
         .map(({ value }) => value)
 }
+
+/** Converts "a cool dude" string to "A Cool Dude" */
+export function toTitleCase(input: string): string {
+    return input.split(" ").map((s) => s[0].toUpperCase() + s.slice(1)).join(" ")
+}
