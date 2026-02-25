@@ -106,7 +106,7 @@ function TopSongs() {
                 withPlayCount
                 limit={!showMore ? 5 : 10}
             />
-            {songs && (
+            {(songs?.length ?? 0) > 5 && (
                 <button
                     type="button"
                     onClick={() => setShowMore(!showMore)}
