@@ -2,6 +2,7 @@ import {
     createColumnHelper,
     flexRender,
     getCoreRowModel,
+    type RowData,
     useReactTable,
 } from "@tanstack/react-table"
 import { ClockIcon, EllipsisIcon, PauseIcon, PlayIcon } from "lucide-react"
@@ -9,19 +10,30 @@ import { useShallow } from "zustand/react/shallow"
 import type { Child } from "@/lib/api/subsonic/schemas"
 import { usePlayerState } from "@/lib/state"
 import { humanTime } from "@/lib/utils"
-import { Link } from "../custom/Link"
+import { AlbumLink } from "../custom/Link"
 import { SongItem } from "./Item"
 import { FavoriteSong } from "./Song"
 import classes from "./SongTable.module.css"
 
 // https://tanstack.com/table/v8/docs/guide/custom-features
-export interface SongTableToggles {
-    coverArt: boolean
+interface SongTableToggles {
+    coverArt?: boolean
+    albumLink?: boolean
+    artists?: boolean
 }
 
 // define types for our new feature's table options
-export interface SongTableOptions {
+interface SongTableOptions {
     songTable?: SongTableToggles
+}
+
+// Use declaration merging to add our new feature APIs and state types to TanStack Table's existing types.
+declare module "@tanstack/react-table" {
+    // or whatever framework adapter you are using
+    //merge our new feature's options with the existing table options
+    // biome-ignore lint/correctness/noUnusedVariables: it's okay
+    interface TableOptionsResolved<TData extends RowData>
+        extends SongTableOptions {}
 }
 
 const columnHelper = createColumnHelper<Child>()
@@ -59,19 +71,28 @@ const columns = [
                 song={info.row.original}
                 className={classes.song}
                 theme={{ artists: classes.artist }}
+                disableCover={!info.table.options.songTable?.coverArt}
+                disableAlbumLink={!info.table.options.songTable?.albumLink}
+                disableArtists={!info.table.options.songTable?.artists}
             />
         ),
     }),
-    columnHelper.accessor("album", {
+    columnHelper.accessor(({ album, albumId }) => ({ album, albumId }), {
+        id: "album",
         header: () => <span className={classes.album}>Album</span>,
         cell: (info) => (
-            <Link
-                to="/album/$albumID"
-                params={{ albumID: info.row.original.albumId || "" }}
+            <AlbumLink
+                albumID={info.getValue().albumId}
                 className={classes.album}
             >
-                {info.getValue()}
-            </Link>
+                {info.getValue().album}
+            </AlbumLink>
+        ),
+    }),
+    columnHelper.accessor("playCount", {
+        header: () => <div className={classes.playCount} />,
+        cell: (info) => (
+            <span className={classes.playCount}>{info.getValue()}</span>
         ),
     }),
     columnHelper.accessor("id", {
@@ -108,53 +129,82 @@ const columns = [
 
 export interface SongTableProps {
     songs?: Child[]
+    withCoverArt?: boolean
+    withArtists?: boolean
+    withAlbum?: boolean
+    withPlayCount?: boolean
+    withHeader?: boolean
 }
 
-export function SongTable({ songs }: SongTableProps) {
+export function SongTable({
+    songs,
+    withCoverArt = false,
+    withArtists = false,
+    withAlbum = false,
+    withPlayCount = false,
+    withHeader = false,
+}: SongTableProps) {
     const table = useReactTable({
         data: songs ?? [],
         columns,
         getCoreRowModel: getCoreRowModel(),
         getRowId: (row) => row.id,
+        songTable: {
+            coverArt: withCoverArt,
+            albumLink: true,
+            artists: withArtists,
+        },
+        state: {
+            columnVisibility: {
+                album: withAlbum,
+                playCount: withPlayCount,
+            },
+        },
     })
 
     const [songID, playing, setSongID, setQueue] = usePlayerState(
         useShallow((s) => [s.songID, s.playing, s.setSongID, s.setQueue]),
     )
 
+    const selectSong = (selectedID: string) => {
+        const songIDs = table.getRowModel().rows.map((row) => row.id)
+        setQueue(songIDs)
+
+        if (selectedID !== songID) {
+            setSongID(selectedID)
+        }
+    }
+
     return (
         <div className={classes.songTable}>
             {/* spotify gave up using tables here, I gave up too. Welcome to the div hell */}
-            <div className={classes.header}>
-                {table
-                    .getFlatHeaders()
-                    .map((header) =>
-                        header.isPlaceholder ? (
-                            <div key={header.id}></div>
-                        ) : (
-                            flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                            )
-                        ),
-                    )}
-            </div>
+            {withHeader && (
+                <div className={classes.header}>
+                    {table
+                        .getFlatHeaders()
+                        .filter((header) => header.column.getIsVisible())
+                        .map((header) =>
+                            header.isPlaceholder ? (
+                                <div key={header.id}></div>
+                            ) : (
+                                flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext(),
+                                )
+                            ),
+                        )}
+                </div>
+            )}
             <div className={classes.body}>
                 {table.getRowModel().rows.map((row) => (
-                    <button
+                    // biome-ignore lint/a11y/useSemanticElements: this element contains interactive elements inside, if <button> used, will result in hydration error
+                    <div
+                        role="button"
+                        tabIndex={0}
                         key={row.id}
                         className={classes.row}
-                        onClick={() => {
-                            const songIDs = table
-                                .getRowModel()
-                                .rows.map((row) => row.id)
-                            setQueue(songIDs)
-
-                            if (row.id !== songID) {
-                                setSongID(row.id)
-                            }
-                        }}
-                        type="button"
+                        onClick={() => selectSong(row.id)}
+                        onKeyUp={() => selectSong(row.id)}
                         {...(songID === row.id && {
                             "data-selected": true,
                             "data-playing": playing,
@@ -168,51 +218,9 @@ export function SongTable({ songs }: SongTableProps) {
                                     ceil.getContext(),
                                 ),
                             )}
-                    </button>
+                    </div>
                 ))}
             </div>
-            {/* <table>
-                <thead>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <tr key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => (
-                                <th key={header.id}>
-                                    {header.isPlaceholder
-                                        ? null
-                                        : flexRender(
-                                              header.column.columnDef.header,
-                                              header.getContext(),
-                                          )}
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody>
-                    {table.getRowModel().rows.map((row) => (
-                        <tr
-                            key={row.id}
-                            onClick={() => {
-                                setSongID(row.id)
-                                setQueue(
-                                    table
-                                        .getRowModel()
-                                        .rows.map((row) => row.id),
-                                )
-                            }}
-                        >
-                            {row.getVisibleCells().map((cell) => (
-                                <td key={cell.id}>
-                                    {flexRender(
-                                        cell.column.columnDef.cell,
-                                        cell.getContext(),
-                                    )}
-                                </td>
-                            ))}
-                        </tr>
-                    ))}
-                </tbody>
-            </table> */}
         </div>
     )
 }

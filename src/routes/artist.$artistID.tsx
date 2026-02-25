@@ -1,11 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import {
-    type ComponentPropsWithRef,
-    type CSSProperties,
-    useEffect,
-    useState,
-} from "react"
+import { type ComponentPropsWithRef, type CSSProperties, useState } from "react"
 import { CoverGradientContainer } from "@/components/CoverGradientContainer"
 import { type ConverArtProps, CoverArt } from "@/components/subsonic/CoverArt"
 import { SongTable } from "@/components/subsonic/SongTable"
@@ -99,15 +94,9 @@ function FavoriteSongs() {
         enabled: !!artist,
     })
 
-    useEffect(() => {
-        console.log(songs)
-    }, [songs])
-
-    if (!songs) return
-
     return (
         <div>
-            <SongTable songs={songs} />
+            <SongTable songs={songs} withCoverArt withPlayCount />
         </div>
     )
 }

@@ -26,7 +26,7 @@ function AlbumPage() {
         <div style={style}>
             <AlbumOverview album={album} onCoverLoaded={setCoverImage} />
             <CoverGradientContainer>
-                <SongTable songs={album.song} />
+                <SongTable songs={album.song} withArtists withHeader />
             </CoverGradientContainer>
         </div>
     )
