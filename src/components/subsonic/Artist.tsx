@@ -76,7 +76,7 @@ export function Artists({
             {artists
                 .flatMap((a) => [
                     <Artist key={a.id} id={a.id} name={a.name} theme={theme} />,
-                    <Separator key={a.id} />,
+                    <Separator key={`${a.id}-separator`} />,
                 ])
                 .slice(0, -1)}
         </span>
