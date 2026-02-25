@@ -36,3 +36,25 @@
         gap: 2em;
     }
 }
+
+.mainContent {
+    padding: 2em;
+    min-height: 24em;
+}
+
+.topSongs {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
+    .showMore {
+        width: max-content;
+        margin: 0 2em;
+        color: var(--gray-1200);
+        font-weight: bold;
+
+        &:hover {
+            color: var(--gray-1400);
+        }
+    }
+}

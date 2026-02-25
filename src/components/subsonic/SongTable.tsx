@@ -129,6 +129,8 @@ const columns = [
 
 export interface SongTableProps {
     songs?: Child[]
+    /** limits how much songs are shown in the song table */
+    limit?: number
     withCoverArt?: boolean
     withArtists?: boolean
     withAlbum?: boolean
@@ -138,6 +140,7 @@ export interface SongTableProps {
 
 export function SongTable({
     songs,
+    limit: showLimit,
     withCoverArt = false,
     withArtists = false,
     withAlbum = false,
@@ -162,13 +165,20 @@ export function SongTable({
         },
     })
 
-    const [songID, playing, setSongID, setQueue] = usePlayerState(
-        useShallow((s) => [s.songID, s.playing, s.setSongID, s.setQueue]),
+    const [songID, playing, setSongID, setQueue, setPlaying] = usePlayerState(
+        useShallow((s) => [
+            s.songID,
+            s.playing,
+            s.setSongID,
+            s.setQueue,
+            s.setPlaying,
+        ]),
     )
 
     const selectSong = (selectedID: string) => {
         const songIDs = table.getRowModel().rows.map((row) => row.id)
         setQueue(songIDs)
+        setPlaying(true)
 
         if (selectedID !== songID) {
             setSongID(selectedID)
@@ -196,30 +206,33 @@ export function SongTable({
                 </div>
             )}
             <div className={classes.body}>
-                {table.getRowModel().rows.map((row) => (
-                    // biome-ignore lint/a11y/useSemanticElements: this element contains interactive elements inside, if <button> used, will result in hydration error
-                    <div
-                        role="button"
-                        tabIndex={0}
-                        key={row.id}
-                        className={classes.row}
-                        onClick={() => selectSong(row.id)}
-                        onKeyUp={() => selectSong(row.id)}
-                        {...(songID === row.id && {
-                            "data-selected": true,
-                            "data-playing": playing,
-                        })}
-                    >
-                        {row
-                            .getVisibleCells()
-                            .map((ceil) =>
-                                flexRender(
-                                    ceil.column.columnDef.cell,
-                                    ceil.getContext(),
-                                ),
-                            )}
-                    </div>
-                ))}
+                {table
+                    .getRowModel()
+                    .rows.slice(0, showLimit)
+                    .map((row) => (
+                        // biome-ignore lint/a11y/useSemanticElements: this element contains interactive elements inside, if <button> used, will result in hydration error
+                        <div
+                            role="button"
+                            tabIndex={0}
+                            key={row.id}
+                            className={classes.row}
+                            onDoubleClick={() => selectSong(row.id)}
+                            onKeyUp={() => selectSong(row.id)}
+                            {...(songID === row.id && {
+                                "data-selected": true,
+                                "data-playing": playing,
+                            })}
+                        >
+                            {row
+                                .getVisibleCells()
+                                .map((ceil) =>
+                                    flexRender(
+                                        ceil.column.columnDef.cell,
+                                        ceil.getContext(),
+                                    ),
+                                )}
+                        </div>
+                    ))}
             </div>
         </div>
     )

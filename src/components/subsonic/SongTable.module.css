@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 2em;
+    user-select: none;
 
     /* cells */
     .track {
@@ -98,6 +98,7 @@
             height: 4em;
             padding: 0 0em;
             cursor: pointer;
+            border-radius: 0.5em;
 
             .track {
                 color: var(--gray-900);
@@ -114,10 +115,6 @@
                 }
             }
 
-            .song {
-                height: 4em;
-            }
-
             .favorite,
             .options {
                 opacity: 0;
@@ -125,7 +122,6 @@
 
             &:hover {
                 background-color: rgb(255, 255, 255, 0.1);
-                border-radius: 0.25em;
 
                 .artist {
                     color: var(--gray-1600);

@@ -20,8 +20,8 @@ function RouteComponent() {
     return (
         <div style={{ "--coverColor": pallete?.Vibrant?.hex } as CSSProperties}>
             <ArtistOverview onLoad={(e) => setImg(e.currentTarget)} />
-            <CoverGradientContainer style={{ minHeight: "24em" }}>
-                <FavoriteSongs />
+            <CoverGradientContainer className={classes.mainContent}>
+                <TopSongs />
             </CoverGradientContainer>
         </div>
     )
@@ -86,17 +86,31 @@ function ArtistOverview({ onLoad }: { onLoad?: ConverArtProps["onLoad"] }) {
     )
 }
 
-function FavoriteSongs() {
+function TopSongs() {
     const { artistID } = Route.useParams()
     const { data: artist } = useQuery(getArtistOptions({ id: artistID }))
     const { data: songs } = useQuery({
         ...getTopSongsOptions({ artist: artist?.name ?? "" }),
         enabled: !!artist,
     })
+    const [showMore, setShowMore] = useState(false)
 
     return (
-        <div>
-            <SongTable songs={songs} withCoverArt withPlayCount />
+        <div className={classes.topSongs}>
+            <h2>Popular</h2>
+            <SongTable
+                songs={songs}
+                withCoverArt
+                withPlayCount
+                limit={!showMore ? 5 : 10}
+            />
+            <button
+                type="button"
+                onClick={() => setShowMore(!showMore)}
+                className={classes.showMore}
+            >
+                {showMore ? "See less" : "See more"}
+            </button>
         </div>
     )
 }
