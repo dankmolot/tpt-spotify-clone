@@ -1,6 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { type ComponentPropsWithRef, type CSSProperties, useState } from "react"
+import {
+    type ComponentPropsWithRef,
+    type CSSProperties,
+    useEffect,
+    useState,
+} from "react"
 import { CoverGradientContainer } from "@/components/CoverGradientContainer"
 import { type ConverArtProps, CoverArt } from "@/components/subsonic/CoverArt"
 import { PlayControlsForSongs } from "@/components/subsonic/PlayControls"
@@ -17,12 +22,16 @@ export const Route = createFileRoute("/artist/$artistID")({
 function RouteComponent() {
     const [img, setImg] = useState<HTMLImageElement | undefined>()
     const pallete = useVibrant(img)
+    const [topSongsReady, setTopSongsReady] = useState(false)
 
     return (
         <div style={{ "--coverColor": pallete?.Vibrant?.hex } as CSSProperties}>
             <ArtistOverview onLoad={(e) => setImg(e.currentTarget)} />
             <CoverGradientContainer className={classes.mainContent}>
-                <TopSongs />
+                <TopSongs
+                    show={(img && topSongsReady) || false}
+                    onLoaded={() => setTopSongsReady(true)}
+                />
             </CoverGradientContainer>
         </div>
     )
@@ -87,7 +96,7 @@ function ArtistOverview({ onLoad }: { onLoad?: ConverArtProps["onLoad"] }) {
     )
 }
 
-function TopSongs() {
+function TopSongs({ show, onLoaded }: { show: boolean; onLoaded: () => void }) {
     const { artistID } = Route.useParams()
     const { data: artist } = useQuery(getArtistOptions({ id: artistID }))
     const { data: songs } = useQuery({
@@ -96,8 +105,12 @@ function TopSongs() {
     })
     const [showMore, setShowMore] = useState(false)
 
+    useEffect(() => {
+        if (songs) onLoaded()
+    }, [songs, onLoaded])
+
     return (
-        <div className={classes.topSongs}>
+        <div className={cn(classes.topSongs, show && classes.ready)}>
             <PlayControlsForSongs songs={songs} />
             <h2>Popular</h2>
             <SongTable
