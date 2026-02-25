@@ -220,14 +220,14 @@ export function SongTable({
                                 "data-playing": playing,
                             })}
                         >
-                            {row
-                                .getVisibleCells()
-                                .map((ceil) =>
-                                    flexRender(
-                                        ceil.column.columnDef.cell,
-                                        ceil.getContext(),
-                                    ),
-                                )}
+                            {row.getVisibleCells().map((cell) => (
+                                <div key={cell.id} className={classes.cell}>
+                                    {flexRender(
+                                        cell.column.columnDef.cell,
+                                        cell.getContext(),
+                                    )}
+                                </div>
+                            ))}
                         </div>
                     ))}
             </div>
