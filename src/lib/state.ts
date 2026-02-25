@@ -120,7 +120,7 @@ export const usePlayerState = create<PlayerState>()(
             setLoop: (loop) => set({ loop }),
             setQueue: (queue) => set({ queue: queue }),
             seekQueue: (forward: boolean) => {
-                const { queue, songID, loop, setSongID } = get()
+                const { queue, songID, loop, currentTime, setSongID, setSeekPos } = get()
                 const currentIndex = queue.indexOf(songID)
                 if (currentIndex === -1) {
                     console.warn(`for some reason queue was not populated, unable to seek in the queue songID=${songID} queue=`, queue)
@@ -129,7 +129,7 @@ export const usePlayerState = create<PlayerState>()(
 
                 // first, go back or forward in the queue
                 // out of bounds will result in undefined
-                let nextID: string | undefined = queue[currentIndex + (forward ? 1 : -1)]
+                let nextID: string | undefined = queue[currentIndex + (forward ? 1 : currentTime < 3 ? -1 : 0)]
 
                 if (!nextID) {
                     // if no next song was found, and loop enabled, then just go around
@@ -147,7 +147,8 @@ export const usePlayerState = create<PlayerState>()(
 
 
                 if (nextID) {
-                    setSongID(nextID)
+                    if (nextID === songID) setSeekPos(0) 
+                    else setSongID(nextID)
                 }
 
                 return !!nextID
