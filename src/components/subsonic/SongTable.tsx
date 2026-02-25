@@ -11,6 +11,7 @@ import type { Child } from "@/lib/api/subsonic/schemas"
 import { usePlayerState } from "@/lib/state"
 import { humanTime } from "@/lib/utils"
 import { AlbumLink } from "../custom/Link"
+import { Passthrough } from "../Passthrough"
 import { SongItem } from "./Item"
 import { FavoriteSong } from "./Song"
 import classes from "./SongTable.module.css"
@@ -221,12 +222,12 @@ export function SongTable({
                             })}
                         >
                             {row.getVisibleCells().map((cell) => (
-                                <div key={cell.id} className={classes.cell}>
+                                <Passthrough key={cell.id}>
                                     {flexRender(
                                         cell.column.columnDef.cell,
                                         cell.getContext(),
                                     )}
-                                </div>
+                                </Passthrough>
                             ))}
                         </div>
                     ))}
