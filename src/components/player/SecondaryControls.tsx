@@ -24,7 +24,7 @@ export function VolumeSlider() {
         useShallow((s) => [s.volume, s.muted, s.setVolume, s.setMuted]),
     )
 
-    const linearVolume = Math.sqrt(Math.sqrt(volume))
+    const linearVolume = Math.sqrt(volume)
 
     return (
         <div className={classes.volume}>
@@ -50,7 +50,7 @@ export function VolumeSlider() {
                         setMuted(false)
                     }
 
-                    setVolume(v ** 4)
+                    setVolume(v ** 2)
                 }}
                 className={classes.slider}
             />
