@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { devtools } from "zustand/middleware"
+import { devtools, persist } from "zustand/middleware"
 import { shuffleArray } from "./utils"
 
 export interface BufferedRange {
@@ -58,15 +58,27 @@ export interface PlayerState {
     setQueueOpen: (queueOpen: boolean) => void
 }
 
-const initialPlayerState: Partial<PlayerState> = {
+const persistedKeys: (keyof PlayerState)[] = [
+    "songID",
+    "volume",
+    "muted",
+    "loop",
+    "originalQueue",
+    "queue",
+    "queueID",
+    "shuffled",
+    "queueOpen",
+]
+
+const initialPlayerState = {
     currentTime: 0,
     duration: 0,
     error: undefined,
     buffered: [],
-    state: "start",
+    state: "start" as MediaState,
 }
 
-const defaultPlayerState: Partial<PlayerState> = {
+const defaultPlayerState = {
     ...initialPlayerState,
 
     songID: "",
@@ -76,7 +88,7 @@ const defaultPlayerState: Partial<PlayerState> = {
     seeking: false,
     seekPos: 0,
     playbackRate: 1,
-    loop: "none",
+    loop: "none" as LoopType,
     originalQueue: [],
     queue: [],
     queueID: "",
@@ -86,108 +98,126 @@ const defaultPlayerState: Partial<PlayerState> = {
 
 export const usePlayerState = create<PlayerState>()(
     devtools(
-        (set, get) => ({
-            ...defaultPlayerState,
-            setSongID: (songID) => {
-                if (get().songID === songID) {
-                    set({ state: "start" })
-                    return
-                }
-
-                set({ ...initialPlayerState, songID })
-            },
-            setPlaying: (playing) => set({ playing }),
-            setVolume: (volume) =>
-                set({ volume: Math.min(Math.max(volume, 0), 1) }),
-            setMuted: (muted) => set({ muted }),
-            setCurrentTime: (currentTime, buffered) => {
-                currentTime = Math.floor(currentTime)
-                currentTime = Math.max(Math.min(currentTime, get().duration), 0)
-
-                if (get().currentTime !== currentTime) {
-                    set({ currentTime: currentTime })
-                    buffered && get().setBuffered(buffered)
-                }
-            },
-            setSeeking: (seeking) => set({ seeking }),
-            setSeekPos: (seekPos) => set({ seekPos }),
-            seek: (amount) => get().setSeekPos(get().seekPos + amount),
-            setDuration: (duration) => set({ duration: Math.floor(duration) }),
-            setPlaybackRate: (playbackRate) =>
-                set({
-                    playbackRate: Math.max(Math.min(playbackRate, 4), 0.25), // Gecko mutes rate outside this range
-                }),
-            setError: (error) => set({ error }),
-            setBuffered: (buffered) => {
-                const old = get().buffered
-                const parsed = parseTimeRanges(buffered)
-                // check if buffered has changed at all
-                if (
-                    old.length !== parsed.length ||
-                    !old.every(
-                        (v, i) =>
-                            v.start === parsed[i]?.start &&
-                            v.end === parsed[i]?.end,
-                    )
-                ) {
-                    set({ buffered: parsed })
-                }
-            },
-            setState: (state) => {
-                if (get().state !== state) set({ state })
-            },
-            setLoop: (loop) => set({ loop }),
-            setQueue: (queue, queueID) => {
-                set({ originalQueue: queue, queue, queueID })
-                if (get().shuffled) get().shuffle()
-            },
-            seekQueue: (forward: boolean) => {
-                const { queue, songID, loop, currentTime, setSongID } = get()
-                const currentIndex = queue.indexOf(songID)
-                if (currentIndex === -1) {
-                    console.warn(
-                        `for some reason queue was not populated, unable to seek in the queue songID=${songID} queue=`,
-                        queue,
-                    )
-                    return false
-                }
-
-                // first, go back or forward in the queue
-                // out of bounds will result in undefined
-                let nextID: string | undefined =
-                    queue[
-                        currentIndex + (forward ? 1 : currentTime < 3 ? -1 : 0)
-                    ]
-
-                if (!nextID) {
-                    // if no next song was found, and loop enabled, then just go around
-                    if (loop === "queue") {
-                        nextID = queue.at(forward ? 0 : -1)
-                        if (!nextID) {
-                            console.warn(
-                                `unable to find next song in queue forward=${forward} songID=${songID} currentIndex=${currentIndex} queue=`,
-                                queue,
-                            )
-                            nextID = songID
-                        }
-                    } else if (!forward) {
-                        // if we go backwards, just stay on first index
-                        nextID = queue[0]
+        persist(
+            (set, get) => ({
+                ...defaultPlayerState,
+                setSongID: (songID) => {
+                    if (get().songID === songID) {
+                        set({ state: "start" })
+                        return
                     }
-                }
 
-                if (nextID) setSongID(nextID)
+                    set({ ...initialPlayerState, songID })
+                },
+                setPlaying: (playing) => set({ playing }),
+                setVolume: (volume) =>
+                    set({ volume: Math.min(Math.max(volume, 0), 1) }),
+                setMuted: (muted) => set({ muted }),
+                setCurrentTime: (currentTime, buffered) => {
+                    currentTime = Math.floor(currentTime)
+                    currentTime = Math.max(
+                        Math.min(currentTime, get().duration),
+                        0,
+                    )
 
-                return !!nextID
+                    if (get().currentTime !== currentTime) {
+                        set({ currentTime: currentTime })
+                        buffered && get().setBuffered(buffered)
+                    }
+                },
+                setSeeking: (seeking) => set({ seeking }),
+                setSeekPos: (seekPos) => set({ seekPos }),
+                seek: (amount) => get().setSeekPos(get().seekPos + amount),
+                setDuration: (duration) =>
+                    set({ duration: Math.floor(duration) }),
+                setPlaybackRate: (playbackRate) =>
+                    set({
+                        playbackRate: Math.max(Math.min(playbackRate, 4), 0.25), // Gecko mutes rate outside this range
+                    }),
+                setError: (error) => set({ error }),
+                setBuffered: (buffered) => {
+                    const old = get().buffered
+                    const parsed = parseTimeRanges(buffered)
+                    // check if buffered has changed at all
+                    if (
+                        old.length !== parsed.length ||
+                        !old.every(
+                            (v, i) =>
+                                v.start === parsed[i]?.start &&
+                                v.end === parsed[i]?.end,
+                        )
+                    ) {
+                        set({ buffered: parsed })
+                    }
+                },
+                setState: (state) => {
+                    if (get().state !== state) set({ state })
+                },
+                setLoop: (loop) => set({ loop }),
+                setQueue: (queue, queueID) => {
+                    set({ originalQueue: queue, queue, queueID })
+                    if (get().shuffled) get().shuffle()
+                },
+                seekQueue: (forward: boolean) => {
+                    const { queue, songID, loop, currentTime, setSongID } =
+                        get()
+                    const currentIndex = queue.indexOf(songID)
+                    if (currentIndex === -1) {
+                        console.warn(
+                            `for some reason queue was not populated, unable to seek in the queue songID=${songID} queue=`,
+                            queue,
+                        )
+                        return false
+                    }
+
+                    // first, go back or forward in the queue
+                    // out of bounds will result in undefined
+                    let nextID: string | undefined =
+                        queue[
+                            currentIndex +
+                                (forward ? 1 : currentTime < 3 ? -1 : 0)
+                        ]
+
+                    if (!nextID) {
+                        // if no next song was found, and loop enabled, then just go around
+                        if (loop === "queue") {
+                            nextID = queue.at(forward ? 0 : -1)
+                            if (!nextID) {
+                                console.warn(
+                                    `unable to find next song in queue forward=${forward} songID=${songID} currentIndex=${currentIndex} queue=`,
+                                    queue,
+                                )
+                                nextID = songID
+                            }
+                        } else if (!forward) {
+                            // if we go backwards, just stay on first index
+                            nextID = queue[0]
+                        }
+                    }
+
+                    if (nextID) setSongID(nextID)
+
+                    return !!nextID
+                },
+                shuffle: () => {
+                    const shuffledQueue = shuffleArray(get().queue, Date.now())
+                    set({ queue: shuffledQueue, shuffled: true })
+                },
+                unshuffle: () =>
+                    set({ shuffled: false, queue: get().originalQueue }),
+                setQueueOpen: (queueOpen) => set({ queueOpen }),
+            }),
+            {
+                name: "player-state",
+                version: 0,
+                partialize: (s) =>
+                    Object.fromEntries(
+                        Object.entries(s).filter(([key]) =>
+                            persistedKeys.includes(key as keyof PlayerState),
+                        ),
+                    ),
             },
-            shuffle: () => {
-                const shuffledQueue = shuffleArray(get().queue, Date.now())
-                set({ queue: shuffledQueue, shuffled: true })
-            },
-            unshuffle: () =>
-                set({ shuffled: false, queue: get().originalQueue }),
-            setQueueOpen: (queueOpen) => set({ queueOpen }),
-        }),
+        ),
         { name: "Player" },
     ),
 )

@@ -9,7 +9,7 @@ export function CurrentSong() {
 
     return (
         <div className={classes.panel}>
-            <Song id={songID} className={classes.song} />
+            <Song id={songID} online className={classes.song} />
             {/* <CoverArt id={songID} className={classes.coverArt} />
             <SongInfo songID={songID} /> */}
             <FavoriteSong id={songID} />

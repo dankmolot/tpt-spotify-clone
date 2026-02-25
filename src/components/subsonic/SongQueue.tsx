@@ -24,7 +24,9 @@ function TheQueue() {
     const queries = useQueries({
         queries: queue.map((id) => ({
             ...getSongOptions({ id }),
-            enabled: false,
+            refetchOnMount: false,
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
         })),
     })
 
