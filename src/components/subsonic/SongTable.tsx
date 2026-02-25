@@ -93,7 +93,7 @@ const columns = [
     columnHelper.accessor("playCount", {
         header: () => <div className={classes.playCount} />,
         cell: (info) => (
-            <span className={classes.playCount}>{info.getValue()}</span>
+            <span className={classes.playCount}>{info.getValue() ?? 0}</span>
         ),
     }),
     columnHelper.accessor("id", {
