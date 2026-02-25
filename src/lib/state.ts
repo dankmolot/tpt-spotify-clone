@@ -73,7 +73,7 @@ const defaultPlayerState: Partial<PlayerState> = {
     playbackRate: 1,
     loop: "none",
     queue: [],
-    shuffled: true,
+    shuffled: false,
 }
 
 export const usePlayerState = create<PlayerState>()(

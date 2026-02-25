@@ -30,6 +30,11 @@ export function PlayControlsForSongs({
     const currentQueue = useRef(queue)
 
     const onPlay = (mushShuffle: boolean) => {
+        if (currentQueue.current === queue && !mushShuffle) {
+            setPlaying(!playing)
+            return
+        }
+
         if (songs) {
             const queue = songs.map((s) => s.id)
             currentQueue.current = queue
