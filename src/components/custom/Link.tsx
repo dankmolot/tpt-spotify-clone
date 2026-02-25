@@ -25,7 +25,11 @@ export function NotLink({ raw, ...props }: NotLinkProps) {
     return <span {...props} className={cn("link", props.className)} />
 }
 
-export interface AlbumLinkProps extends NotLinkProps {
+export interface WrappedLinkProps
+    extends NotLinkProps,
+        Pick<LinkProps, "preload"> {}
+
+export interface AlbumLinkProps extends WrappedLinkProps {
     albumID?: string
 }
 
@@ -34,7 +38,7 @@ export function AlbumLink({ albumID, ...props }: AlbumLinkProps) {
     return <Link {...props} to="/album/$albumID" params={{ albumID }} />
 }
 
-export interface ArtistLinkProps extends NotLinkProps {
+export interface ArtistLinkProps extends WrappedLinkProps {
     artistID?: string
 }
 
@@ -43,7 +47,7 @@ export function ArtistLink({ artistID, ...props }: ArtistLinkProps) {
     return <Link {...props} to="/artist/$artistID" params={{ artistID }} />
 }
 
-export interface PlaylistLink extends NotLinkProps {
+export interface PlaylistLink extends WrappedLinkProps {
     playlistID?: string
 }
 
