@@ -178,10 +178,12 @@ export function SongTable({
     const selectSong = (selectedID: string) => {
         const songIDs = table.getRowModel().rows.map((row) => row.id)
         setQueue(songIDs)
-        setPlaying(true)
 
         if (selectedID !== songID) {
             setSongID(selectedID)
+            setPlaying(true)
+        } else {
+            setPlaying(!playing)
         }
     }
 
