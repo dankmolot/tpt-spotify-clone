@@ -1,21 +1,16 @@
 import { useQueries } from "@tanstack/react-query"
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 import { getSongOptions } from "@/lib/queries/subsonic"
 import { usePlayerState } from "@/lib/state"
 import { cn } from "@/lib/utils"
 import classes from "./SongQueue.module.css"
 import { SongTable } from "./SongTable"
 
-export function SongQueue() {
+export default function SongQueue() {
     const queueOpen = usePlayerState((s) => s.queueOpen)
-    const [busy, setBusy] = useState(false)
 
     return (
-        <div
-            className={cn(classes.songQueue, queueOpen && classes.open)}
-            onAnimationStart={() => setBusy(true)}
-            onAnimationEnd={() => setBusy(false)}
-        >
+        <div className={cn(classes.songQueue, queueOpen && classes.open)}>
             <div className={classes.content}>
                 <h3>Queue</h3>
                 <TheQueue />

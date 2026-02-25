@@ -1,9 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { Button } from "react-aria-components"
-import z from "zod"
 import { Form } from "@/components/aria/Form"
 import { Logo } from "@/components/Logo"
-import { useAppForm } from "@/lib/hooks/useForm"
 import { cn } from "@/lib/utils"
 import classes from "./login.module.scss"
 
@@ -12,24 +10,24 @@ export const Route = createFileRoute("/auth/login")({
 })
 
 function RouteComponent() {
-    const form = useAppForm({
-        defaultValues: {
-            server: "",
-            user: "",
-            pass: "",
-        },
-        validators: {
-            onChange: z.object({
-                server: z.url(),
-                user: z.string(),
-                pass: z.string(),
-            }),
-        },
-        onSubmit: async ({ value }) => {
-            console.log(value)
-            // ping.mutate()
-        },
-    })
+    // const form = useAppForm({
+    //     defaultValues: {
+    //         server: "",
+    //         user: "",
+    //         pass: "",
+    //     },
+    //     validators: {
+    //         onChange: z.object({
+    //             server: z.url(),
+    //             user: z.string(),
+    //             pass: z.string(),
+    //         }),
+    //     },
+    //     onSubmit: async ({ value }) => {
+    //         console.log(value)
+    //         // ping.mutate()
+    //     },
+    // })
 
     // const ping = queries.subsonic.ping()
 

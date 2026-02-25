@@ -2,19 +2,21 @@ import { createRootRoute, Outlet } from "@tanstack/react-router"
 import { lazy } from "react"
 import { Header } from "@/components/Header"
 import { Player } from "@/components/player/Player"
-import { SongQueue } from "@/components/subsonic/SongQueue"
 
-const TanStackQueryLayout = lazy(
-    () => import("@/integrations/tanstack-query/layout"),
-)
-const TanStackRouterDevtools = lazy(() =>
-    import("@tanstack/react-router-devtools").then((m) => ({
-        default: m.TanStackRouterDevtools,
-    })),
-)
+// const TanStackQueryLayout = lazy(
+//     () => import("@/integrations/tanstack-query/layout"),
+// )
+// const TanStackRouterDevtools = lazy(() =>
+//     import("@tanstack/react-router-devtools").then((m) => ({
+//         default: m.TanStackRouterDevtools,
+//     })),
+// )
+
 const PlaylistViewer = lazy(
     () => import("@/components/subsonic/PlaylistViewer"),
 )
+
+const SongQueue = lazy(() => import("@/components/subsonic/SongQueue"))
 
 export const Route = createRootRoute({
     component: RootLayout,
