@@ -1,0 +1,50 @@
+.playControls {
+    display: flex;
+    align-items: center;
+    gap: 2em;
+
+    .play {
+        background-color: var(--tint-1200);
+        color: black;
+        width: 4em;
+        height: 4em;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        & > svg {
+            fill: currentColor;
+        }
+
+        &:hover {
+            transform: scale(1.05);
+            background-color: var(--tint-1300);
+        }
+
+        &:active {
+            transform: scale(0.95);
+            background-color: var(--tint-1100);
+        }
+    }
+
+    .iconButton {
+        display: flex;
+        color: var(--gray-1300);
+
+        & > svg {
+            width: 2em;
+            height: 2em;
+        }
+
+        &:hover {
+            transform: scale(1.05);
+            color: var(--gray-1600);
+        }
+
+        &:active {
+            transform: scale(0.95);
+            color: var(--gray-900);
+        }
+    }
+}

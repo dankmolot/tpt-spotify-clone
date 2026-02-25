@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { type CSSProperties, useState } from "react"
 import { CoverGradientContainer } from "@/components/CoverGradientContainer"
 import { AlbumOverview } from "@/components/subsonic/Overview"
+import { PlayControlsForSongs } from "@/components/subsonic/PlayControls"
 import { SongTable } from "@/components/subsonic/SongTable"
 import { getQueryClient } from "@/integrations/tanstack-query/root-provider"
 import { useVibrant } from "@/lib/hooks/useVibrant"
@@ -26,6 +27,7 @@ function AlbumPage() {
         <div style={style}>
             <AlbumOverview album={album} onCoverLoaded={setCoverImage} />
             <CoverGradientContainer style={{ padding: "1.5em" }}>
+                <PlayControlsForSongs songs={album.song} />
                 <SongTable songs={album.song} withArtists withHeader />
             </CoverGradientContainer>
         </div>

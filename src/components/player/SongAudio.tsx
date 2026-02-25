@@ -26,26 +26,27 @@ export function SongAudio() {
     const [seekPos, seeking] = usePlayerState(
         useShallow((s) => [s.seekPos, s.seeking]),
     )
+    const [state, setState] = usePlayerState(
+        useShallow((s) => [s.state, s.setState]),
+    )
     const loop = usePlayerState((s) => s.loop)
     const muted = usePlayerState((s) => s.muted)
     const seekQueue = usePlayerState((s) => s.seekQueue)
-    const [setCurrentTime, setDuration, setError, setBuffered, setState] =
-        usePlayerState(
-            useShallow((s) => [
-                s.setCurrentTime,
-                s.setDuration,
-                s.setError,
-                s.setBuffered,
-                s.setState,
-            ]),
-        )
+    const [setCurrentTime, setDuration, setError, setBuffered] = usePlayerState(
+        useShallow((s) => [
+            s.setCurrentTime,
+            s.setDuration,
+            s.setError,
+            s.setBuffered,
+        ]),
+    )
 
     // Play/pause
     // biome-ignore lint/correctness/useExhaustiveDependencies(songID): make sure play state is synchronized
     useEffect(() => {
         if (!ref.current) return
         if (playing && ref.current.paused) {
-            ref.current.play().catch(() => { })
+            ref.current.play().catch(() => {})
         } else if (!playing && !ref.current.paused) {
             ref.current.pause()
         }
@@ -78,7 +79,7 @@ export function SongAudio() {
             ref.current.pause()
         } else if (!seeking && playing && ref.current.paused) {
             // and undo previous pausing
-            ref.current.play().catch(() => { })
+            ref.current.play().catch(() => {})
             setPlaying(!ref.current.paused)
         }
     }, [seeking, setPlaying])
@@ -106,6 +107,13 @@ export function SongAudio() {
             setDuration(duration)
         }
     }, [queryClient, songID, setDuration])
+
+    // Reset currentTime when song was (re)selected
+    useEffect(() => {
+        if (!ref.current || state !== "start") return
+        setState("ready")
+        ref.current.currentTime = 0
+    }, [state, setState])
 
     // Handle events for the queue
     function onEnded(e: SyntheticEvent<HTMLAudioElement>) {
@@ -140,16 +148,17 @@ export function SongAudio() {
             onError={(e) => setError(e.currentTarget.error || undefined)}
             onProgress={(e) => setBuffered(e.currentTarget.buffered)}
             onLoadStart={() => setState("start")}
-            onCanPlayThrough={() => setState("ready")}
             onCanPlay={(e) => setBuffered(e.currentTarget.buffered)}
             onEnded={onEnded}
-        // handle waiting and stalled?
+            // handle waiting and stalled?
         />
     )
 }
 
 export function SongMediaSession() {
-    const [songID, seekQueue] = usePlayerState(useShallow((s) => [s.songID, s.seekQueue]))
+    const [songID, seekQueue] = usePlayerState(
+        useShallow((s) => [s.songID, s.seekQueue]),
+    )
     const { data: song } = useQuery({
         ...getSongOptions({ id: songID }),
         enabled: !!songID,
@@ -169,8 +178,12 @@ export function SongMediaSession() {
             ],
         })
 
-        navigator.mediaSession.setActionHandler("previoustrack", () => seekQueue(false))
-        navigator.mediaSession.setActionHandler("nexttrack", () => seekQueue(true))
+        navigator.mediaSession.setActionHandler("previoustrack", () =>
+            seekQueue(false),
+        )
+        navigator.mediaSession.setActionHandler("nexttrack", () =>
+            seekQueue(true),
+        )
     }, [song, seekQueue])
 
     return null

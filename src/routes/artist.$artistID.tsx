@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { type ComponentPropsWithRef, type CSSProperties, useState } from "react"
 import { CoverGradientContainer } from "@/components/CoverGradientContainer"
 import { type ConverArtProps, CoverArt } from "@/components/subsonic/CoverArt"
+import { PlayControlsForSongs } from "@/components/subsonic/PlayControls"
 import { SongTable } from "@/components/subsonic/SongTable"
 import { useVibrant } from "@/lib/hooks/useVibrant"
 import { getArtistOptions, getTopSongsOptions } from "@/lib/queries/subsonic"
@@ -97,6 +98,7 @@ function TopSongs() {
 
     return (
         <div className={classes.topSongs}>
+            <PlayControlsForSongs songs={songs} />
             <h2>Popular</h2>
             <SongTable
                 songs={songs}
@@ -104,13 +106,15 @@ function TopSongs() {
                 withPlayCount
                 limit={!showMore ? 5 : 10}
             />
-            <button
-                type="button"
-                onClick={() => setShowMore(!showMore)}
-                className={classes.showMore}
-            >
-                {showMore ? "See less" : "See more"}
-            </button>
+            {songs && (
+                <button
+                    type="button"
+                    onClick={() => setShowMore(!showMore)}
+                    className={classes.showMore}
+                >
+                    {showMore ? "See less" : "See more"}
+                </button>
+            )}
         </div>
     )
 }

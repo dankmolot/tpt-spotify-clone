@@ -48,6 +48,9 @@ export interface PlayerState {
     queue: string[]
     setQueue: (queue: string[]) => void
     seekQueue: (forward: boolean) => boolean
+    shuffled: boolean
+    shuffle: () => void
+    unshuffle: () => void
 }
 
 const initialPlayerState: Partial<PlayerState> = {
@@ -70,13 +73,21 @@ const defaultPlayerState: Partial<PlayerState> = {
     playbackRate: 1,
     loop: "none",
     queue: [],
+    shuffled: true,
 }
 
 export const usePlayerState = create<PlayerState>()(
     devtools(
         (set, get) => ({
             ...defaultPlayerState,
-            setSongID: (songID) => set({ ...initialPlayerState, songID }),
+            setSongID: (songID) => {
+                if (get().songID === songID) {
+                    set({ state: "start" })
+                    return
+                }
+
+                set({ ...initialPlayerState, songID })
+            },
             setPlaying: (playing) => set({ playing }),
             setVolume: (volume) =>
                 set({ volume: Math.min(Math.max(volume, 0), 1) }),
@@ -120,7 +131,7 @@ export const usePlayerState = create<PlayerState>()(
             setLoop: (loop) => set({ loop }),
             setQueue: (queue) => set({ queue: queue }),
             seekQueue: (forward: boolean) => {
-                const { queue, songID, loop, currentTime, setSongID, setSeekPos } = get()
+                const { queue, songID, loop, currentTime, setSongID } = get()
                 const currentIndex = queue.indexOf(songID)
                 if (currentIndex === -1) {
                     console.warn(`for some reason queue was not populated, unable to seek in the queue songID=${songID} queue=`, queue)
@@ -146,13 +157,13 @@ export const usePlayerState = create<PlayerState>()(
                 }
 
 
-                if (nextID) {
-                    if (nextID === songID) setSeekPos(0) 
-                    else setSongID(nextID)
-                }
+                if (nextID)
+                    setSongID(nextID)
 
                 return !!nextID
             },
+            shuffle: () => set({ shuffled: true }),
+            unshuffle: () => set({ shuffled: false })
         }),
         { name: "Player" },
     ),

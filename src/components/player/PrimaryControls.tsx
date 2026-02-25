@@ -41,8 +41,16 @@ function Buttons() {
 }
 
 function Shuffle() {
+    const [shuffled, shuffle, unshuffle] = usePlayerState(
+        useShallow((s) => [s.shuffled, s.shuffle, s.unshuffle]),
+    )
+
     return (
-        <button type="button">
+        <button
+            type="button"
+            onClick={() => (shuffled ? unshuffle() : shuffle())}
+            className={cn(shuffled && classes.shuffled)}
+        >
             <ShuffleIcon />
         </button>
     )
@@ -117,8 +125,6 @@ function Loop() {
         </button>
     )
 }
-
-
 
 function Progress() {
     return (
