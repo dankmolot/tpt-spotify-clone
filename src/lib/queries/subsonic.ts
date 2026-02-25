@@ -110,5 +110,19 @@ export const getTopSongsOptions = (params?: RequestParams["getTopSongs"]) =>
     queryOptions({
         queryKey: ["getTopSongs", params],
         queryFn: ({ signal, client }) =>
-            subsonic.getTopSongs({ ...defaultOptions, signal, params }).then((s) => cacheSongs(client, s)),
+            subsonic
+                .getTopSongs({ ...defaultOptions, signal, params })
+                .then((s) => cacheSongs(client, s)),
+    })
+
+export const getPlaylistOptions = (params?: RequestParams["getPlaylist"]) =>
+    queryOptions({
+        queryKey: ["getPlaylist", params],
+        queryFn: ({ signal, client }) =>
+            subsonic
+                .getPlaylist({ ...defaultOptions, signal, params })
+                .then((p) => {
+                    cacheSongs(client, p.entry)
+                    return p
+                }),
     })

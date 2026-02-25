@@ -4,6 +4,7 @@ import {
     GetAlbumResponse,
     GetArtistInfo2Response,
     GetArtistResponse,
+    GetPlaylistResponse,
     GetPlaylistsResponse,
     GetSongResponse,
     GetTopSongsResponse,
@@ -140,4 +141,9 @@ export function getArtistInfo2(options: RequestOptions<"getArtistInfo2">) {
 /** Returns top songs for the given artist, using data from last.fm. */
 export function getTopSongs(options: RequestOptions<"getTopSongs">) {
     return request("getTopSongs", options).then((r) => GetTopSongsResponse.parse(r).topSongs.song || [])
+}
+
+/** Returns a listing of files in a saved playlist. */
+export function getPlaylist(options: RequestOptions<"getPlaylist">) {
+    return request("getPlaylist", options).then((r) => GetPlaylistResponse.parse(r).playlist)
 }

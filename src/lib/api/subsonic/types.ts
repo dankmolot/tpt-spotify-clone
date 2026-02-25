@@ -33,6 +33,7 @@ export interface RequestParams {
     getArtist: GetArtistParams
     getArtistInfo2: GetArtistInfo2Params
     getTopSongs: GetTopSongsParams
+    getPlaylist: GetPlaylistParams
 }
 export type RequestName = keyof RequestParams
 
@@ -108,4 +109,8 @@ export interface GetTopSongsParams {
     artist: string
     /** Max number of songs to return. (default 50) */
     count?: number
+}
+export interface GetPlaylistParams {
+    /** ID of the playlist to return, as obtained by `getPlaylists` */
+    id: string
 }

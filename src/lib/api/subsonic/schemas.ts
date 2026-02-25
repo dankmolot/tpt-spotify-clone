@@ -185,6 +185,13 @@ const Playlist = z.object({
 export type Playlist = z.infer<typeof Playlist>
 
 
+const PlaylistWithSongs = z.object({
+    ...Playlist.shape,
+    entry: z.array(Child).optional(),
+})
+export type PlaylistWithSongs = z.infer<typeof PlaylistWithSongs>
+
+
 const ArtistInfo2 = z.object({
     biography: z.string().optional(),
     musicBrainzId: z.string().optional(),
@@ -243,3 +250,9 @@ export const GetTopSongsResponse = z.object({
     }),
 })
 export type GetTopSongsResponse = z.infer<typeof GetTopSongsResponse>
+
+
+export const GetPlaylistResponse = z.object({
+    playlist: PlaylistWithSongs
+})
+export type GetPlaylistResponse = z.infer<typeof GetPlaylistResponse>
