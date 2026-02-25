@@ -5,7 +5,7 @@ import { Logo } from "./Logo"
 export function Header() {
     return (
         <div className={classes.header}>
-            <Link to="/" className={classes.logo}>
+            <Link to="/" raw className={classes.logo}>
                 <Logo />
             </Link>
 

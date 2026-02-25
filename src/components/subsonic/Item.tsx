@@ -1,8 +1,8 @@
 import type { ClassValue } from "clsx"
-import type { ComponentPropsWithRef, ReactNode } from "react"
+import type { ComponentPropsWithRef } from "react"
 import type { Child, Playlist } from "@/lib/api/subsonic/schemas"
 import { cn } from "@/lib/utils"
-import { Link, RawLink } from "../custom/Link"
+import { AlbumLink, PlaylistLink } from "../custom/Link"
 import { Artists, type ArtistTheme, type WithArtists } from "./Artist"
 import { CoverArt } from "./CoverArt"
 import classes from "./Item.module.css"
@@ -52,9 +52,9 @@ export interface PlaylistItemProps extends ComponentPropsWithRef<"div"> {
 
 export function PlaylistItem({ playlist, theme, ...props }: PlaylistItemProps) {
     return (
-        <RawLink
-            to="/playlist/$playlistID"
-            params={{ playlistID: playlist.id }}
+        <PlaylistLink
+            raw
+            playlistID={playlist.id}
             className={cn(classes.link, theme?.link)}
         >
             <Item
@@ -71,7 +71,7 @@ export function PlaylistItem({ playlist, theme, ...props }: PlaylistItemProps) {
                     </span>
                 )}
             </Item>
-        </RawLink>
+        </PlaylistLink>
     )
 }
 
@@ -86,36 +86,32 @@ export interface SongItemProps extends ComponentPropsWithRef<"div"> {
     song: Pick<Child, "albumId" | "coverArt" | "title" | keyof WithArtists>
     disableCover?: boolean
     disableAlbumLink?: boolean
+    disableArtists?: boolean
 }
 
 export function SongItem({
     song,
     disableCover,
     disableAlbumLink,
+    disableArtists,
     theme,
     ...props
 }: SongItemProps) {
-    let AlbumLink: (props: ComponentPropsWithRef<"a">) => ReactNode = (
-        props,
-    ) => <span {...props} />
-
-    const albumID = song.albumId
-    if (!disableAlbumLink && albumID) {
-        AlbumLink = (props) => (
-            <Link {...props} to="/album/$albumID" params={{ albumID }} />
-        )
-    }
-
     return (
         <Item
             theme={theme?.item}
             coverID={!disableCover ? song.coverArt : undefined}
             {...props}
         >
-            <AlbumLink className={cn(classes.title, theme?.name)}>
+            <AlbumLink
+                albumID={!disableAlbumLink ? song.albumId : undefined}
+                className={cn(classes.title, theme?.name)}
+            >
                 {song.title}
             </AlbumLink>
-            <Artists from={song} theme={{ name: theme?.artists }} />
+            {!disableArtists && (
+                <Artists from={song} theme={{ name: theme?.artists }} />
+            )}
         </Item>
     )
 }

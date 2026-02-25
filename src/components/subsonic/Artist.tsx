@@ -2,19 +2,10 @@ import type { ClassValue } from "clsx"
 import type { ComponentPropsWithRef } from "react"
 import type { ArtistID3 } from "@/lib/api/subsonic/schemas"
 import { cn } from "@/lib/utils"
-import { Link } from "../custom/Link"
+import { ArtistLink } from "../custom/Link"
 import { Separator } from "../custom/Separator"
 import classes from "./Artist.module.css"
 import { CoverArt } from "./CoverArt"
-
-interface ArtistLinkProps extends ComponentPropsWithRef<"a"> {
-    id?: string
-}
-
-function ArtistLink({ id, ...props }: ArtistLinkProps) {
-    if (!id) return <span {...props} />
-    return <Link to="/artist/$artistID" params={{ artistID: id }} {...props} />
-}
 
 export interface ArtistTheme {
     link?: ClassValue
@@ -40,7 +31,7 @@ export function Artist({
 }: ArtistProps) {
     return (
         <ArtistLink
-            id={id}
+            artistID={id}
             className={cn(classes.author, theme?.link, className)}
             {...props}
         >

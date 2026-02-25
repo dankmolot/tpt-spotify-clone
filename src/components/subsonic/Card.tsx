@@ -2,7 +2,7 @@ import type { ClassValue } from "clsx"
 import type { ComponentPropsWithRef } from "react"
 import type { AlbumID3 } from "@/lib/api/subsonic/schemas"
 import { cn } from "@/lib/utils"
-import { RawLink } from "../custom/Link"
+import { AlbumLink } from "../custom/Link"
 import { Artists } from "./Artist"
 import classes from "./Card.module.css"
 import { CoverArt } from "./CoverArt"
@@ -52,9 +52,9 @@ export interface AlbumCardProps extends ComponentPropsWithRef<"div"> {
 
 export function AlbumCard({ album, theme, ...props }: AlbumCardProps) {
     return (
-        <RawLink
-            to="/album/$albumID"
-            params={{ albumID: album.id }}
+        <AlbumLink
+            raw
+            albumID={album.id}
             className={cn(classes.link, theme?.link)}
         >
             <Card theme={theme?.card} coverID={album.coverArt ?? ""} {...props}>
@@ -67,6 +67,6 @@ export function AlbumCard({ album, theme, ...props }: AlbumCardProps) {
                     className={cn(classes.description, theme?.artists)}
                 />
             </Card>
-        </RawLink>
+        </AlbumLink>
     )
 }
