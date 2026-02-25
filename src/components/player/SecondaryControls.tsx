@@ -7,19 +7,20 @@ import {
 } from "lucide-react"
 import { useShallow } from "zustand/react/shallow"
 import { usePlayerState } from "@/lib/state"
+import { cn } from "@/lib/utils"
 import { Slider } from "../custom/Slider"
 import classes from "./SecondaryControls.module.css"
 
 export function SecondaryControls() {
     return (
         <div className={classes.panel}>
-            <ListMusicIcon className={classes.queue} />
+            <QueueButton />
             <VolumeSlider />
         </div>
     )
 }
 
-export function VolumeSlider() {
+function VolumeSlider() {
     const [volume, muted, setVolume, setMuted] = usePlayerState(
         useShallow((s) => [s.volume, s.muted, s.setVolume, s.setMuted]),
     )
@@ -55,5 +56,21 @@ export function VolumeSlider() {
                 className={classes.slider}
             />
         </div>
+    )
+}
+
+function QueueButton() {
+    const [queueOpen, setQueueOpen] = usePlayerState(
+        useShallow((s) => [s.queueOpen, s.setQueueOpen]),
+    )
+
+    return (
+        <button
+            type="button"
+            className={cn(classes.queue, queueOpen && classes.open)}
+            onClick={() => setQueueOpen(!queueOpen)}
+        >
+            <ListMusicIcon />
+        </button>
     )
 }

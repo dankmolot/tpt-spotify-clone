@@ -54,6 +54,8 @@ export interface PlayerState {
     shuffled: boolean
     shuffle: () => void
     unshuffle: () => void
+    queueOpen: boolean
+    setQueueOpen: (queueOpen: boolean) => void
 }
 
 const initialPlayerState: Partial<PlayerState> = {
@@ -79,6 +81,7 @@ const defaultPlayerState: Partial<PlayerState> = {
     queue: [],
     queueID: "",
     shuffled: false,
+    queueOpen: false,
 }
 
 export const usePlayerState = create<PlayerState>()(
@@ -183,6 +186,7 @@ export const usePlayerState = create<PlayerState>()(
             },
             unshuffle: () =>
                 set({ shuffled: false, queue: get().originalQueue }),
+            setQueueOpen: (queueOpen) => set({ queueOpen }),
         }),
         { name: "Player" },
     ),

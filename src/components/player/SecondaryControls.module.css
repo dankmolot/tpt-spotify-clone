@@ -43,6 +43,7 @@
     }
 
     .queue {
+        display: flex;
         color: var(--gray-1200);
         width: 1.5em;
         height: 1.5em;
@@ -55,6 +56,18 @@
         &:active {
             color: var(--gray-900);
             transform: none;
+        }
+
+        &.open {
+            color: var(--tint-1200);
+
+            &:hover {
+                color: var(--tint-1400);
+            }
+
+            &:active {
+                color: var(--tint-1000);
+            }
         }
     }
 }

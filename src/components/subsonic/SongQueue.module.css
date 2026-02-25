@@ -1,0 +1,40 @@
+@keyframes slideIn {
+    from {
+        width: 0;
+    }
+    to {
+        width: var(--width);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        width: var(--width);
+    }
+
+    to {
+        width: 0;
+    }
+}
+
+.songQueue {
+    --width: 40em;
+    width: 0;
+    transition: width 0.3s ease;
+    overflow: hidden;
+
+    &.open {
+        width: var(--width);
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        width: var(--width);
+        height: 100%;
+        background-color: var(--background-color);
+        border-radius: 0.5em;
+        padding: 2em 1em 1em 1em;
+        gap: 1em;
+    }
+}
