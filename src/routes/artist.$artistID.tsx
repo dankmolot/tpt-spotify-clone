@@ -11,12 +11,15 @@ import { AlbumCard } from "@/components/subsonic/Card"
 import { type ConverArtProps, CoverArt } from "@/components/subsonic/CoverArt"
 import { PlayControlsForSongs } from "@/components/subsonic/PlayControls"
 import { SongTable } from "@/components/subsonic/SongTable"
+import { getQueryClient } from "@/integrations/tanstack-query/root-provider"
 import { useVibrant } from "@/lib/hooks/useVibrant"
 import { getArtistOptions, getTopSongsOptions } from "@/lib/queries/subsonic"
 import { cn } from "@/lib/utils"
 import classes from "./artist.$artistID.module.css"
 
 export const Route = createFileRoute("/artist/$artistID")({
+    loader: ({ params: { artistID } }) =>
+        getQueryClient().ensureQueryData(getArtistOptions({ id: artistID })),
     component: RouteComponent,
 })
 
