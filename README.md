@@ -1,500 +1,122 @@
-Welcome to your new TanStack app! 
+# Spotify Clone
 
-# Getting Started
+This is my work for my polytechnic school. I have chosen Spotify, because I enjoy listening to the music all the time. And also I host my own instance of [Navidrome] (self hosted music server) with music I own, and it follows [OpenSubsonic] API specification.
 
-To run this application:
+So, I can follow [the specification][OpenSubsonic], and potentially my clone application could be used with other [OpenSubsonic]-compliant servers. *(there are [a lot](https://github.com/awesome-selfhosted/awesome-selfhosted#media-streaming---audio-streaming))*
 
+Since the main point of the given task was to learn database relationships, repository also includes [a barebone database diagram](./database-diagram.jpeg) to prove my knowledge in relationships.
+![database diagram baby](./database-diagram.jpeg)
+
+## Want to try out?
+For a limited time I host a public instance at <https://spotify.p1ka.eu> on my server. It is connected to [Navidrome demo server instance](https://www.navidrome.org/demo/). Feel free to try it out.
+
+P.S. To create a playlist, go to [the demo server](https://www.navidrome.org/demo/), and create there. Sorry, I haven't wrote UI to create a playlist 😭
+
+## Summary of learned experience.
+My main goal was to deep dive into frontend development, to understand how everything works from ground up and why we have current ecosystem as it is. And it was very fun, and too much time was taken, while looking back not much from a glance was done 😄.
+
+Most fun was figuring out how to work with [Audio API](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAudioElement) and [Media Session API](https://developer.mozilla.org/en-US/docs/Web/API/Media_Session_API). I actually wrote everything via React Hooks, so it integrates into the ecosystem. Must not be the best approach, but it was fun. [Here it is btw](./src/components/player/SongAudio.tsx)
+
+I haven't created basic components like buttons and checkboxes, most of the styles could be reused, like with icon buttons for example. But nonetheless I think application end up great judging by my unexperience with frontend. If I had more reason to continue the project, I would totally do it, and would refactor components to be more reusable.
+
+To sum everything up, I am very proud with this learning experience, and how the project end up. It was fun to tinker on a deep level with React, probably because everything for me is new stuff.
+
+## Run the project
+1. Make sure that you have a [NodeJS](https://nodejs.org/en) installed.
+2. Create an `.env` file with these values
+```toml
+# Use Navidrome demo server
+VITE_SUBSONIC_URL = https://demo.navidrome.org
+VITE_SUBSONIC_USER = demo
+VITE_SUBSONIC_PASS = demo
+```
+Project does not have authentication system, so all credentials are hardcoded via env variables.
+3. Install packages
 ```bash
-pnpm install
-pnpm start  
+npm i
 ```
-
-# Building For Production
-
-To build this application for production:
-
+4. Run development server
 ```bash
-pnpm build
+npm run dev
 ```
-
-## Testing
-
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
-
+5. To build static files, use `build` script
 ```bash
-pnpm test
+npm run build
 ```
+And in the `dist/` folder will reside an `index.html` file with `assets/` folder that contains javascript, css and images.
 
-## Styling
-
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
-
-
-## Linting & Formatting
-
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
-
-
-```bash
-pnpm lint
-pnpm format
-pnpm check
-```
-
-
-## Shadcn
-
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
-
-```bash
-pnpx shadcn@latest add button
-```
-
-
-
-## Routing
-This project uses [TanStack Router](https://tanstack.com/router). The initial setup is a code based router. Which means that the routes are defined in code (in the `./src/main.tsx` file). If you like you can also use a file based routing setup by following the [File Based Routing](https://tanstack.com/router/latest/docs/framework/react/guide/file-based-routing) guide.
-
-### Adding A Route
-
-To add a new route to your application just add another `createRoute` call to the `./src/main.tsx` file. The example below adds a new `/about`route to the root route.
-
-```tsx
-const aboutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/about",
-  component: () => <h1>About</h1>,
-});
-```
-
-You will also need to add the route to the `routeTree` in the `./src/main.tsx` file.
-
-```tsx
-const routeTree = rootRoute.addChildren([indexRoute, aboutRoute]);
-```
-
-With this set up you should be able to navigate to `/about` and see the about page.
-
-Of course you don't need to implement the About page in the `main.tsx` file. You can create that component in another file and import it into the `main.tsx` file, then use it in the `component` property of the `createRoute` call, like so:
-
-```tsx
-import About from "./components/About.tsx";
-
-const aboutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/about",
-  component: About,
-});
-```
-
-That is how we have the `App` component set up with the home page.
-
-For more information on the options you have when you are creating code based routes check out the [Code Based Routing](https://tanstack.com/router/latest/docs/framework/react/guide/code-based-routing) documentation.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-
-Layouts can be used to wrap the contents of the routes in menus, headers, footers, etc.
-
-There is already a layout in the `src/main.tsx` file:
-
-```tsx
-const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
-  ),
-});
-```
-
-You can use the React component specified in the `component` property of the `rootRoute` to wrap the contents of the routes. The `<Outlet />` component is used to render the current route within the body of the layout. For example you could add a header to the layout like so:
-
-```tsx
-import { Link } from "@tanstack/react-router";
-
-const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <header>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-        </nav>
-      </header>
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
-  ),
-});
-```
-
-The `<TanStackRouterDevtools />` component is not required so you can remove it if you don't want it in your layout.
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-
-### Migrating To File Base Routing
-
-First you need to add the Vite plugin for Tanstack Router:
-
-```bash
-pnpm add @tanstack/router-plugin --dev
-```
-
-From there you need to update your `vite.config.js` file to use the plugin:
-
-```ts
-import { defineConfig } from "vite";
-import viteReact from "@vitejs/plugin-react";
-import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
-import tailwindcss from "@tailwindcss/vite";
-
-  
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [
-    TanStackRouterVite(),
-    viteReact(),
-    tailwindcss()
-  ],
-});
-```
-
-Now you'll need to rearrange your files a little bit. That starts with creating a `routes` directory in the `src` directory:
-
-```bash
-mkdir src/routes
-```
-
-Then you'll need to create a `src/routes/__root.tsx` file with the contents of the root route that was in `main.tsx`.
-
-```tsx
-import { Outlet, createRootRoute } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-
-export const Route = createRootRoute({
-  component: () => (
-    <>
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
-  ),
-});
-```
-
-Next up you'll need to move your home route code into `src/routes/index.tsx`
-
-```tsx
-import { createFileRoute } from "@tanstack/react-router";
-
-import logo from "../logo.svg";
-import "../App.css";
-
-export const Route = createFileRoute("/")({
-  component: App,
-});
-
-function App() {
-  return (
-    <div className="text-center">
-      <header className="min-h-screen flex flex-col items-center justify-center bg-[#282c34] text-white text-[calc(10px+2vmin)]">
-        <img
-          src={logo}
-          className="h-[40vmin] pointer-events-none animate-[spin_20s_linear_infinite]"
-          alt="logo"
-        />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://tanstack.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn TanStack
-        </a>
-      </header>
-    </div>
-  );
+If you are gonna use static files, don't forget to setup SPA file serving. Example for [Caddy](https://caddyserver.com/)
+```ini
+spotify.example.com {
+    root /path/to/dist
+    file_server
+    try_files {path} /index.html # try_files is important, since it will be used when a file from the path hasn't been found
 }
 ```
 
-At this point you can delete `src/App.tsx`, you will no longer need it as the contents have moved into `src/routes/index.tsx`.
+## Stack
+* Build system - [Vite](https://vite.dev/)
+* UI framework - React v19
+* Router - [Tanstack Router]
+* State managment - [Tanstack Query] + [Zustand]
+* OpenSubsonic API - [written from scratch](./src/lib/api/subsonic/)
+* Data validation - [Zod](https://zod.dev/)
+* Styligg - Plain CSS with [CSS Modules](https://vite.dev/guide/features#css-modules)
+* Icons - [Lucide](https://lucide.dev/)
+* Table managment - [Tanstack Table](https://tanstack.com/table/latest)
+* *[and etc](#other-packages-used)*
 
-The only additional code is the `createFileRoute` function that tells TanStack Router where to render the route. Helpfully the Vite plugin will keep the path argument that goes to `createFileRoute` automatically in sync with the file system.
+### Why React?
+React has probably biggest ecosystem, and I know basics of its rendering. So it was chosen because of popularity and familiarity. And it is fun to try and write optimized React code, which does not redraw entire megabuild of a page when one tiny bitty state changes 😒
 
-Finally the `src/main.tsx` file can be simplified down to this:
+### Why two state managment libraries?
+When I was working at the beginning of my internship, I have noticed that with [React.StrictMode](https://react.dev/reference/react/StrictMode) fetch requests are sent **two times**, which is expected since StrictMode renders tree two times.
 
-```tsx
-import { StrictMode } from "react";
-import ReactDOM from "react-dom/client";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
+I searched for a solution, and found [Tanstack Query], which is very powerful tool. It automatically deduplicates requests, caches data, optimistically refetches requests and can act as a state managment library, since you can manually set cached data.
 
-// Import the generated route tree
-import { routeTree } from "./routeTree.gen";
+It is a literally **godsend** library! Thanks to it, there is no need for realtime updates via websocket, and creating complex system to propagate updates across entire app. If you have a state from a server, you can use this library, and you won't need to use another state managment library.
 
-import "./styles.css";
-import reportWebVitals from "./reportWebVitals.ts";
+Since OpenSubsonic API is used, most of the stuff is on the server, so most of the things is stored via [Tanstack Query]
 
-// Create a new router instance
-const router = createRouter({
-  routeTree,
-  defaultPreload: "intent",
-  defaultPreloadStaleTime: 0,
-  scrollRestoration: true,
-  defaultStructuralSharing: true
-});
+But what about [Zustand]? It is actually used only for player state, you can [take a look here](./src/lib/state.ts), it is pretty simple. And also stored in local storage, so you can continue from where you left. 
 
-// Register the router instance for type safety
-declare module "@tanstack/react-router" {
-  interface Register {
-    router: typeof router;
-  }
-}
+To repeat, [Zustand] is only used to control client-side state, aka player state. For everything else, aka server state, [Tanstack Query] used.
 
-// Render the app
-const rootElement = document.getElementById("app")!;
-if (!rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement);
-  root.render(
-    <StrictMode>
-      <RouterProvider router={router} />
-    </StrictMode>
-  );
-}
+There is also [Tanstack Store](https://tanstack.com/store/latest), but at the current moment it is in alpha, and [Zustand] is very easy to use for its purpose. So it was decided to not to experiment.
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
-```
+### Why Tanstack Router?
+During my internship first time I actually have chosen [React Router](https://reactrouter.com/), since it is very old and famous library, and I heard developers learnt their experience from [Remix](https://v2.remix.run/), and used it in React Router v7 framework mode.
 
-Now you've got a file based routing setup in your project! Let's have some fun with it! Just create a file in `about.tsx` in `src/routes` and it if the application is running TanStack will automatically add contents to the file and you'll have the start of your `/about` route ready to go with no additional work. You can see why folks find File Based Routing so easy to use.
+Both Library and Framework modes were used in two different projects, latter was used in latest project. It was okay at the beginning, but framework mode was mode more for SSR rendering, but I prefer static files, since for me server resources are sacred, especially with current hardware price increases due to AI demands. And it does not work great in SPA mode. It actually builds a SSR server, and then deletes it from build artifacts *(yikes)*. And also pre-render gave headaches, React Router expected components to be renderable on the server by default, because of that DOM wasn't always available... 
 
-You can find out everything you need to know on how to use file based routing in the [File Based Routing](https://tanstack.com/router/latest/docs/framework/react/guide/file-based-routing) documentation.
+Bla-bla-bla. So, we already were using [Tanstack Query], and I found out that they also have [Tanstack Router] library. And these guys are amazing.
+1. It integrates seamlessly into Vite, no need to use [dedicated cli build system](https://reactrouter.com/api/other-api/dev)
+2. API is pretty simple, especially with File routes. And even while you run Vite dev server, creating or renaming new routes, will automatically have all boilerplate code you'll need (it is actually not much, like 9 lines with page component). It felt like there was a special IDE integration!
+3. First class Typescript support. All link components, route params, search query params and even data loading is typesafe. You have changed a route? Not a problem, Typescript will tell you there you need to change something. And types are generated into [routeTree.gen.ts](./src/routeTree.gen.ts) file, so even without dev server you'll have full typesafety.
+4. Built in data fetching and caching. I have integration album, artist and playlist pages with [Tanstack Query], and when user only thinks about clicking on an album, all data is already preloaded before he even clicks on the link.
+5. It is very lightweight (12kb), yet very powerful
 
-## Data Fetching
+I swear, this Tanstack team revolutionize web development experience. Huge kudos to them for amazing libraries.
 
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
+### Other packages used
+* [clsx](https://www.npmjs.com/package/clsx) to simplify className concatination (used heavily in tailwind based projects)
+* [node-vibrant](https://vibrant.dev/) to generate a pallete of colors from images, currently used for background gradients at album, playlist and artist pages.
+* [sass-embedded](https://www.npmjs.com/package/sass-embedded) used initially, but modern css already has most features you would want, so it was abandoned later
+* [spark-md5](https://www.npmjs.com/package/spark-md5) to generate a hash from given password (yup, opensubsonic uses md5 hashing for password. Alternative is api keys, but they aren't supported widely, like nowhere)
+* [biome](https://biomejs.dev/) fast and smart formatter and linter, was provided with project template. Actually great
+* [react-aria-components](https://react-aria.adobe.com/) are Adobe headless components that follow Aria. It was actually hard to understand everything at once, so I dropped RAC in favor of components from scratch, just in sake of learning how to style, and understand bases.
+* [Tanstack Form](https://tanstack.com/form/latest) was used at the beginning alongside with RAC, but I understood that it takes too much time to create a login page for me, so I decided to focus more on main player functionality, not usual components. 
 
-For example:
+## Disclaimer
+The project presented herein is an independent, non‑commercial school assignment created solely for educational purposes. It is **not** affiliated with, endorsed by, or sponsored by **Spotify AB** or any of its affiliates. All trademarks, service marks, logos, and other intellectual property rights displayed in this project (including but not limited to the “Spotify” name and the Spotify logo) are the exclusive property of **Spotify AB**.
 
-```tsx
-const peopleRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/people",
-  loader: async () => {
-    const response = await fetch("https://swapi.dev/api/people");
-    return response.json() as Promise<{
-      results: {
-        name: string;
-      }[];
-    }>;
-  },
-  component: () => {
-    const data = peopleRoute.useLoaderData();
-    return (
-      <ul>
-        {data.results.map((person) => (
-          <li key={person.name}>{person.name}</li>
-        ))}
-      </ul>
-    );
-  },
-});
-```
+The use of Spotify’s visual assets, branding elements, or any other copyrighted material in this project is intended solely for illustrative, academic, and non‑profit purposes. No portion of this project may be reproduced, distributed, or used for commercial gain without the explicit written permission of **Spotify AB**.
 
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
+By viewing or using this project, you acknowledge and agree that Spotify retains all rights to its trademarks and related intellectual property, and that this project does not claim any ownership or official relationship with Spotify.
 
-### React-Query
 
-React-Query is an excellent addition or alternative to route loading and integrating it into you application is a breeze.
-
-First add your dependencies:
-
-```bash
-pnpm add @tanstack/react-query @tanstack/react-query-devtools
-```
-
-Next we'll need to create a query client and provider. We recommend putting those in `main.tsx`.
-
-```tsx
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-// ...
-
-const queryClient = new QueryClient();
-
-// ...
-
-if (!rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement);
-
-  root.render(
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
-  );
-}
-```
-
-You can also add TanStack Query Devtools to the root route (optional).
-
-```tsx
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
-const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <Outlet />
-      <ReactQueryDevtools buttonPosition="top-right" />
-      <TanStackRouterDevtools />
-    </>
-  ),
-});
-```
-
-Now you can use `useQuery` to fetch your data.
-
-```tsx
-import { useQuery } from "@tanstack/react-query";
-
-import "./App.css";
-
-function App() {
-  const { data } = useQuery({
-    queryKey: ["people"],
-    queryFn: () =>
-      fetch("https://swapi.dev/api/people")
-        .then((res) => res.json())
-        .then((data) => data.results as { name: string }[]),
-    initialData: [],
-  });
-
-  return (
-    <div>
-      <ul>
-        {data.map((person) => (
-          <li key={person.name}>{person.name}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-export default App;
-```
-
-You can find out everything you need to know on how to use React-Query in the [React-Query documentation](https://tanstack.com/query/latest/docs/framework/react/overview).
-
-## State Management
-
-Another common requirement for React applications is state management. There are many options for state management in React. TanStack Store provides a great starting point for your project.
-
-First you need to add TanStack Store as a dependency:
-
-```bash
-pnpm add @tanstack/store
-```
-
-Now let's create a simple counter in the `src/App.tsx` file as a demonstration.
-
-```tsx
-import { useStore } from "@tanstack/react-store";
-import { Store } from "@tanstack/store";
-import "./App.css";
-
-const countStore = new Store(0);
-
-function App() {
-  const count = useStore(countStore);
-  return (
-    <div>
-      <button onClick={() => countStore.setState((n) => n + 1)}>
-        Increment - {count}
-      </button>
-    </div>
-  );
-}
-
-export default App;
-```
-
-One of the many nice features of TanStack Store is the ability to derive state from other state. That derived state will update when the base state updates.
-
-Let's check this out by doubling the count using derived state.
-
-```tsx
-import { useStore } from "@tanstack/react-store";
-import { Store, Derived } from "@tanstack/store";
-import "./App.css";
-
-const countStore = new Store(0);
-
-const doubledStore = new Derived({
-  fn: () => countStore.state * 2,
-  deps: [countStore],
-});
-doubledStore.mount();
-
-function App() {
-  const count = useStore(countStore);
-  const doubledCount = useStore(doubledStore);
-
-  return (
-    <div>
-      <button onClick={() => countStore.setState((n) => n + 1)}>
-        Increment - {count}
-      </button>
-      <div>Doubled - {doubledCount}</div>
-    </div>
-  );
-}
-
-export default App;
-```
-
-We use the `Derived` class to create a new store that is derived from another store. The `Derived` class has a `mount` method that will start the derived store updating.
-
-Once we've created the derived store we can use it in the `App` component just like we would any other store using the `useStore` hook.
-
-You can find out everything you need to know on how to use TanStack Store in the [TanStack Store documentation](https://tanstack.com/store/latest).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
+[Navidrome]: https://www.navidrome.org/
+[OpenSubsonic]: https://opensubsonic.netlify.app/
+[Tanstack Router]: https://tanstack.com/router/latest
+[Tanstack Query]: https://tanstack.com/query/latest
+[Zustand]: https://github.com/pmndrs/zustand
