@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { type CSSProperties, useEffect, useState } from "react"
+import { type CSSProperties, useState } from "react"
 import { CoverGradientContainer } from "@/components/CoverGradientContainer"
 import { PlaylistOverview } from "@/components/subsonic/Overview"
 import { PlayControlsForSongs } from "@/components/subsonic/PlayControls"
@@ -25,11 +25,8 @@ function PlaylistPage() {
     const [coverImage, setCoverImage] = useState<HTMLImageElement>()
     const palette = useVibrant(coverImage)
 
-    useEffect(() => {
-        console.log(playlist)
-    }, [playlist])
-
     const style = { "--coverColor": palette?.Vibrant?.hex } as CSSProperties
+
     return (
         <div key={playlistID} style={style}>
             <PlaylistOverview

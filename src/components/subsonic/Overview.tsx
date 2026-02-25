@@ -91,6 +91,11 @@ export function PlaylistOverview({
             type="Playlist"
             title={playlist.name}
             {...props}
-        ></Overview>
+        >
+            <span>{playlist.entry?.length ?? 0} songs</span>
+            {playlist.duration && (
+                <span>{humanDuration(playlist.duration)}</span>
+            )}
+        </Overview>
     )
 }
