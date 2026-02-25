@@ -38,6 +38,9 @@
 }
 
 .mainContent {
+    display: flex;
+    flex-direction: column;
+    gap: 4em;
     padding: 2em;
     min-height: 24em;
 }
@@ -47,10 +50,10 @@
     flex-direction: column;
     gap: 1em;
 
-    opacity: 0;
-    &.ready {
-        opacity: 1;
-        animation: fadeIn 0.5s;
+    animation: fadeIn 0.5s;
+
+    .controls {
+        margin-bottom: 1em;
     }
 
     .showMore {
@@ -62,5 +65,18 @@
         &:hover {
             color: var(--gray-1400);
         }
+    }
+}
+
+.albums {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
+    animation: fadeIn 0.5s;
+
+    .list {
+        display: flex;
+        flex-wrap: wrap;
     }
 }

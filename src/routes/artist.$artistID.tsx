@@ -7,6 +7,7 @@ import {
     useState,
 } from "react"
 import { CoverGradientContainer } from "@/components/CoverGradientContainer"
+import { AlbumCard } from "@/components/subsonic/Card"
 import { type ConverArtProps, CoverArt } from "@/components/subsonic/CoverArt"
 import { PlayControlsForSongs } from "@/components/subsonic/PlayControls"
 import { SongTable } from "@/components/subsonic/SongTable"
@@ -24,14 +25,17 @@ function RouteComponent() {
     const pallete = useVibrant(img)
     const [topSongsReady, setTopSongsReady] = useState(false)
 
+    const ready = (img && topSongsReady) || false
+
     return (
         <div style={{ "--coverColor": pallete?.Vibrant?.hex } as CSSProperties}>
             <ArtistOverview onLoad={(e) => setImg(e.currentTarget)} />
             <CoverGradientContainer className={classes.mainContent}>
                 <TopSongs
-                    show={(img && topSongsReady) || false}
+                    show={ready}
                     onLoaded={() => setTopSongsReady(true)}
                 />
+                <Albums show={ready} />
             </CoverGradientContainer>
         </div>
     )
@@ -109,9 +113,11 @@ function TopSongs({ show, onLoaded }: { show: boolean; onLoaded: () => void }) {
         if (songs) onLoaded()
     }, [songs, onLoaded])
 
+    if (!show) return
+
     return (
-        <div className={cn(classes.topSongs, show && classes.ready)}>
-            <PlayControlsForSongs songs={songs} />
+        <div className={classes.topSongs}>
+            <PlayControlsForSongs songs={songs} className={classes.controls} />
             <h2>Popular</h2>
             <SongTable
                 songs={songs}
@@ -128,6 +134,24 @@ function TopSongs({ show, onLoaded }: { show: boolean; onLoaded: () => void }) {
                     {showMore ? "See less" : "See more"}
                 </button>
             )}
+        </div>
+    )
+}
+
+function Albums({ show }: { show: boolean }) {
+    const { artistID } = Route.useParams()
+    const { data: artist } = useQuery(getArtistOptions({ id: artistID }))
+
+    if (!show) return
+
+    return (
+        <div className={classes.albums}>
+            <h2>Albums</h2>
+            <div className={classes.list}>
+                {artist?.album?.map((a) => (
+                    <AlbumCard key={a.id} album={a} />
+                ))}
+            </div>
         </div>
     )
 }
