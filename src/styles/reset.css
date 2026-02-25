@@ -25,3 +25,11 @@ button {
     -webkit-font-smoothing: inherit;
     -moz-osx-font-smoothing: inherit;
 }
+
+/* make buttons predictably styled + override reset-modernize */
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+    appearance: none;
+}
