@@ -27,7 +27,10 @@ function AlbumPage() {
         <div style={style}>
             <AlbumOverview album={album} onCoverLoaded={setCoverImage} />
             <CoverGradientContainer style={{ padding: "1.5em" }}>
-                <PlayControlsForSongs songs={album.song} />
+                <PlayControlsForSongs
+                    songs={album.song}
+                    style={{ marginBottom: "1em" }}
+                />
                 <SongTable songs={album.song} withArtists withHeader />
             </CoverGradientContainer>
         </div>
